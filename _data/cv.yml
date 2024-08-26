@@ -1,97 +1,167 @@
-- title: General Information
-  type: map
-  contents:
-    - name: Full Name
-      value: Albert Einstein
-    - name: Date of Birth
-      value: 14th March 1879
-    - name: Languages
-      value: English, German
+#- title: General Information
+  #type: map
+  #contents:
+    #- name: Full Name
+      #value: Zander Whitlock Blasingame
+    #- name: Date of Birth
+      #value: 14th March 1879
+    #- name: Languages
+      #value: English
 
 - title: Education
   type: time_table
   contents:
-    - title: PhD
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1905
+    - title: Ph.D. in Electrical Engineering
+      institution: Clarkson University, Postdam NY, USA 
+      year: 2024
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
-          contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Federal teaching diploma
-      institution: Eidgenössische Technische Hochschule, Zurich, Switzerland
-      year: 1900
-      description:
-        - Description 1.
-        - Description 2.
+        - Advised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>
+    - title: B.Sc. in Computer Enginnering
+      institution: Clarkson University, Postdam NY, USA 
+      year: 2018
 
 - title: Experience
   type: time_table
   contents:
-    - title: Professor of Theoretical Physics
-      institution: Institute for Advanced Study, Princeton University
-      year: 1933 - 1955
+    - title: Research Assistant
+      institution: Clarkson University, Potsdam NY, USA
+      department: Electrical and Computer Engineering
+      year: 2018 - 2024
       description:
-        - Description 1.
-        - Description 2.
-        - title: Description 3.
+        - Created <b>AdjointDEIS</b> a novel technique to calculate the gradients for diffusion ODEs/SDEs
+        - title: Proposed <b>Di</b>ffusion <b>M</b>orphs (<b>DiM</b>) a novel family of face morphing algorithms
           contents:
-            - Sub-description 1.
-            - Sub-description 2.
-    - title: Visiting Professor
-      institution: California Institute of Technology, Pasadena, California, US
-      year: 1933
+            - Developed <b>Fast-DiM</b> a more computationally efficient version of DiM which uses high-order ODE solvers
+            - Designed <b>Greedy-DiM</b> an improvment on the vanilla DiM algorithm which uses a greedy strategy to preform guided generation 
+        - Developed a SOTA morph detection algorithm using adversarial learning
+
+    - title: Undergraduate Research Assistant
+      institution: Clarkson University, Potsdam NY, USA
+      department: Electrical and Computer Engineering
+      year: 2015 - 2018
       description:
-        - Description 1.
-        - Description 2.
+        - Developed machine learning algorithms for the detection of malware using hardware information
+        - Studied the theory of semi-supervised anomaly detection problems
 
-    - title: Director
-      institution: Kaiser Wilhelm Institute for Physics, Berlin, Germany.
-      year: 1917-1933
-
-    - title: Professor of Theoretical Physics
-      institution: Karl-Ferdinand University, Prague, Czechoslovakia
-      year: 1911 - 1917
+    - title: Engineering Intern
+      institution: Griffiss Institute, Rome NY, USA
+      year: Summer 2016
       description:
+        - Generated meta-statistics for several machine learning datasets
+        - Designed android application to display data from a backend server
 
-    - title: Associate Professor of Theoretical Physics
-      institution: University of Zurich, Zurich, Switzerland
-      year: 1909 - 1911
+    - title: Engineering Intern
+      institution: University of New Hampshire, Durham NH, USA
+      department: InterOperability Laboratory
+      year: Summer 2014
+      description:
+        - Designed a custom Linux image for embedded systems using the Yocto Project
+        - Created a web application capable of monitoring and maintaining server processes
 
-- title: Open Source Projects
+- title: Awards and Honors
   type: time_table
   contents:
-    - title: <a href="https://github.com/alshedivat/al-folio">al-folio</a>
-      year: 2015-now
-      description: A beautiful, simple, clean, and responsive Jekyll theme for academics.
+    - title:
+      year: 2024
+      description: 
+        - IJCB Docotral Consortium
 
-- title: Honors and Awards
+- title: Teaching
   type: time_table
   contents:
-    - year: 1921
-      items:
-        - Nobel Prize in Physics
-        - Matteucci Medal
-    - year: 2029
-      items:
-        - Max Planck Medal
+    - title: Instructor
+      year: 2023 - 2024
+      description: CyberSecurity Camp, Griffiss Institute
+
+    - title: Teaching Assistant
+      year: 2021 - 2022
+      description: CyberSecurity Camp, Griffiss Institute
+
+    - title: Teaching Assistant
+      year: 2021
+      description: Electrical Science, Clarkson University
+
+    - title: Teaching Assistant
+      year: 2018 - 2019
+      description: Introduction to Digital Design, Clarkson University
+
+    - title: Teaching Assistant
+      year: 2019
+      description: ECE Sophomore Lab, Clarkson University
+
+    - title: Teaching Assistant
+      year: 2017 - 2018
+      description: Software System Architecture, Clarkson University
+
+    - title: Teaching Assistant
+      year: 2016
+      description: Differential Equations, Clarkson University
+
+- title: Grants
+  type: time_table
+  contents:
+    - title: Explainable Image Quality with Transformer-based Models
+      year: 2023 - 2024
+      description:
+        - Chen Liu (PI), Zander Blasingame
+        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Amount:</i> 50,000 (USD)
+        - <i>Role:</i> Student Investigator
+
+    - title: Towards the Creation of a Large Dataset of High-Quality Face Morphs
+      year: 2021 - 2024
+      description:
+        - Chen Liu (PI), Stephanie Schuckers, Xin Li, Jeremy Dawson, Nasser Nasrabadi, David Doermann, Srirangaraj Setlur, Siwei Lyu, Xiaoming Liu, Sébastien Marcel
+        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Amount:</i> 400,000 (USD)
+        - <i>Role:</i> Student Investigator at Clarkson
+
+    - title: Comparative Detection of Facial Image Manipulation Techniques
+      year: 2020 - 2022
+      description:
+        - Chen Liu (PI), Zander Blasingame
+        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Amount:</i> 45,000 (USD)
+        - <i>Role:</i> Student Investigator
+
+    - title: Adversarial Learning Based Approach Against Face Morphing Attacks
+      year: 2019 - 2021
+      description:
+        - Chen Liu (PI), Zander Blasingame
+        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Amount:</i> 60,000 (USD)
+        - <i>Role:</i> Student Investigator
+
+
+- title: Professional Services
+  type: list
+  contents:
+    - <b>Journal Reviewer:</b> Future Generation Computer Systems, IEEE Access
+    - <b>Conference Reviewer:</b> ICLR (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
+
+- title: Skills
+  type: list
+  contents:
+    - <b>Programming Languages:</b> Python, C/C++, Java, Javascript, Bash, MATLAB, VHDL, Assembly
+    - <b>Frameworks:</b> TensorFlow, Pytorch, Numpy, Scipy, Matplotlib, Plotly, Pandas, Jax
+    - <b>Tools:</b> Vim, Git, Linux, Docker, LaTeX
+    - <b>Audio:</b> Over a decade of exeperience as a FOH engineer including theater productions and worship services
 
 - title: Academic Interests
   type: nested_list
   contents:
-    - title: Topic 1.
+    - title: Generative Models 
       items:
-        - Description 1.
-        - Description 2.
-    - title: Topic 2.
-      items:
-        - Description 1.
-        - Description 2.
+        - Bespoke ODE/SDE solvers
+        - Stochastic calculus
+        - Latent representations
+        - Latent editing
+        - Autoencoding for generative models
 
-- title: Other Interests
-  type: list
-  contents:
-    - <u>Hobbies:</u> Hobby 1, Hobby 2, etc.
+    - title: Biometrics
+      items:
+        - Face morphing
+        - Adversarial attacks
+        - Deepfakes
+
+

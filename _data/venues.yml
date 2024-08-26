@@ -1,9 +1,23 @@
-"AJP":
-  url: https://aapt.scitation.org/journal/ajp
-  color: "#00369f"
+"IJCB":
+  url: https://ieee-biometrics.org/conferences/flagship/ijcb/
 
-"PhysRev":
-  url: https://journals.aps.org/
+"IEEE TBIOM":
+  url: https://ieee-biometrics.org/publications/t-biom/
 
-"Vision":
-  color: "#009f36"
+"arXiv":
+  url: https://arxiv.org
+
+"IEEE S&P":
+  url: https://ieeexplore.ieee.org/xpl/RecentIssue.jsp?punumber=8013
+
+"ICANN":
+  url: https://link.springer.com/conference/icann
+
+"HASP":
+  url: https://dl.acm.org/conference/hasp
+
+"AsianHOST":
+  url: https://www.asianhost.org
+
+"IEEE TOCS":
+  url: https://ieee-cas.org/publication/TCAS-I
