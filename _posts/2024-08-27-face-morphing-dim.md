@@ -185,7 +185,7 @@ With a neural network, often a U-Net <d-cite key="unet"></d-cite>, $$\boldsymbol
 ## DiM
 **Di**fusion **M**orphs (**DiM**) are a novel kind of face morphing algorithm which solve the *Probability Flow* ODE *both* forwards and backwards in time to achieve state-of-the-art visual fidelity and morphing performance far surpassing previous representation-based morphing attacks. 
 The DiM framework could use many different diffusion backbones like DDPM <d-cite key="ddpm"></d-cite>, LDM <d-cite key="ldm"></d-cite>, DiT <d-cite key="Peebles2022DiT"></d-cite>, &amp;c.
-However, in our work we opted to use the Diffusion Autoencoder <d-cite key="diffae"></d-cite> trained on the FFHQ dataset <d-cite key="stylegan"></d-cite> which conditions the noise prediction network $$\boldsymbol\epsilon_\theta(\bfx_t, \bfz, t)$$ on a latent representation, $$bfz$$, of the target image.
+However, in our work we opted to use the Diffusion Autoencoder <d-cite key="diffae"></d-cite> trained on the FFHQ dataset <d-cite key="stylegan"></d-cite> which conditions the noise prediction network $$\boldsymbol\epsilon_\theta(\bfx_t, \bfz, t)$$ on a latent representation, $$\bfz$$, of the target image.
 
 <div class="row mt-3">
     <div class="col-sm mt-3 mt-md-0">
