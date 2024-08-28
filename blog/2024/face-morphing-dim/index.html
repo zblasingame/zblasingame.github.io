@@ -114,16 +114,16 @@
             <span class="n">eps</span> <span class="o">=</span> <span class="nf">model</span><span class="p">(</span><span class="n">xt</span><span class="p">,</span> <span class="n">z</span><span class="p">,</span> <span class="n">t</span><span class="p">)</span>
 
         <span class="n">eps</span> <span class="o">=</span> <span class="n">eps</span><span class="p">.</span><span class="nf">detach</span><span class="p">().</span><span class="nf">clone</span><span class="p">().</span><span class="nf">requires_grad</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">optim</span><span class="p">.</span><span class="nc">RAdam</span><span class="p">([</span><span class="n">out</span><span class="p">],</span> <span class="o">**</span><span class="n">opt_kwargs</span><span class="p">)</span>
+        <span class="n">opt</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">optim</span><span class="p">.</span><span class="nc">RAdam</span><span class="p">([</span><span class="n">eps</span><span class="p">],</span> <span class="o">**</span><span class="n">opt_kwargs</span><span class="p">)</span>
 
-        <span class="n">x0_pred</span> <span class="o">=</span> <span class="nf">convert_eps_to_x0</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xt</span><span class="p">.</span><span class="nf">detach</span><span class="p">())</span>  <span class="c1"># assumes Eq. (13) is implemented somewhere
+        <span class="n">x0_pred</span> <span class="o">=</span> <span class="nf">convert_eps_to_x0</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xt</span><span class="p">.</span><span class="nf">detach</span><span class="p">())</span>  <span class="c1"># assumes Eq. (13) is implemented somewhere
 </span>        <span class="n">best_loss</span> <span class="o">=</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">x0_pred</span><span class="p">)</span>
         <span class="n">best_eps</span> <span class="o">=</span> <span class="n">eps</span>
 
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">n_opt_steps</span><span class="p">):</span>
             <span class="n">opt</span><span class="p">.</span><span class="nf">zero_grad</span><span class="p">()</span>
 
-            <span class="n">x0_pred</span> <span class="o">=</span> <span class="nf">convert_eps_to_x0</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xt</span><span class="p">.</span><span class="nf">detach</span><span class="p">())</span>
+            <span class="n">x0_pred</span> <span class="o">=</span> <span class="nf">convert_eps_to_x0</span><span class="p">(</span><span class="n">eps</span><span class="p">,</span> <span class="n">t</span><span class="p">,</span> <span class="n">xt</span><span class="p">.</span><span class="nf">detach</span><span class="p">())</span>
             <span class="n">loss</span> <span class="o">=</span> <span class="nf">loss_fn</span><span class="p">(</span><span class="n">x0_pred</span><span class="p">)</span>
 
             <span class="n">do_update</span> <span class="o">=</span> <span class="p">(</span><span class="n">loss</span> <span class="o">&lt;</span> <span class="n">best_loss</span><span class="p">).</span><span class="nf">float</span><span class="p">()</span>  <span class="c1"># handles batches of morphs
