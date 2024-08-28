@@ -701,6 +701,11 @@ footer.sticky-bottom {
             color: var(--global-theme-color) !important;
             background-color: white;
             border: 1px solid var(--global-theme-color);
+            min-width: 100px;
+        }
+
+        .badge {
+            min-width: 100px;
         }
 
         abbr {

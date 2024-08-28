@@ -23,7 +23,7 @@ Recent research has focused on bespoke ODE/SDE solvers for the gradients of diff
 I work in the [CAMEL](https://camel.clarkson.edu/) group and I am advised by Dr. [Chen Liu](https://camel.clarkson.edu/members.html).
 Previously, I received my B.Sc. in Computer Engineering from Clarkson University in 2018.
 
-All of Christ, for all of life.
+*All of Christ, for all of life.*
 
 In my free time I am a middle blocker for [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
 

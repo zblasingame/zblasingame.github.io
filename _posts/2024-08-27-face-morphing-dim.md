@@ -524,16 +524,16 @@ def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_func, eps=0.002, T=8
             eps = model(xt, z, t)
 
         eps = eps.detach().clone().requires_grad(True)
-        opt = torch.optim.RAdam([out], **opt_kwargs)
+        opt = torch.optim.RAdam([eps], **opt_kwargs)
 
-        x0_pred = convert_eps_to_x0(out, t, xt.detach())  # assumes Eq. (13) is implemented somewhere
+        x0_pred = convert_eps_to_x0(eps, t, xt.detach())  # assumes Eq. (13) is implemented somewhere
         best_loss = loss_fn(x0_pred)
         best_eps = eps
 
         for _ in range(n_opt_steps):
             opt.zero_grad()
 
-            x0_pred = convert_eps_to_x0(out, t, xt.detach())
+            x0_pred = convert_eps_to_x0(eps, t, xt.detach())
             loss = loss_fn(x0_pred)
 
             do_update = (loss < best_loss).float()  # handles batches of morphs
