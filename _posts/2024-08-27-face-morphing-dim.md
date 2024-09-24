@@ -664,10 +664,10 @@ I develop the motivation for DiM, and it's successors Fast-DiM and Greedy-DiM, t
 I was then able to demonstrate that this new family of morphing attacks pose a serious threat to FR systems and represent a significant advance in face morphing attacks.
 This post is a compilation of several papers we have published in the last few years. Please visit them if you are interested in more details.
 
+* [Zander W. Blasingame and Chen Liu. *Greedy-DiM: Greedy Algorithms for Unreasonably Effective Face Morphs*. IJCB 2024](https://arxiv.org/abs/2404.06025)
 * [Zander W. Blasingame and Chen Liu. *Leveraging Diffusion for Strong and High Quality Face Morphing Attacks*. IEEE TBIOM 2024.](https://arxiv.org/abs/2301.04218)
 * [Zander W. Blasingame and Chen Liu. *Fast-DiM: Towards Fast Diffusion Morphs*. IEEE Security & Privacy 2024.](https://arxiv.org/abs/2310.09484)
 * [Richard E. Neddo, Zander W. Blasingame, and Chen Liu. *The Impact of Print-and-Scan in Heterogeneous Morph Evaluation Scenarios*. IJCB 2024](https://arxiv.org/abs/2404.06559)
-* [Zander W. Blasingame and Chen Liu. *Greedy-DiM: Greedy Algorithms for Unreasonably Effective Face Morphs*. IJCB 2024](https://arxiv.org/abs/2404.06025)
 
 For more reading on more *efficiently* estimating the gradients of diffusion models please check out our recent paper.
 
