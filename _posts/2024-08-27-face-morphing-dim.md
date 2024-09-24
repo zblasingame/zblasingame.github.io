@@ -482,7 +482,7 @@ We outline the Greedy-DiM algorithm with the following PyTorch pseudo code.
 ```python
 def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_func, eps=0.002, T=80., n_encode=250, n_sample=20, n_opt_steps=50, opt_kwargs={}):
     """
-    DiM algorithm.
+    Greedy-DiM algorithm.
 
     Args:
         model (nn.Module): Noise prediction U-Net (or x-prediction / v-prediction).
@@ -518,7 +518,8 @@ def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_func, eps=0.002, T=8
 
     # Generate morph
     timesteps = torch.linspace(T, eps, n_sample) 
-
+    
+    # Perform Greedy Optimization
     for i, t in enumerate(timesteps[:-1]):
         with torch.no_grad():
             eps = model(xt, z, t)
@@ -530,6 +531,7 @@ def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_func, eps=0.002, T=8
         best_loss = loss_fn(x0_pred)
         best_eps = eps
 
+        # Gradient descent on epsilon to find epsilon*
         for _ in range(n_opt_steps):
             opt.zero_grad()
 
@@ -545,6 +547,7 @@ def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_func, eps=0.002, T=8
 
         eps = best_eps
 
+        # Use the approximated epsilon* to take the next step of the ode solver
         xt = ode_solver(xt, z, diff_eq, [t, timesteps[i+1]])
             
     return xt
