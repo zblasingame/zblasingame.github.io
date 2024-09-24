@@ -1,7 +1,7 @@
 ---
 layout: distill
 title: Face Morphing with Diffusion Models
-description: This blog introduces a new family of face morphing attacks known as <b>Di</b>fusion <b>M</b>orphs (<b>DiM</b>). DiMs are a novel method for constructing morphed faces which exploit the iterative nature of diffusion models to construct face morphs which are more effective and more realisitc in appearance. DiMs achieve state-of-the-art morphing performance and visual fidelity, far surpassing previous methods. In this blog post I will detail the intution, basic concepts, and applications of DiMs.
+description: This blog introduces a new family of face morphing attacks known as <b>Di</b>fusion <b>M</b>orphs (<b>DiM</b>). DiMs are a novel method for constructing morphed faces which exploit the iterative nature of diffusion models to construct face morphs which are more effective and more realistic in appearance. DiMs achieve state-of-the-art morphing performance and visual fidelity, far surpassing previous methods. In this blog post I will detail the intution, basic concepts, and applications of DiMs.
 tags: diffusion DiM face-morphing numerical-methods ODEs SDEs greedy-algorithms
 giscus_comments: false
 date: 2024-08-27
