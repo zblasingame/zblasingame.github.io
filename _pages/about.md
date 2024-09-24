@@ -25,6 +25,7 @@ Previously, I received my B.Sc. in Computer Engineering from Clarkson University
 
 *All of Christ, for all of life.*
 
-In my free time I am a middle blocker for [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
+In my free time I am an opposite hitter for the [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
+I also enjoy powerlifting and resistance training.
 
-**I am currently looking for Post Doc or Industry research positions in generative modeling**
+**I am currently looking for research positions in industry/academia in generative modeling. Particularly in diffusion models or generative flows.**
