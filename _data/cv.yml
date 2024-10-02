@@ -97,7 +97,7 @@
       year: 2016
       description: Differential Equations, Clarkson University
 
-- title: Grants
+- title: Research Funding
   type: time_table
   contents:
     - title: Explainable Image Quality with Transformer-based Models
@@ -137,7 +137,7 @@
   type: list
   contents:
     - <b>Journal Reviewer:</b> Future Generation Computer Systems, IEEE Access
-    - <b>Conference Reviewer:</b> ICLR (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
+    - <b>Conference Reviewer:</b> AISTATS (2025), ICLR (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
 
 - title: Skills
   type: list
