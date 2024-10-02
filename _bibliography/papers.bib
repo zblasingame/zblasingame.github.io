@@ -13,6 +13,9 @@ url={https://openreview.net/forum?id=fAlcxvrOEX},
   code={https://github.com/zblasingame/AdjointDEIS},
   website={https://zblasingame.github.io/AdjointDEIS},
   selected={true},
+  abstract={
+           The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
+  }
 },
 
 @INPROCEEDINGS{blasingame_greedydim,
