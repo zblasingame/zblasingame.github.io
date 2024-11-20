@@ -38,6 +38,7 @@ toc:
 ---
 
 <!--Math macros-->
+<div style="display:none">
 $$
 \newcommand{\R}{\mathbb{R}}
 \newcommand{\X}{\mathcal{X}}
@@ -58,6 +59,7 @@ $$
 \DeclareMathOperator{\argmax}{arg\,max}
 \DeclareMathOperator{\argmin}{arg\,min}
 $$
+</div>
 
 ## Introduction
 
@@ -164,7 +166,7 @@ where $$\alpha_t,\sigma_t$$ form a noise schedule such that $$\alpha_t^2 + \sigm
 \begin{equation}
     \bfx_t = \alpha_t\bfx_0 + \sigma_t\boldsymbol\epsilon_t \qquad \boldsymbol\epsilon_t \sim \mathcal{N}(\mathbf 0, \mathbf I)
 \end{equation}
-Diffusion models which use noise prediction are train a neural network $$\boldsymbol\epsilon_\theta(\bfx_t, t)$$ parameterized by $$\theta$$ to predict $$\boldsymbol\epsilon_t$$ given $$\bfx_t$$ which is equivalent to learning $$\boldsymbol\epsilon_\theta(\bfx_t, t) = -\sigma_t\nabla_\bfx \log p_t(\bfx_t)$$.
+Diffusion models which use noise prediction train a neural network $$\boldsymbol\epsilon_\theta(\bfx_t, t)$$ parameterized by $$\theta$$ to predict $$\boldsymbol\epsilon_t$$ given $$\bfx_t$$ which is equivalent to learning $$\boldsymbol\epsilon_\theta(\bfx_t, t) = -\sigma_t\nabla_\bfx \log p_t(\bfx_t)$$.
 This choice of drift and coefficients forms the Variance Preserving SDE (VP SDE) type of diffusion SDE <d-cite key="song2021scorebased"></d-cite>.
 
 
@@ -671,7 +673,7 @@ This post is a compilation of several papers we have published in the last few y
 
 For more reading on more *efficiently* estimating the gradients of diffusion models please check out our recent paper.
 
-* [Zander W. Blasingame and Chen Liu. *AdjointDEIS: Efficient Gradients for Diffusion Models*. Pre-print.](https://arxiv.org/abs/2405.15020)
+* [Zander W. Blasingame and Chen Liu. *AdjointDEIS: Efficient Gradients for Diffusion Models*. NeurIPS 2024.](https://openreview.net/forum?id=fAlcxvrOEX)
 
 Interestingly, our work on Greedy-DiM bares some similarity to recent work done by Yu *et al.* <d-cite key="yu2023freedom"></d-cite> as they also end up doing a one-shot gradient estimation via $$\bfx_0$$-prediction; however, they develop their approach from the prospective of energy guidance.
 
