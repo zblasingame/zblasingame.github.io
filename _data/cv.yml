@@ -11,23 +11,27 @@
 - title: Education
   type: time_table
   contents:
-    - title: Ph.D. in Electrical Engineering
-      institution: Clarkson University, Postdam NY, USA 
-      year: 2024
+    - title: Ph.D. in Electrical and Computer Engineering <br> M.Sc. in Electrical and Computer Engineering
+      institution: Clarkson University
+      location: Postdam, NY 
+      year: 2025
       description:
         - Advised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>
-    - title: B.Sc. in Computer Enginnering
-      institution: Clarkson University, Postdam NY, USA 
+    - title: B.Sc. in Computer Engineering <br> Minors in Mathematics and Computer Science
+      institution: Clarkson University
+      location: Postdam, NY 
       year: 2018
 
 - title: Experience
   type: time_table
   contents:
-    - title: Research Assistant
-      institution: Clarkson University, Potsdam NY, USA
+    - title: Graduate Research Assistant
+      location: Postsdam, NY
+      institution: Clarkson University
       department: Electrical and Computer Engineering
-      year: 2018 - 2024
+      year: 2018 - Now
       description:
+        - Studied the problem of guided generation with diffusion models
         - Created <b>AdjointDEIS</b> a novel technique to calculate the gradients for diffusion ODEs/SDEs
         - title: Proposed <b>Di</b>ffusion <b>M</b>orphs (<b>DiM</b>) a novel family of face morphing algorithms
           contents:
@@ -36,66 +40,80 @@
         - Developed a SOTA morph detection algorithm using adversarial learning
 
     - title: Undergraduate Research Assistant
-      institution: Clarkson University, Potsdam NY, USA
+      institution: Clarkson University
+      location: Potsdam, NY
       department: Electrical and Computer Engineering
-      year: 2015 - 2018
+      year: 2016 - 2018
       description:
         - Developed machine learning algorithms for the detection of malware using hardware information
         - Studied the theory of semi-supervised anomaly detection problems
 
     - title: Engineering Intern
-      institution: Griffiss Institute, Rome NY, USA
+      institution: Griffiss Institute
+      department: Air Force Research Laboratory
+      location: Rome, NY
       year: Summer 2016
       description:
         - Generated meta-statistics for several machine learning datasets
         - Designed android application to display data from a backend server
 
     - title: Engineering Intern
-      institution: University of New Hampshire, Durham NH, USA
+      institution: University of New Hampshire
+      location: Durham, NH
       department: InterOperability Laboratory
       year: Summer 2014
       description:
         - Designed a custom Linux image for embedded systems using the Yocto Project
         - Created a web application capable of monitoring and maintaining server processes
 
-- title: Awards and Honors
+- title: Invited Talks
   type: time_table
   contents:
-    - title:
+    - title: "Diffusion Morphs (DiM): Diffusion is all you need for highly effective face morphs"
+      year: Nov 2024
+      location: Washington, D.C.
+      institution: EAB and the iMARS project
+      department: Transatlantic Dialogue on Presentation Attack Detection
+
+    - title: "Diffusion Morphs (DiM): Leveraging Diffusion for Strong and High-Quality Face Morphing Attacks"
+      year: Sep 2024
+      location: Buffalo, NY
+      institution: IEEE IJCB Conference
+      department: Journal Presentation
+
+    - title: "Diffusion Morphs (DiM): The Power of Iterative Generative Models for Attacking FR Systems"
+      year: Jul 2024
+      location: Martigny, Switzerland
+      institution: Idiap Research Insitute
+      department: Biometrics Security & Privacy Group
+
+    - title: "Diffusion for the Generation of Face Morphs"
+      year: Feb 2024
+      institution: CITeR and DSA Webinar
+    
+    - title: "Face Morph Generation and Attack Detection"
+      year: Nov 2022
+      institution: NIST
+      department: International Face Performance Conference
+
+    - title: "Morph Attack Detection and Mitigation Projects"
+      year: Oct 2020
+      institution: NIST
+      department: International Face Performance Conference
+
+- title: Projects
+  type: time_table
+  contents:
+    - title: <i class="fa-brands fa-github"></i> <a href="https://github.com/zblasingame/AdjointDEIS/">AdjointDEIS</a>
+      year: 2024 - Now
+      description:
+        - Efficient algorithms for backpropagation in diffusion models for guided generation and related tasks
+
+    - title: <i class="fa-brands fa-github"></i> <a href="https://github.com/zblasingame/Greedy-DiM/">Diffusion Morphs (DiM)</a>
       year: 2024
-      description: 
-        - IJCB Docotral Consortium
+      description:
+        - Developed a family of SOTA face morphing algorithms using diffusion models
 
-- title: Teaching
-  type: time_table
-  contents:
-    - title: Instructor
-      year: 2023 - 2024
-      description: CyberSecurity Camp, Griffiss Institute
-
-    - title: Teaching Assistant
-      year: 2021 - 2022
-      description: CyberSecurity Camp, Griffiss Institute
-
-    - title: Teaching Assistant
-      year: 2021
-      description: Electrical Science, Clarkson University
-
-    - title: Teaching Assistant
-      year: 2018 - 2019
-      description: Introduction to Digital Design, Clarkson University
-
-    - title: Teaching Assistant
-      year: 2019
-      description: ECE Sophomore Lab, Clarkson University
-
-    - title: Teaching Assistant
-      year: 2017 - 2018
-      description: Software System Architecture, Clarkson University
-
-    - title: Teaching Assistant
-      year: 2016
-      description: Differential Equations, Clarkson University
 
 - title: Research Funding
   type: time_table
@@ -104,7 +122,7 @@
       year: 2023 - 2024
       description:
         - Chen Liu (PI), Zander Blasingame
-        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Funding Agency:</i> Center for Identification Technology Research, a NSF-IUCRC
         - <i>Amount:</i> 50,000 (USD)
         - <i>Role:</i> Student Investigator
 
@@ -112,7 +130,7 @@
       year: 2021 - 2024
       description:
         - Chen Liu (PI), Stephanie Schuckers, Xin Li, Jeremy Dawson, Nasser Nasrabadi, David Doermann, Srirangaraj Setlur, Siwei Lyu, Xiaoming Liu, Sébastien Marcel
-        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Funding Agency:</i> Center for Identification Technology Research, a NSF-IUCRC
         - <i>Amount:</i> 400,000 (USD)
         - <i>Role:</i> Student Investigator at Clarkson
 
@@ -120,7 +138,7 @@
       year: 2020 - 2022
       description:
         - Chen Liu (PI), Zander Blasingame
-        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Funding Agency:</i> Center for Identification Technology Research, a NSF-IUCRC
         - <i>Amount:</i> 45,000 (USD)
         - <i>Role:</i> Student Investigator
 
@@ -128,40 +146,73 @@
       year: 2019 - 2021
       description:
         - Chen Liu (PI), Zander Blasingame
-        - <i>Funding Agency:</i> Center for Identification Technology Research, National Science Foundation
+        - <i>Funding Agency:</i> Center for Identification Technology Research, a NSF-IUCRC
         - <i>Amount:</i> 60,000 (USD)
         - <i>Role:</i> Student Investigator
 
+- title: Awards and Honors
+  type: time_table
+  contents:
+    - title:
+      year: 2024
+      description: 
+        - IJCB Doctoral Consortium
+    - title:
+      year: 2018
+      description:
+        - Clarkson Presidential Scholar
+    - title:
+      year: 2017
+      description:
+        - Best Oral Presentation for Software Engineering - Clarkson RAPS
+        - Clarkson Presidential Scholar
+    - title:
+      year: 2016
+      description:
+        - Clarkson Presidential Scholar
+    - title:
+      year: 2015
+      description:
+        - Clarkson Presidential Scholar
+
+
+
+
+- title: Teaching
+  type: time_table
+  contents:
+    - title: Instructor
+      location: Rome, NY
+      institution: Griffiss Institute
+      year: 2020 - 2024
+      description: Taught and co-designed the introduction to CyberSecurity Summer Camp for advanced high school students
+
+    - title: Graduate Teaching Assistant
+      year: 2018 - 2021
+      location: Potsdam, NY
+      institution: Clarkson University
+      description:
+        - Electrical Science (ES 250)
+        - Introduction to Digital Design (EE 264)
+        - Electrical and Computer Engineering Sophomore Lab (EE 211)
+
+    - title: Undergraduate Teaching Assistant
+      year: 2016 - 2028
+      location: Potsdam, NY
+      institution: Clarkson University
+      description:
+        - Software System Architecture (EE 462)
+        - Differential Equations (MA 232)
 
 - title: Professional Services
   type: list
   contents:
-    - <b>Journal Reviewer:</b> Future Generation Computer Systems, IEEE Access
-    - <b>Conference Reviewer:</b> AISTATS (2025), ICLR (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
+    - <b>Conference Reviewer:</b> AISTATS (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
 
 - title: Skills
   type: list
   contents:
-    - <b>Programming Languages:</b> Python, C/C++, Java, Javascript, Bash, MATLAB, VHDL, Assembly
+    - <b>Programming Languages:</b> Python, C/C++, Java, Javascript, Bash, MATLAB, VHDL
     - <b>Frameworks:</b> TensorFlow, Pytorch, Numpy, Scipy, Matplotlib, Plotly, Pandas, Jax
     - <b>Tools:</b> Vim, Git, Linux, Docker, LaTeX
     - <b>Audio:</b> Over a decade of exeperience as a FOH engineer including theater productions and worship services
-
-- title: Academic Interests
-  type: nested_list
-  contents:
-    - title: Generative Models 
-      items:
-        - Bespoke ODE/SDE solvers
-        - Stochastic calculus
-        - Latent representations
-        - Latent editing
-        - Autoencoding for generative models
-
-    - title: Biometrics
-      items:
-        - Face morphing
-        - Adversarial attacks
-        - Deepfakes
-
-

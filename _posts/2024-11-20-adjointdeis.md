@@ -169,7 +169,7 @@ Later work, by Ho and Salimans <d-cite key="ho2021classifierfree"></d-cite> show
 \begin{equation}
     \tilde{\boldsymbol\epsilon}\_\theta(\bfx_t, \bfz, t) := \gamma \boldsymbol\epsilon_\theta(\bfx_t, \bfz, t) + (1 - \gamma) \boldsymbol\epsilon_\theta(\bfx_t, \mathbf 0, t),
 \end{equation}
-where $\gamma \geq 0$ is the guidance scale.
+where $$\gamma \geq 0$$ is the guidance scale.
 
 Outside of methods which require the additional to the diffusion model, or some external network, there are **training-free methods** which we broadly categorize into the following two categories:
 1. Techniques which directly optimize the solution trajectory during sampling <d-cite key="yu2023freedom,greedy_dim,liu2023flowgrad"></d-cite>.
@@ -518,12 +518,12 @@ Now our diffusion SDE can be easily converted into Stratonovich form due to the 
 Moreover, due to the shared derivation using the Kolmogorov equations in constructing diffusion SDEs and diffusion ODEs, the two forms differ only by a factor of 2 within the drift term.
 $$
 \begin{equation}
-        {\color{orange}\underbrace{\rmd \bfx_t = f(t)\bfx_t + {\color{black}2} \frac{g^2(t)}{2\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)\;\rmd t}_{\textrm{Diffusion ODE}}} + g(t)\circ\rmd\bar\bfw_t.
+        {\color{orange}\underbrace{\rmd \bfx_t = f(t)\bfx_t + {\color{cyan}2} \frac{g^2(t)}{2\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)\;\rmd t}_{\textrm{Diffusion ODE}}} + {\color{cyan}g(t)\circ\rmd\bar\bfw_t.}
     \end{equation}
 $$
 Furthermore, notice that SDE has form
 $$\begin{equation}
-    \rmd \bfx_t = {\color{orange}\underbrace{f(t)\bfx_t + \frac{g^2(t)}{\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)}_{= \bsf_\theta(\bfx_t,\bfz, t)}}\;\rmd t + g(t)\;\rmd\bar\bfw_t.
+    \rmd \bfx_t = {\color{orange}\underbrace{f(t)\bfx_t + \frac{g^2(t)}{\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)}_{= \bsf_\theta(\bfx_t,\bfz, t)}}\;\rmd t + g(t)\circ\rmd\bar\bfw_t.
 \end{equation}$$
 and then by our result from Equation \eqref{eq:sde_is_ode} the adjoint diffusion SDE evolves with the following ODE
 $$
