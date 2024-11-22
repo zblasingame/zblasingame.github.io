@@ -2,7 +2,7 @@
 layout: distill
 title: The Continuous Adjoint Equations for Diffusion Models
 description: This blog introduces the topic of the continuous adjoint equations for diffusion models, an efficient way to calculate gradients for diffusion models. We show how to design bespoke ODE/SDE solvers of the continuous adjoint equations and show that adjoint diffusion SDEs actually simplify to the adjoint diffusion ODE.
-tags: diffusion adjoint AdjointDEIS ODEs SDEs
+tags: diffusion adjoint neuralODEs guided-generation
 giscus_comments: false
 date: 2024-11-20
 featured: true
@@ -35,7 +35,7 @@ toc:
         - name: Numerical solvers
         - name: Implementation
         - name: Adjoint diffusion SDEs are actually ODEs
-    - name: Concluding Remarks
+    - name: Concluding remarks
 
 ---
 
@@ -195,7 +195,7 @@ Luckily, diffusion models are a type of Neural ODE <d-cite key="neural_ode"></d-
     </div>
 </div>
 <div class="caption">
-    Overview of solving the continuous adjoint equations with diffusion models. The sampling schedule consists of $\{t_n\}_{n=0}^N$ timesteps for the diffusion model and $\{\tilde t_n\}_{n=0}^M$ timesteps for AdjointDEIS. The gradients $\bfa_\bfx(T)$ can be used to optimize $\bfx_T$ to find some optimal $\bfx_T^*$. In this example we use the solver known as AdjointDEIS <d-cite key="adjointdeis"></d-cite>.
+    Overview of solving the continuous adjoint equations with diffusion models. The sampling schedule consists of <i>N</i> timesteps for the diffusion model and <i>M</i> timesteps for solving the continuous adjoint equations. In this example we use the AdjointDEIS solver for the continuous adjoint equations<d-cite key="adjointdeis"></d-cite>.
 </div>
 
 The technique of solving an *adjoint* backwards-in-time ODE to calculate the gradients of an ODE is widely used and widespread technique initially proposed by Pontryagin *et al.* <d-cite key="adjoint_sensitivity_method"></d-cite>.
@@ -411,7 +411,7 @@ These functions are defined as
 $$\begin{equation}
     \varphi_{n+1}(h) := \int_0^1 e^{(1-u)h} \frac{u^n}{n!}\;\mathrm du,\qquad\varphi_0(h) = e^h,
 \end{equation}$$
-which satisfy the recurrence relation $$\varphi_{k+1}(h) = (\varphi_{k}(h) - \varphi_k(0)) / h$$ and have closed forms for $k = 1, 2$:
+which satisfy the recurrence relation $$\varphi_{k+1}(h) = (\varphi_{k}(h) - \varphi_k(0)) / h$$ and have closed forms for $$k = 1, 2$$:
 $$
 \begin{align}
     \varphi_1(h) &= \frac{e^h - 1}{h},\\
