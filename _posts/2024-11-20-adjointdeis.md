@@ -183,7 +183,7 @@ We reframe this problem for the specific case of diffusion ODEs.
     \label{eq:problem_stmt_ode}
     \argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t\bigg).
 \end{equation}
-*N.B.*, without loss of generality we let $$\bseps_\theta(\bfx_t, \bfz, t)$$ denote a noise-prediction network conditioned either directly on $\bfz$ or as the classifier-free guidance model $$\tilde \bseps_\theta(\bfx_t, \bfz, t)$$.
+*N.B.*, without loss of generality we let $$\bseps_\theta(\bfx_t, \bfz, t)$$ denote a noise-prediction network conditioned either directly on $$\bfz$$ or as the classifier-free guidance model $$\tilde \bseps_\theta(\bfx_t, \bfz, t)$$.
 
 From this formulation it is readily apparent the difficulty introduced by diffusion models, over say other methods like [GANs](https://en.wikipedia.org/wiki/Generative_adversarial_network) or [VAEs](https://en.wikipedia.org/wiki/Variational_autoencoder), is that we need to perform backpropagation through an ODE solve.
 Luckily, diffusion models are a type of Neural ODE <d-cite key="neural_ode"></d-cite> which means we can solve the *continuous adjoint equations* to calculate these gradients.
