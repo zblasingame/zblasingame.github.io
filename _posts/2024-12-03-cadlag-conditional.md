@@ -1,11 +1,11 @@
 ---
 layout: distill
 title: Gradients for Time Scheduled Conditional Variables in Neural Differential Equations
-description: A short derivation of the continuous adjoint equation for time schedulued conditional variables.
+description: A short derivation of the continuous adjoint equation for time scheduled conditional variables.
 tags: diffusion adjoint neuralODEs guided-generation
 giscus_comments: false
 date: 2024-12-03
-featured: true
+featured: false
 
 authors:
   - name: Zander W. Blasingame
@@ -73,37 +73,53 @@ This concept was initially proposed by Doggettx [in this reddit post](https://ww
     Examples of the prompt scheduling technique proposed by Doggettx.
 </div>
 
-More technically, assume we have a U-Net trained on the noise-prediction task $$\bseps_\theta(\bfx_t, \bfz, t)$$ conditioned on a time scheduled text embedding $$\bfz(t)$$.
+More generally, we can view this as have the conditional information (in this case text embeddings) scheduled w.r.t. time.
+Formally, assume we have a U-Net trained on the noise-prediction task $$\bseps_\theta(\bfx_t, \bfz, t)$$ conditioned on a time scheduled text embedding $$\bfz(t)$$.
 The sampling procedure amounts to solving the *probability flow ODE* from time $$T$$ to time $$0$$.
 $$\begin{equation}
     \frac{\rmd \bfx_t}{\rmd t} = f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t),
 \end{equation}$$
-where $f, g$ define the drift and diffusion coefficients of a Variance Preserving (VP) type SDE <d-cite key="song2021denoising"></d-cite>.
+where $$f, g$$ define the drift and diffusion coefficients of a Variance Preserving (VP) type SDE <d-cite key="song2021denoising"></d-cite>.
 
-An active area of research in diffusion models has been the development of techniques which search of the optimal generation parameters.
+### Training-free guidance
+A closely related area of active research has been the development of techniques which search of the optimal generation parameters.
+
 More specifically, they attempt to solve the following optimization problem:
 $$\begin{equation}
     \label{eq:problem_stmt_ode}
-    \argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t\bigg).
+    \argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t\bigg),
 \end{equation}$$
-Several recent works this year <d-cite key="pan2024adjointdpm,adjointdeis,marion2024implicit"></d-cite> explore solving the continuous adjoint equations <d-cite key="neural_ode,adjoint_sensitivity_method,kidger_thesis"></d-cite> to find the gradients:
+where $$\mathcal L$$ is a real-valued loss function on the output $$\bfx_0$$.
+
+Several recent works this year <d-cite key="pan2024adjointdpm,adjointdeis,marion2024implicit"></d-cite> explore solving the continuous adjoint equations <d-cite key="kidger_thesis"></d-cite> to find the gradients:
 $$\begin{equation}
     \frac{\partial \mathcal L}{\partial \bfx_t}, \qquad
     \frac{\partial \mathcal L}{\partial \bfz}, \qquad
     \frac{\partial \mathcal L}{\partial \theta}.
 \end{equation}$$
-
+These gradients can the be used in combination with gradient descent algorithms to solve the optimization problem.
 However, what if $$\bfz$$ is scheduled and not constant w.r.t to time?
-*I.e.*, how do we find $$\partial \mathcal L / \partial \bfz(t)$$ for all $$t \in [0, T]$$?
-In this blog post we present one the of results from our recent NeurIPS paper <d-cite key="adjointdeis"></d-cite> which shows how to calculate this gradient.
+
+**Problem statement.** Given
+$$\begin{equation}
+    \bfx_0 = \bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t)\;\rmd t,
+\end{equation}$$
+and $$\mathcal L (\bfx_0)$$, find:
+$$\begin{equation}
+    \frac {\partial \mathcal L}{\partial \bfz(t)}, \qquad t \in [0,T].
+\end{equation}$$
+
+In an earlier [blog post](https://zblasingame.github.io/blog/2024/adjointdeis/) we showed how to find $$\partial L / \partial \bfz$$ by solving the continuous adjoint equations.
+How do the continuous adjoint equations change with replacing $$\bfz$$ with time scheduled $$\bfz(t)$$ in the sampling equation?
+What we will now show is that
+
+> We can just **simply** replace $$\bfz$$ with $$\bfz(t)$$ in the continuous adjoint equations.
+
+This result will intuitive, does require some technical details to show.
 
 ## Gradients of time-scheduled conditional variables
 It is well known that diffusion models are just a special type of neural differential equation, either a neural ODE or SDE.
-We will show the result more generally for neural ODEs.
-
-> The main result is that we can just **simply** replace $$\bfz$$ with $$\bfz(t)$$ in the continuous adjoint equations.
-
-This result will intuitive, does require some technical details to show.
+As such we will show this result holds more generally for neural ODEs.
 
 **Theorem** (Continuous adjoint equations for time scheduled conditional variables)**.**
 <i>
