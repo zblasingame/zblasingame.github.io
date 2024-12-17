@@ -18,8 +18,8 @@ social: true # includes social icons at the bottom of the page
 ---
 
 I am currently a Ph.D. student at [Clarkson University](https://www.clarkson.edu/) studying guided generation and latent representations of generative models.
-Lately, I've been interested in stochastic processes, generative flows, score-based generative models, and numerical ODE/SDE solvers.
-Recent research has focused on bespoke ODE/SDE solvers for the gradients of diffusion models, greedy algorithms for guided generation, and guided generation for attacking Face Recognition (FR) systems.
+Lately, I've been interested in stochastic processes, flow matching, neural differential equations, and score-based generative models.
+Recent research has focused on bespoke ODE/SDE solvers for the gradients of diffusion models, greedy algorithms for guided generation, and reversible solvers for diffusion models.
 I work in the [CAMEL](https://camel.clarkson.edu/) group and I am advised by Dr. [Chen Liu](https://camel.clarkson.edu/members.html).
 Previously, I received my B.Sc. in Computer Engineering from Clarkson University in 2018.
 
@@ -28,4 +28,4 @@ Previously, I received my B.Sc. in Computer Engineering from Clarkson University
 In my free time I am an opposite hitter for the [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
 I also enjoy powerlifting and resistance training.
 
-**I am currently looking for research positions in industry/academia in generative modeling. Particularly in diffusion models or generative flows.**
+**I am currently looking for research positions in industry/academia in generative modeling. Particularly in neural differential equations, diffusion models, or flow matching.**
