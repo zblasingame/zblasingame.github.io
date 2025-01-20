@@ -11,16 +11,20 @@
 - title: Education
   type: time_table
   contents:
-    - title: Ph.D. in Electrical and Computer Engineering <br> M.Sc. in Electrical and Computer Engineering
+    - title: Ph.D. in Electrical and Computer Engineering
       institution: Clarkson University
       location: Postdam, NY 
-      year: 2025
+      year: 2020 - 2025
       description:
         - Advised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>
+    - title: M.Sc. in Electrical and Computer Engineering
+      institution: Clarkson University
+      location: Postdam, NY 
+      year: 2018 - 2020
     - title: B.Sc. in Computer Engineering <br> Minors in Mathematics and Computer Science
       institution: Clarkson University
       location: Postdam, NY 
-      year: 2018
+      year: 2015 - 2018
 
 - title: Experience
   type: time_table
@@ -69,6 +73,12 @@
 - title: Invited Talks
   type: time_table
   contents:
+    - title: "AdjointDEIS: Efficient Gradients for Diffusion Models"
+      year: Jan 2025
+      location: Montréal, Canada
+      institution: Mila - Institut québécois d'intelligence artificielle
+      department: Université de Montréal
+
     - title: "Diffusion Morphs (DiM): Diffusion is all you need for highly effective face morphs"
       year: Nov 2024
       location: Washington, D.C.
@@ -207,7 +217,7 @@
 - title: Professional Services
   type: list
   contents:
-    - <b>Conference Reviewer:</b> AISTATS (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
+    - <b>Conference Reviewer:</b> ICML (2025), AISTATS (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
 
 - title: Skills
   type: list
