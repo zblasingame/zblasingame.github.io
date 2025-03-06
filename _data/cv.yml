@@ -217,11 +217,12 @@
 - title: Professional Services
   type: list
   contents:
-    - <b>Conference Reviewer:</b> ICML (2025), AISTATS (2025), NeurIPS (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
-
+    - <b>Reviewer:</b> ICLR FPI Workshop (2025), ICLR DeLTA Workshop (2025), ICML (2025), AISTATS (2025), NeurIPS (2024), IJCB FMADT Workshop (2024), IJCB (2024), ICPR (2024), MOST (2023, 2024), PMAM (2022, 2023), ICANN (2021), IISWC (2020), BTAS (2019), ISPA (2018)
+    - <b>Student Organizer:</b> IJCB FMADT Workshop (2024)
 - title: Skills
   type: list
   contents:
+    - <b>ML Architectures:</b> Diffusion Models, Flow Matching, Neural Differential Equations, GANs, VAEs
     - <b>Programming Languages:</b> Python, C/C++, Java, Javascript, Bash, MATLAB, VHDL
     - <b>Frameworks:</b> TensorFlow, Pytorch, Numpy, Scipy, Matplotlib, Plotly, Pandas, Jax
     - <b>Tools:</b> Vim, Git, Linux, Docker, LaTeX

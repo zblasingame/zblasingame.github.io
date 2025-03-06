@@ -1,29 +1,29 @@
-@article{blasingame2025greed,
-  title={Greed is Good: Guided Generation from a Greedy Perspective},
-  author={Blasingame, Zander W. and Liu, Chen},
-  journal={arXiv preprint arXiv:2502.08006},
-  year={2025},
-  month={02},
-  url={https://arxiv.org/abs/2502.08006},
-  bibtex_show={true},
-  arxiv={2502.08006},
-  pdf={https://arxiv.org/pdf/2502.08006},
-  selected={true},
-  abbr={arXiv},
+@inproceedings{blasingame2025greed,
+    title={Greed is Good: Guided Generation from a Greedy Perspective},
+    author={Blasingame, Zander W. and Liu, Chen},
+    booktitle={Frontiers in Probabilistic Inference: Learning meets Sampling},
+    year={2025},
+    url={https://openreview.net/forum?id=o4yQzZ5qCW},
+    bibtex_show={true},
+    arxiv={2502.08006},
+    pdf={https://arxiv.org/pdf/2502.08006},
+    selected={true},
+    abbr={ICLR},
+    award={Workshop}
 }
 
-@article{blasingame2025reversible,
-    title={Reversible Solvers for Diffusion Models},
-    author={Blasingame, Zander W. and Liu, Chen},
+@inproceedings{blasingame2025reversible,
+    title={A Reversible Solver for Diffusion {SDE}s},
+    author={Zander W. Blasingame and Chen Liu},
+    booktitle={ICLR 2025 Workshop on Deep Generative Model in Machine Learning: Theory, Principle and Efficacy},
     year={2025},
-    month={02},
-    journal={arXiv preprint arXiv:2502.08834},
+    url={https://openreview.net/forum?id=0gEFLVUL6n},
     bibtex_show={true},
-    url={https://arxiv.org/abs/2502.08834},
     arxiv={2502.08834},
     pdf={https://arxiv.org/pdf/2502.08834},
     selected={true},
-    abbr={arXiv},
+    abbr={ICLR},
+    award={Workshop}
 }
 
 
@@ -45,6 +45,7 @@
   pdf={https://arxiv.org/pdf/2405.15020},
   code={https://github.com/zblasingame/AdjointDEIS},
   website={https://zblasingame.github.io/AdjointDEIS},
+  google_scholar_id={UebtZRa9Y70C},
   selected={true},
   abstract={
            The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
