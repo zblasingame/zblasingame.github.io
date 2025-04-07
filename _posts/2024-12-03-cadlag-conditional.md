@@ -190,4 +190,14 @@ Likewise, for $$\bfa_\bfy \in \R^d$$ the map $$(t, \bfa_\bfy) \mapsto -\bfa_\bfy
 Therefore, by the [Picard-Lindelo&#776;f theorem](https://en.wikipedia.org/wiki/Picard%E2%80%93Lindel%C3%B6f_theorem) the solution $$\bfa_\text{aug}(t)$$ exists and is unique.
 <div style="text-align: right">&#x25A1;</div>
 
+If you would like to cite this post in an academic context, you can use this BibTex snippet:
+```bibtex
+@misc{blasingame2024conditionaladjoint,
+    author = {Blasingame, Zander W},
+    year = {2024},
+    title = {Gradients for Time Scheduled Conditional Variables in Neural Differential Equations},
+    url = {https://zblasingame.github.io/blog/2024/cadlag-conditional/}
+}
+```
+
 <!--ca&#768;dla&#768;g<d-footnote>French: <i>continue a&#768; droite, limite a&#768; gauche.</i></d-footnote>-->
