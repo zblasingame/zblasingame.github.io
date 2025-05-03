@@ -12,6 +12,17 @@
     award={Workshop}
 }
 
+@phdthesis{blasingame2025thesis,
+    title={On Guided and Reversible Solvers for Neural Differential Equations},
+    author={Blasingame, Zander W.},
+    year={2025},
+    school={Clarkson University},
+    type={Ph.D. Thesis},
+    bibtex_show={true},
+    slides={phd_oral.pdf},
+    selected={true},
+    abbr={Ph.D. Thesis}
+}
 
 @inproceedings{blasingame2025reversible,
     title={A Reversible Solver for Diffusion {SDE}s},
@@ -54,7 +65,6 @@
   pdf={https://arxiv.org/pdf/2405.15020},
   code={https://github.com/zblasingame/AdjointDEIS},
   website={https://zblasingame.github.io/AdjointDEIS},
-  google_scholar_id={UebtZRa9Y70C},
   selected={true},
   abstract={
            The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
@@ -83,7 +93,6 @@
     poster={poster_ijcb2024_greedydim.pdf},
     arxiv={2404.06025},
     abstract={Morphing attacks are an emerging threat to state-of-the-art Face Recognition (FR) systems, which aim to create a single image that contains the biometric information of multiple identities. Diffusion Morphs (DiM) are a recently proposed morphing attack that has achieved state-of-the-art performance for representation-based morphing attacks. However, none of the existing research on DiMs have leveraged the iterative nature of DiMs and left the DiM model as a black box, treating it no differently than one would a Generative Adversarial Network (GAN) or Variational AutoEncoder (VAE). We propose a greedy strategy on the iterative sampling process of DiM models which searches for an optimal step guided by an identity-based heuristic function. We compare our proposed algorithm against ten other state-of-the-art morphing algorithms using the open-source SYN-MAD 2022 competition dataset. We find that our proposed algorithm is unreasonably effective, fooling all of the tested FR systems with an MMPMR of 100%, outperforming all other morphing algorithms compared. },
-    google_scholar_id={LkGwnXOMwfcC},
     blog={/blog/2024/face-morphing-dim/#greedy-guided-generation}
 },
 
@@ -109,7 +118,6 @@
   selected={true},
   poster={poster_ijcb2024_dim.pdf},
   slides={slides_ijcb2024_dim.pdf},
-  google_scholar_id={u-x6o8ySG0sC},
   blog={/blog/2024/face-morphing-dim/}
 },
 
@@ -128,7 +136,6 @@
   award={Oral},
   abstract={An emerging threat towards face recognition systems (FRS) is face morphing attack, which involves the combination of two faces from two different identities into a singular image that would trigger an acceptance for either identity within the FRS. Many of the existing morphing attack detection (MAD) approaches have been trained and evaluated on datasets with limited variation of image characteristics, which can make the approach prone to overfitting. Additionally, there has been difficulty in developing MAD algorithms which can generalize beyond the morphing attack they were trained on, as shown by the most recent NIST FRVT MORPH report. Furthermore, the Single image based MAD (S-MAD) problem has had poor performance, especially when compared to its counterpart, Differential based MAD (D-MAD). In this work, we propose a novel architecture for training deep learning based S-MAD algorithms that leverages adversarial learning to train a more robust detector. The performance of the proposed S-MAD method is benchmarked against the state-of-the-art VGG19 based S-MAD algorithm over 36 experiments using the ISO-IEC 30107-3 evaluation metrics. The proposed method has demonstrated superior and robust detection performance of less than 5% D-EER when evaluated against different morphing attacks.},
   slides={IJCB_2021_Presentation.pdf},
-  google_scholar_id={9yKSN-GCB0IC},
 },
 
 @inproceedings{10.1117/12.2263029,
@@ -145,7 +152,6 @@ year = {2017},
 month = may,
 doi = {10.1117/12.2263029},
 URL = {https://doi.org/10.1117/12.2263029},
-google_scholar_id={2osOgNQ5qMEC},
 },
 
 @inproceedings{10.1145/3203422.3203433,
@@ -165,7 +171,6 @@ numpages = {7},
 keywords = {anomaly detection, machine learning, hardware performance counters, data-only exploits},
 location = {Incheon, Republic of Korea},
   bibtex_show={true},
-google_scholar_id={UeHWp8X0CEIC},
 series = {RESEC '18}
 },
 
@@ -187,7 +192,6 @@ keywords = {Machine Learning, Encryption-Downgrade Attacks, Anomaly Detection, H
 location = {Phoenix, AZ, USA},
   bibtex_show={true},
 abbr={HASP},
-google_scholar_id={Tyk-4Ss8FVUC},
 series = {HASP '19}
 },
 
@@ -229,7 +233,6 @@ isbn="978-3-030-86362-3",
     abbr={AsianHOST},
     award={Best Paper Nominee},
     year={2022},
-    google_scholar_id={u5HHmVD_uO8C},
     month=dec,
 },
 
@@ -245,7 +248,6 @@ isbn="978-3-030-86362-3",
   abbr={IEEE TOCS},
   bibtex_show={true},
   keywords={Ransomware;Monitoring;Behavioral sciences;Hardware;Servers;Registers;Operating systems;Performance evaluation;Semisupervised learning;Anomaly detection;Performance monitoring counters;semi-supervised learning;ransomware;anomaly detection;malware analysis},
-    google_scholar_id={u5HHmVD_uO8C},
   doi={10.1109/TCSI.2023.3299532}},
 
 @INPROCEEDINGS{10409333,
@@ -261,7 +263,6 @@ isbn="978-3-030-86362-3",
   keywords={Handwriting recognition;Supervised learning;Semisupervised learning;Hardware;Behavioral sciences;Ransomware;Anomaly detection;Performance Monitoring Counters;Semi-supervised Learning;Supervised Learning;Ransomware;Anomaly Detection},
   bibtex_show={true},
   abbr={AsianHOST},
-  google_scholar_id={qjMakFHDy7sC},
   award={Oral},
   doi={10.1109/AsianHOST59942.2023.10409333}}
 
@@ -291,7 +292,6 @@ isbn="978-3-030-86362-3",
   code={https://github.com/zblasingame/DiM},
   website={https://zblasingame.github.io/DiM/},
   pdf={https://arxiv.org/pdf/2310.09484},
-  google_scholar_id={WF5omc3nYNoC},
 }
 
 
