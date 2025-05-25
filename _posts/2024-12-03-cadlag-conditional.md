@@ -191,13 +191,13 @@ Therefore, by the [Picard-Lindelo&#776;f theorem](https://en.wikipedia.org/wiki/
 <div style="text-align: right">&#x25A1;</div>
 
 If you would like to cite this post in an academic context, you can use this BibTex snippet:
-```bibtex
+{% highlight python %}
 @misc{blasingame2024conditionaladjoint,
     author = {Blasingame, Zander W},
     year = {2024},
     title = {Gradients for Time Scheduled Conditional Variables in Neural Differential Equations},
     url = {https://zblasingame.github.io/blog/2024/cadlag-conditional/}
 }
-```
+{% endhighlight %}
 
 <!--ca&#768;dla&#768;g<d-footnote>French: <i>continue a&#768; droite, limite a&#768; gauche.</i></d-footnote>-->
