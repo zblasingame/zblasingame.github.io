@@ -157,14 +157,14 @@ Unlike in traditional calculus, the chain rule for Ito&#x302; calculus is given 
 <div id="itolemma" class="theorem">
 <h3>Theorem 1 (Ito&#x302;'s lemma).</h3>
 <p>Consider the Ito&#x302; SDE in \eqref{eq:sde}. Then, for a sufficiently smooth function $\phi: [0,T] \times \R^d \to \R^{d''}$ we can write
-$$\begin{equation}
+$\begin{equation}
 \label{eq:itolemma}
 \begin{aligned}
     \rmd \phi(t, \bfX_t) &= \bigg(\frac{\partial}{\partial t}\phi(t, \bfX_t) + \innerprod{\nabla_\bfx \phi(t, \bfX_t)}{\bsf(t, \bfX_t)}\\
                         &\qquad + \frac 12 \innerprod{\nabla_\bfx^2 \phi(t, \bfX_t)}{\bsg(t, \bfX_t)\bsg(t, \bfX_t)^\top}_F\bigg)\;\rmd t\\
                         & + \innerprod{\nabla_\bfx \phi(t, \bfX_t)}{\bsg(t, \bfX_t)\;\rmd \bfW_t},
 \end{aligned}
-\end{equation}$$
+\end{equation}$
 where $\innerprod{\cdot}{\cdot}_F$ is the Frobenius inner product.
 </p>
 </div>
@@ -209,14 +209,14 @@ we will spend the rest of this blog proving the following proposition.
 <div id="noisesched_prop" class="theorem">
 <h3>Proposition 2 (Coefficients of Gaussian processes with fixed perturbation kernel).</h3>
 <p>Given the linear Ito&#x302; SDE in \eqref{eq:linear_ito}, a strictly monotonically decreasing smooth function $\alpha_t \in \mathcal C^\infty([0,T];\R_{\geq 0})$, a strictly monotonically increasing smooth function $\sigma_t \in \mathcal C^\infty([0,T]; \R_{\geq 0})$, with boundary conditions $\alpha_0 = 1$ and $\sigma_0 = 0$; and a desired transition kernel of the form
-$$\begin{equation}
+$\begin{equation}
     q_{t|0}(\bfx_t|\bfx_0) = \mathcal N(\bfx_t; \alpha_t\bfx_0, \sigma_t^2 \boldsymbol I),
-\end{equation}$$
+\end{equation}$
 the drift and the diffusion coefficients for the linear SDE are:
-$$\begin{align}
+$\begin{align}
     f(t) &= \frac{\rmd \log \alpha_t}{\rmd t},\\
     g(t) &= \frac{\rmd \sigma_t^2}{\rmd t} - 2\sigma_t^2 \frac{\rmd \log \alpha_t}{\rmd t}.
-\end{align}$$
+\end{align}$
 </p>
 </div>
 
