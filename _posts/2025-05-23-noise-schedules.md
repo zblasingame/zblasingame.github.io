@@ -29,6 +29,7 @@ toc:
       subsections:
         - name: Finding the drift coefficient
         - name: Finding the diffusion coefficient
+        - name: General transition kernel
     - name: Concluding remarks
 
 _styles: >
