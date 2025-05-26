@@ -1,6 +1,6 @@
 ---
 layout: distill
-title: On the Drift and Diffusion Coefficients for Diffusion Models
+title: Deriving the Drift and Diffusion Coefficients for Diffusion Models
 description: A short derivation of the drift and diffusion coefficients for diffusion models.
 tags: diffusion SDEs
 giscus_comments: false
@@ -98,7 +98,7 @@ $$
 
 $$\begin{equation}
     \label{eq:ideal_sde}
-    \rmd \bfX_t = \underbrace{\frac{\rmd \log \alpha_t}{\rmd t}}_{f(t)} \bfX_t \; \rmd t + \underbrace{\sqrt{\frac{\rmd \sigma_t^2}{\rmd t} - 2\sigma_t \frac{\rmd \log \alpha_t}{\rmd t}}}_{g(t)}\; \rmd \bfW_t
+    \rmd \bfX_t = \underbrace{\vphantom{\sqrt{\frac{\rmd \sigma_t^2}{\rmd t}}}\frac{\rmd \log \alpha_t}{\rmd t}}_{f(t)} \bfX_t \; \rmd t + \underbrace{\sqrt{\frac{\rmd \sigma_t^2}{\rmd t} - 2\sigma_t \frac{\rmd \log \alpha_t}{\rmd t}}}_{g(t)}\; \rmd \bfW_t
 \end{equation}$$
 <div class="caption">
     In this blog post we derive these choices of drift and diffusion coefficients.
@@ -113,7 +113,7 @@ $$
     q(t, \bfx_t | 0, \bfx_0) = \mathcal N(\bfx_t; \alpha_t\bfx_0, \sigma_t^2 \boldsymbol I),
 \end{equation}
 $$
-where $$\bfx_0$$ is the initial clean data sample, and with abuse of notation $\mathcal N(\cdot ; \boldsymbol \mu, \boldsymbol \Sigma)$ denotes the *density* function of a multivariate Gaussian distribution with mean vector $\boldsymbol \mu \in \R^d$ and covariance matrix $\boldsymbol \Sigma \in \R^{d\times d}$.
+where $$\bfx_0 \in \R^d$$ is the initial clean data sample, and with abuse of notation $\mathcal N(\cdot ; \boldsymbol \mu, \boldsymbol \Sigma)$ denotes the *density* function of a multivariate Gaussian distribution with mean vector $\boldsymbol \mu \in \R^d$ and covariance matrix $\boldsymbol \Sigma \in \R^{d\times d}$.
 For notational shorthand we will write $q_{t|s}(\bfx\|\bfy) \mapsto q(t, \bfx \| s, \bfy)$ .
 
 This is a very *convenient* property for diffusion models as it implies sampling in forward time reduces to the nice form of
@@ -278,6 +278,23 @@ $$\begin{align}
 \end{align}$$
 where (i) holds by the quotient rule and where (ii) holds by applications of the chain rule.
 
+### General transition kernel
+With a little more work one can easily show the result of Kingma *et al.* (<d-cite key="kingma2021variational"></d-cite>, Appendix A.1) for constructing the general form of the transition kernel.
+We restate their result below as a corollary of <a href="#noisesched_prop">Proposition 2</a>.
+
+<div class="theorem">
+<h3>Corollary 2.1 (Transition kernel for Gaussian processes).</h3>
+<p>
+The general transition kernel $q_{t|s}(\bfx_t\|\bfx_s)$ for $s < t$ of the Ito&#x302; described in <a href="#noisesched_prop">Proposition 2</a> is
+$$\begin{equation}
+    q_{t|s}(\bfx_t|\bfx_s) = \mathcal N\left(\bfx_t; \frac{\alpha_t}{\alpha_s}\bfx_s, \left(\sigma_t^2 - \frac{\alpha_t}{\alpha_s}\sigma_s^2\right) \boldsymbol I\right).
+\end{equation}$$
+</p>
+</div>
+
+We leave the proof as an exercise for the reader as it follows straight forwardly from our derivations for <a href="#noisesched_prop">Proposition 2</a> with a simple change in the initial conditions.
+
+
 ## Concluding remarks
 In this blog post we presented a brief derivation for the commonly used drift and diffusion coefficients for diffusion models, starting with our desired transition kernel and then working backwards to find the resulting SDE.
 
@@ -295,7 +312,7 @@ If you would like to cite this post in an academic context, you can use this Bib
 @misc{blasingame2025noiseschedules,
     author = {Blasingame, Zander W},
     year = {2025},
-    title = {Gradients for Time Scheduled Conditional Variables in Neural Differential Equations},
+    title = {Deriving the Drift and Diffusion Coefficients for Diffusion Models},
     url = {https://zblasingame.github.io/blog/2025/noise-schedules/}
 }
 {% endhighlight %}
