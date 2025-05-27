@@ -208,7 +208,7 @@ Given this SDE we will derive the drift and diffusion coefficients that yield th
 we will spend the rest of this blog proving the following proposition.
 
 <div id="noisesched_prop" class="theorem">
-<h3>Proposition 2 (Coefficients of Gaussian processes with fixed perturbation kernel).</h3>
+<h3>Proposition 2.</h3>
 <p>Given the linear Ito&#x302; SDE in \eqref{eq:linear_ito}, a strictly monotonically decreasing smooth function $\alpha_t \in \mathcal C^\infty([0,T];\R_{\geq 0})$, a strictly monotonically increasing smooth function $\sigma_t \in \mathcal C^\infty([0,T]; \R_{\geq 0})$, with boundary conditions $\alpha_0 = 1$ and $\sigma_0 = 0$; and a desired transition kernel of the form
 $\begin{equation}
     q_{t|0}(\bfx_t|\bfx_0) = \mathcal N(\bfx_t; \alpha_t\bfx_0, \sigma_t^2 \boldsymbol I),
@@ -284,7 +284,7 @@ With a little more work one can easily show the result of Kingma *et al.* (<d-ci
 We restate their result below as a corollary of <a href="#noisesched_prop">Proposition 2</a>.
 
 <div class="theorem">
-<h3>Corollary 2.1 (Transition kernel for Gaussian processes).</h3>
+<h3>Corollary 2.1.</h3>
 <p>
 The general transition kernel $q_{t|s}(\bfx_t\|\bfx_s)$ for $s < t$ of the Ito&#x302; described in <a href="#noisesched_prop">Proposition 2</a> is
 $$\begin{equation}
