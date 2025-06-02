@@ -164,6 +164,10 @@
   type: time_table
   contents:
     - title:
+      year: 2025
+      description:
+        - AISTATS Best Reviewer
+    - title:
       year: 2024
       description: 
         - IJCB Doctoral Consortium
