@@ -1,6 +1,5 @@
 ---
 layout: post
-title: Published two new preprints on flow/diffusion models. 
 date: 2025-03-06
 inline: true
 related_posts: false

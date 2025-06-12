@@ -6,6 +6,7 @@ tags: diffusion SDEs
 giscus_comments: false
 date: 2025-05-25
 featured: true
+citation: true
 
 authors:
   - name: Zander W. Blasingame
@@ -307,15 +308,5 @@ In this blog post we presented a brief derivation for the commonly used drift an
 <!--\end{equation}-->
 <!--$$-->
 <!--with initial condition $$p(s, \bfx | s, \bfy) = \delta(\bfx-\bfy)$$; and where $$\boldsymbol D(t, \bfx) = \bsg(t, \bfx)\bsg(t, \bfx)^\top$$ is the diffusion tensor and $$\innerprod{\cdot}{\cdot}_F$$ is the [Frobenius inner product](https://en.wikipedia.org/wiki/Frobenius_inner_product).-->
-
-If you would like to cite this post in an academic context, you can use this BibTex snippet:
-{% highlight bibtex %}
-@misc{blasingame2025noiseschedules,
-    author = {Blasingame, Zander W},
-    year = {2025},
-    title = {Deriving the Drift and Diffusion Coefficients for Diffusion Models},
-    url = {https://zblasingame.github.io/blog/2025/noise-schedules/}
-}
-{% endhighlight %}
 
 <!--ca&#768;dla&#768;g<d-footnote>French: <i>continue a&#768; droite, limite a&#768; gauche.</i></d-footnote>-->

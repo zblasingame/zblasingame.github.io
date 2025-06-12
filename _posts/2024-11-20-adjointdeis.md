@@ -6,6 +6,7 @@ tags: diffusion adjoint neuralODEs guided-generation
 giscus_comments: false
 date: 2024-11-20
 featured: true
+citation: true
 
 authors:
   - name: Zander W. Blasingame

@@ -6,6 +6,7 @@ tags: diffusion DiM face-morphing numerical-methods ODEs SDEs greedy-algorithms
 giscus_comments: false
 date: 2024-08-27
 featured: true
+citation: true
 
 authors:
   - name: Zander W. Blasingame
@@ -678,13 +679,3 @@ For more reading on more *efficiently* estimating the gradients of diffusion mod
 Interestingly, our work on Greedy-DiM bares some similarity to recent work done by Yu *et al.* <d-cite key="yu2023freedom"></d-cite> as they also end up doing a one-shot gradient estimation via $$\bfx_0$$-prediction; however, they develop their approach from the prospective of energy guidance.
 
 It is my belief that the insights gained here are not only relevant to face morphing, but also to other downstream task with diffusion models. *E.g.,* template inversion <d-cite key="template_inversion_sebastien"></d-cite>, guided generation <d-cite key="yu2023freedom,doodl"></d-cite>, adversarial attacks <d-cite key="chen2023diffusion"></d-cite>, and even other modalities like audio.
-
-If you would like to cite this post in an academic context, you can use this BibTex snippet:
-```bibtex
-@misc{blasingame2024facemorphing,
-    author = {Blasingame, Zander W},
-    year = {2024},
-    title = {Face Morphing with Diffusion Models},
-    url = {https://zblasingame.github.io/blog/2024/face-morphing-dim/}
-}
-```
