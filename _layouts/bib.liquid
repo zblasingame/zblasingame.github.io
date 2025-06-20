@@ -226,6 +226,13 @@
           <a href="{{ entry.html | prepend: '/assets/html/' | relative_url }}" class="btn btn-sm z-depth-0" role="button">HTML</a>
         {% endif %}
       {% endif %}
+      {% if entry.url or entry.openreview %}
+        {% if entry.url contains 'openreview' %}
+            <a href="{{ entry.url }}" class="btn btn-sm z-depth-0" role="button">OpenReview</a>
+        {% elsif entry.openreview %}
+            <a href="{{ entry.openreview }}" class="btn btn-sm z-depth-0" role="button">OpenReview</a>
+        {% endif %}
+        {% endif %} 
       {% if entry.pdf %}
         {% if entry.pdf contains '://' %}
           <a href="{{ entry.pdf }}" class="btn btn-sm z-depth-0" role="button">PDF</a>

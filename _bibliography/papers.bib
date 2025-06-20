@@ -11,13 +11,15 @@
 @workshop{blasingame2025greedb,
     title={Greed is Good: A Unifying Perspective on Guided Generation},
     author={Blasingame, Zander W. and Liu, Chen},
-    booktitle={Exploration in AI Today},
+    booktitle={The Exploration in AI Today Workshop at ICML 2025},
     year={2025},
+    url={https://openreview.net/forum?id=cSU2jEzanw},
     month={7},
     bibtex_show={true},
     arxiv={2502.08006},
-    pdf={https://arxiv.org/pdf/2502.08006},
+    pdf={https://openreview.net/pdf?id=cSU2jEzanw},
     abbr={ICML},
+    abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of flow/diffusion models. Generally speaking, two families of techniques have emerged for solving this problem for gradient-based guidance: namely, posterior guidance (i.e., guidance via projecting the current sample to the target distribution via the target prediction model) and end-to-end guidance (i.e., guidance by performing backpropagation throughout the entire ODE solve). In this work, we show that these two seemingly separate families can actually be unified by looking at posterior guidance as a greedy strategy of end-to-end guidance. We explore the theoretical connections between these two families and provide an in-depth theoretical of these two techniques relative to the continuous ideal gradients. Motivated by this analysis we then show a method for interpolating between these two families enabling a trade-off between compute and accuracy of the guidance gradients. We then validate this work on several inverse image problems and property-guided molecular generation.}
 }
 
 @workshop{blasingame2025greeda,
@@ -29,9 +31,10 @@
     url={https://openreview.net/forum?id=o4yQzZ5qCW},
     bibtex_show={true},
     arxiv={2502.08006},
-    pdf={https://arxiv.org/pdf/2502.08006},
+    pdf={https://openreview.net/pdf?id=o4yQzZ5qCW},
     selected={true},
     abbr={ICLR},
+    abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of diffusion models. In this work, we explore the guided generation from the perspective of optimizing the solution trajectory of a neural differential equation in a greedy manner. We present such a strategy as a unifying view on training-free guidance by showing that the greedy strategy is a first-order discretization of end-to-end optimization techniques. We show that a greedy guidance strategy makes good decisions and compare it to a guidance strategy using the ideal gradients found via the continuous adjoint equations. We then show how other popular training-free guidance strategies can be viewed in a unified manner from this perspective.}
 }
 
 @workshop{blasingame2025reversible,
@@ -43,9 +46,10 @@
     url={https://openreview.net/forum?id=0gEFLVUL6n},
     bibtex_show={true},
     arxiv={2502.08834},
-    pdf={https://arxiv.org/pdf/2502.08834},
+    pdf={https://openreview.net/pdf?id=0gEFLVUL6n},
     selected={true},
-    abbr={ICLR}
+    abbr={ICLR},
+    abstract={Diffusion models have quickly become the state-of-the-art for generation tasks across many different data modalities. An important ability of diffusion models is the ability to encode samples from the data distribution back into the sampling prior distribution. This is useful for performing alterations to real data samples along with guided generation via the continuous adjoint equations. We propose an algebraically reversible solver for diffusion SDEs that can exactly invert real data samples into the prior distribution.}
 }
 
 @phdthesis{blasingame2025thesis,
@@ -57,7 +61,29 @@
     bibtex_show={true},
     slides={phd_oral.pdf},
     selected={true},
-    abbr={Ph.D. Thesis}
+    abbr={Ph.D. Thesis},
+    abstract={Neural differential equations have quickly become the backbone behind many powerful
+generative models such as flow models and diffusion models. These models have quickly
+become the state-of-the-art for modeling high-dimensional distributions, thereby
+enabling high fidelity sampling of such complicated real-world data distributions, e.g.,
+images, audio, video, proteins, \&c.
+Within the context of generative modeling, neural differential equations provide the
+mechanisms for describing a transport map from some nice tractable distribution to
+our desired data distribution. Then by solving this neural differential equation we
+can map samples from the nice distribution (e.g., Gaussian samples) to our desired data
+distribution. We explore strategies for guiding the model to enable greater creative
+control of these powerful deep generative models. Additionally, we explore reversible
+solvers for enabling the ability to encode real data samples into the noise space whilst
+preserving two important properties: exact inversion and low distortion to edits (i.e.,
+stability).
+Topics include: continuous adjoint equations for flow/diffusion models (e.g., how to
+backpropagate through flow/diffusion models), greedy guidance for efficient guidance
+strategies (e.g., how strategies which avoid backpropagating through the entire flow
+model), and reversible solvers for neural SDEs (e.g., numerical solvers for SDEs which
+enables exact reconstruction).
+We anticipate that this thesis will be of interest to anyone working on guided generation
+with flow/diffusion models or working latent editing of real data samples with such
+models. We hope this thesis provides a useful reference of the current state-of-the-art.}
 }
 
 @inproceedings{neddo2025vit,
@@ -73,43 +99,44 @@
 @workshop{blasingame2024adjointdeis,
     author = {Blasingame, Zander W. and Liu, Chen},
     title = {AdjointDEIS: Efficient Gradients for Diffusion Models},
-    booktitle = {The 3rd New Frontiers in Adversarial Machine Learning Workshop (AdvML @ NeurIPS)},
-    address = {Vancouver, Canada},
+    booktitle={The Third Workshop on New Frontiers in Adversarial Machine Learning},
+    url={https://openreview.net/forum?id=4Bggd6HRes},
     year = {2024},
     month = {12},
- abbr={NeurIPS},
-  bibtex_show={true},
-  arxiv={2405.15020},
-  bibtex_show={true},
-  pdf={https://arxiv.org/pdf/2405.15020},
-  code={https://github.com/zblasingame/AdjointDEIS},
-  website={https://zblasingame.github.io/AdjointDEIS},
+    abbr={NeurIPS},
+    bibtex_show={true},
+    arxiv={2405.15020},
+    bibtex_show={true},
+    pdf={https://openreview.net/pdf?id=4Bggd6HRes},
+    code={https://github.com/zblasingame/AdjointDEIS},
+    website={https://zblasingame.github.io/AdjointDEIS},
 
 }
 
 @inproceedings{blasingame2024adjointdeis,
- author = {Blasingame, Zander W. and Liu, Chen},
- booktitle = {Advances in Neural Information Processing Systems},
- editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
- pages = {2449--2483},
- publisher = {Curran Associates, Inc.},
- title={Adjoint{DEIS}: Efficient Gradients for Diffusion Models},
- url = {https://proceedings.neurips.cc/paper_files/paper/2024/file/04badd3b048315c8c3a0ca17eff723d7-Paper-Conference.pdf},
- volume = {37},
- year = {2024},
- month={12},
- abbr={NeurIPS},
-  bibtex_show={true},
-  arxiv={2405.15020},
-  bibtex_show={true},
-  pdf={https://arxiv.org/pdf/2405.15020},
-  code={https://github.com/zblasingame/AdjointDEIS},
-  website={https://zblasingame.github.io/AdjointDEIS},
-  selected={true},
-  abstract={
-           The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
+    author = {Blasingame, Zander W. and Liu, Chen},
+    booktitle = {Advances in Neural Information Processing Systems},
+    editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
+    pages = {2449--2483},
+    publisher = {Curran Associates, Inc.},
+    title={Adjoint{DEIS}: Efficient Gradients for Diffusion Models},
+    url = {https://proceedings.neurips.cc/paper_files/paper/2024/file/04badd3b048315c8c3a0ca17eff723d7-Paper-Conference.pdf},
+    openreview={https://openreview.net/forum?id=fAlcxvrOEX},
+    volume = {37},
+    year = {2024},
+    month={12},
+    abbr={NeurIPS},
+    bibtex_show={true},
+    arxiv={2405.15020},
+    bibtex_show={true},
+    pdf={https://proceedings.neurips.cc/paper_files/paper/2024/file/04badd3b048315c8c3a0ca17eff723d7-Paper-Conference.pdf},
+    code={https://github.com/zblasingame/AdjointDEIS},
+    website={https://zblasingame.github.io/AdjointDEIS},
+    selected={true},
+    abstract={
+               The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
   },
-  blog={/blog/2024/adjointdeis/}
+    blog={/blog/2024/adjointdeis/}
 },
 
 
