@@ -1,3 +1,20 @@
+@inproceedings{blasingame2025greedc,
+    title={Greed is Good: A Unifying Perspective on Guided Generation},
+    author={Blasingame, Zander W. and Liu, Chen},
+    booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
+    year={2025},
+    url={https://openreview.net/forum?id=s14pdQgoLb},
+    month={12},
+    bibtex_show={true},
+    selected={true},
+    arxiv={2502.08006},
+    pdf={https://openreview.net/pdf?id=s14pdQgoLb},
+    abbr={NeurIPS},
+    abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of flow/diffusion models. Generally speaking, two families of techniques have emerged for solving this problem for gradient-based guidance: namely, posterior guidance (i.e., guidance via projecting the current sample to the target distribution via the target prediction model) and end-to-end guidance (i.e., guidance by performing backpropagation throughout the entire ODE solve). In this work, we show that these two seemingly separate families can actually be unified by looking at posterior guidance as a greedy strategy of end-to-end guidance. We explore the theoretical connections between these two families and provide an in-depth theoretical of these two techniques relative to the continuous ideal gradients. Motivated by this analysis we then show a method for interpolating between these two families enabling a trade-off between compute and accuracy of the guidance gradients. We then validate this work on several inverse image problems and property-guided molecular generation.}
+}
+
+}
+
 @inproceedings{woralert2025asap,
     title={Scalable Malware Detection Framework Using Performance Counters and Gradient Boosting},
     author={Woralert, Chutitep and Liu, Chen and Blasingame, Zander},
@@ -47,7 +64,6 @@
     bibtex_show={true},
     arxiv={2502.08006},
     pdf={https://openreview.net/pdf?id=o4yQzZ5qCW},
-    selected={true},
     abbr={ICLR},
     abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of diffusion models. In this work, we explore the guided generation from the perspective of optimizing the solution trajectory of a neural differential equation in a greedy manner. We present such a strategy as a unifying view on training-free guidance by showing that the greedy strategy is a first-order discretization of end-to-end optimization techniques. We show that a greedy guidance strategy makes good decisions and compare it to a guidance strategy using the ideal gradients found via the continuous adjoint equations. We then show how other popular training-free guidance strategies can be viewed in a unified manner from this perspective.}
 }
@@ -197,7 +213,6 @@ models. We hope this thesis provides a useful reference of the current state-of-
   code={https://github.com/zblasingame/DiM},
   website={https://zblasingame.github.io/DiM/},
   pdf={https://arxiv.org/pdf/2301.04218},
-  selected={true},
   poster={poster_ijcb2024_dim.pdf},
   slides={slides_ijcb2024_dim.pdf},
   blog={/blog/2024/face-morphing-dim/}
