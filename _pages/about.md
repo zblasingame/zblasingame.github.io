@@ -21,11 +21,8 @@ I am currently a postdoctoral researcher at [Clarkson University](https://www.cl
 Lately, I've been interested in neural differential equations, score-based generative models, rough path theory for ML, and applications in ai4science.
 Recent research has focused on bespoke ODE/SDE solvers for the gradients of diffusion models, greedy algorithms for guided generation, and reversible solvers for diffusion models.
 Previously, I received my Ph.D. in Electrical and Computer Engineering from Clarkson University in 2025 supervised by Dr. [Chen Liu](https://camel.clarkson.edu/members.html).
-Previously, I received my B.Sc. in Computer Engineering from Clarkson University in 2018.
 
 *All of Christ, for all of life.*
 
 In my free time I am an opposite hitter for the [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
-I also enjoy powerlifting and resistance training.
-
-**I am currently looking for research positions in industry/academia with particular interest topics related to ai4science, neural differential equations, and flow/diffusion models.**
+Additionally, I enjoy any form of barbell training and other power sports. 
