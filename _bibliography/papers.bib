@@ -1,3 +1,16 @@
+@misc{blasingame2025rex,
+      title={Rex: Reversible Solvers for Diffusion Models}, 
+      author={Zander W. Blasingame and Chen Liu},
+      year={2025},
+      month={10},
+      arxiv={2502.08834},
+      selected={true},
+      pdf={https://arxiv.org/pdf/2502.08834},
+      bibtex_show={true},
+      abbr={arXiv},
+      abstract={Diffusion models have quickly become the state-of-the-art for numerous generation tasks across many different applications. Encoding samples from the data distribution back into the models underlying prior distribution is an important task that arises in many downstream applications. This task is often called the inversion of diffusion models. Prior approaches for solving this task, however, are often simple heuristic solvers that come with several drawbacks in practice. In this work, we propose a new family of solvers for diffusion models by exploiting the connection between this task and the broader study of algebraically reversible solvers for differential equations. In particular, we construct a family of reversible solvers using an application of Lawson methods to construct exponential Runge-Kutta methods for the diffusion models. We call this family of reversible exponential solvers Rex. In addition to a rigorous theoretical analysis of the proposed solvers we also demonstrate the utility of the methods through a variety of empirical illustrations.}
+}
+
 @inproceedings{blasingame2025greedc,
     title={Greed is Good: A Unifying Perspective on Guided Generation},
     author={Blasingame, Zander W. and Liu, Chen},
@@ -37,7 +50,8 @@
       arxiv={2506.00661},
       bibtex_show={true},
       pdf={https://arxiv.org/pdf/2506.00661},
-      abbr={arXiv}
+      abbr={arXiv},
+      abstract={Adversarial attacks have emerged as a critical threat to autonomous driving systems. These attacks exploit the underlying neural network, allowing small -- nearly invisible -- perturbations to completely alter the behavior of such systems in potentially malicious ways. E.g., causing a traffic sign classification network to misclassify a stop sign as a speed limit sign. Prior working in hardening such systems to adversarial attacks have looked at robust training of the system or adding additional pre-processing steps to the input pipeline. Such solutions either have a hard time generalizing, require knowledge of the adversarial attacks during training, or are computationally undesirable. Instead, we propose to take insights for parameter efficient fine-tuning and use low-rank adaptation (LoRA) to train a lightweight security patch -- enabling us to dynamically patch a large preexisting vision system as new vulnerabilities are discovered. We demonstrate that our framework can patch a pre-trained model to improve classification accuracy by up to 78.01% in the presence of adversarial examples.}
 }
 
 @workshop{blasingame2025greedb,
@@ -78,7 +92,6 @@
     bibtex_show={true},
     arxiv={2502.08834},
     pdf={https://openreview.net/pdf?id=0gEFLVUL6n},
-    selected={true},
     abbr={ICLR},
     abstract={Diffusion models have quickly become the state-of-the-art for generation tasks across many different data modalities. An important ability of diffusion models is the ability to encode samples from the data distribution back into the sampling prior distribution. This is useful for performing alterations to real data samples along with guided generation via the continuous adjoint equations. We propose an algebraically reversible solver for diffusion SDEs that can exactly invert real data samples into the prior distribution.}
 }
@@ -91,7 +104,6 @@
     month={4},
     bibtex_show={true},
     slides={phd_oral.pdf},
-    selected={true},
     abbr={Ph.D. Thesis},
     abstract={Neural differential equations have quickly become the backbone behind many powerful
 generative models such as flow models and diffusion models. These models have quickly
