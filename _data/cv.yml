@@ -33,7 +33,7 @@
       location: Postsdam, NY
       institution: Clarkson University
       department: Electrical and Computer Engineering
-      year: 2018 - Now
+      year: 2018 - 2025
       description:
         - Studied the problem of guided generation with diffusion models
         - Created <b>AdjointDEIS</b> a novel technique to calculate the gradients for diffusion ODEs/SDEs
@@ -163,6 +163,11 @@
 - title: Awards and Honors
   type: time_table
   contents:
+    - title:
+      year: 2025
+      description:
+        - NeurIPS Top Reviewer
+
     - title:
       year: 2025
       description:

@@ -2,9 +2,9 @@
 layout: about
 title: About
 permalink: /
-subtitle: Postdoctoral Researcher @ Clarkson University, Potsdam NY, USA
+subtitle: Postdoctoral Researcher @ Clarkson University
 profile:
-  align: left
+  align: right
   image: zwblasingame.jpg
   image_circular: false # crops the image to make it circular
   #more_info: >
@@ -17,12 +17,15 @@ selected_papers: true # includes a list of papers marked as "selected={true}"
 social: true # includes social icons at the bottom of the page
 ---
 
-I am currently a postdoctoral researcher at [Clarkson University](https://www.clarkson.edu/) studying inference-time control of flow/diffusion models.
-Lately, I've been interested in neural differential equations, score-based generative models, rough path theory for ML, and applications in ai4science.
-Recent research has focused on bespoke ODE/SDE solvers for the gradients of diffusion models, greedy algorithms for guided generation, and reversible solvers for diffusion models.
+I am currently a postdoctoral researcher at [Clarkson University](https://www.clarkson.edu/) studying reversible schemes for diffusion models.
+My research interests are in generative modeling, and more specifically in numerical methods for neural differential equations, flow matching, diffusion models, and ai4science applications.
+
 Previously, I received my Ph.D. in Electrical and Computer Engineering from Clarkson University in 2025 supervised by Dr. [Chen Liu](https://camel.clarkson.edu/members.html).
+During my Ph.D. I focused on controllable generation with flow/diffusion models along with downstream applications in biometrics.
+
 
 *All of Christ, for all of life.*
 
-In my free time I am an opposite hitter for the [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
-Additionally, I enjoy any form of barbell training and other power sports. 
+In my free time I participate in amateur athletics as an opposite hitter for the [Clarkson Men's Club Volleyball](https://www.instagram.com/clarksonmvb/) team.
+I also love any form of barbell training and I am currently working on joining the 1250 lbs club `[1145/1250]`.
+
