@@ -68,6 +68,8 @@ $$
 \DeclareMathOperator{\argmax}{arg\,max}
 \DeclareMathOperator{\argmin}{arg\,min}
 \newtheorem{proposition}{Proposition}
+\definecolor{orange}{named}{#fe8019}
+\definecolor{cyan}{named}{#8ec07c}
 $$
 </div>
 
