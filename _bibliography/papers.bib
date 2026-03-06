@@ -1,20 +1,48 @@
-@misc{blasingame2025rex,
-      title={Rex: Reversible Solvers for Diffusion Models}, 
-      author={Zander W. Blasingame and Chen Liu},
-      year={2025},
-      month={10},
-      arxiv={2502.08834},
-      selected={true},
-      pdf={https://arxiv.org/pdf/2502.08834},
-      bibtex_show={true},
-      abbr={arXiv},
-      abstract={Diffusion models have quickly become the state-of-the-art for numerous generation tasks across many different applications. Encoding samples from the data distribution back into the models underlying prior distribution is an important task that arises in many downstream applications. This task is often called the inversion of diffusion models. Prior approaches for solving this task, however, are often simple heuristic solvers that come with several drawbacks in practice. In this work, we propose a new family of solvers for diffusion models by exploiting the connection between this task and the broader study of algebraically reversible solvers for differential equations. In particular, we construct a family of reversible solvers using an application of Lawson methods to construct exponential Runge-Kutta methods for the diffusion models. We call this family of reversible exponential solvers Rex. In addition to a rigorous theoretical analysis of the proposed solvers we also demonstrate the utility of the methods through a variety of empirical illustrations.}
+@misc{neddo2026lora,
+  title={Lo{RA} as a Flexible Framework for Securing Large Vision Systems},
+  author={Richard E. Neddo and Emmanuel A. Atindama and Zander W. Blasingame* and Chen Liu*},
+  workshops={ICLR 2026 Workshop on Trustworthy AI},
+  year={2026},
+  abbr={-,ICLR},
+  url={https://openreview.net/forum?id=mmM7CVfzVw},
+  bibtex_show={true},
+  arxiv={2506.00661},
+  pdf={https://arxiv.org/pdf/2506.00661},
+  abstract={Adversarial attacks have emerged as a critical threat to autonomous driving systems. These attacks exploit the underlying neural network, allowing small -- nearly invisible -- perturbations to completely alter the behavior of such systems in potentially malicious ways. E.g., causing a traffic sign classification network to misclassify a stop sign as a speed limit sign. Prior working in hardening such systems to adversarial attacks have looked at robust training of the system or adding additional pre-processing steps to the input pipeline. Such solutions either have a hard time generalizing, require knowledge of the adversarial attacks during training, or are computationally undesirable. Instead, we propose to take insights for parameter efficient fine-tuning and use low-rank adaptation (LoRA) to train a lightweight security patch -- enabling us to dynamically patch a large preexisting vision system as new vulnerabilities are discovered. We demonstrate that our framework can patch a pre-trained model to improve classification accuracy by up to 78.01% in the presence of adversarial examples.}
 }
 
-@inproceedings{blasingame2025greedc,
+@misc{passaro2026stochastic,
+  title={Stochastic Few-step Models},
+  author={Romeo Passaro and Zander W. Blasingame and Michael M. Bronstein and Alexander Tong},
+  workshops={ICLR 2026 DeLTa and ReALM-GEN workshops},
+  year={2026},
+  abbr={-,ICLR},
+  url={https://openreview.net/forum?id=i31AUZF8kO},
+  pdf={https://openreview.net/pdf?id=i31AUZF8kO},
+  bibtex_show={true},
+  selected={true},
+  abstract={Reward alignment for flow and diffusion models, via test-time steering or fine-tuning, often relies on sampling from conditional distributions induced by stochastic dynamics. In practice, this creates a computational bottleneck requiring expensive SDE simulation. Meanwhile, recent few-step accelerations for generative flows largely target deterministic dynamics and therefore do not directly address stochastic conditional sampling. We introduce stochastic few-step models, a framework for fast sampling from SDE-defined conditional distributions by mapping the conditional SDE to a deterministic ODE with matching marginals. Building on this formulation, we show that the resulting conditional ODEs can be effectively distilled into a single few-step model, enabling efficient conditional rollouts. Experiments on Gaussian-mixture and MNIST steering show that the resulting sampler provides accurate conditional samples to improve reward steering outperforming standard denoiser heuristics.}
+}
+
+@misc{blasingame2026rex,
+  title={Rex: A Family of Reversible Exponential (Stochastic) Runge-Kutta Solvers},
+  author={Zander W. Blasingame and Chen Liu},
+  year={2026},
+  workshops={ICLR 2026 DeLTa and ReALM-GEN workshops},
+  author={Zander W. Blasingame and Chen Liu},
+  abbr={-,ICLR},
+  url={https://openreview.net/forum?id=rHIUKCqPBZ},
+  arxiv={2502.08834},
+  selected={true},
+  pdf={https://arxiv.org/pdf/2502.08834},
+  bibtex_show={true},
+  abstract={Diffusion models have quickly become the state-of-the-art for numerous generation tasks across many different applications. Encoding samples from the data distribution back into the models underlying prior distribution is an important task that arises in many downstream applications. This task is often called the inversion of diffusion models. Prior approaches for solving this task, however, are often simple heuristic solvers that come with several drawbacks in practice. In this work, we propose a new family of solvers for diffusion models by exploiting the connection between this task and the broader study of algebraically reversible solvers for differential equations. In particular, we construct a family of reversible solvers using an application of Lawson methods to construct exponential Runge-Kutta methods for the diffusion models. We call this family of reversible exponential solvers Rex. In addition to a rigorous theoretical analysis of the proposed solvers we also demonstrate the utility of the methods through a variety of empirical illustrations.}
+}
+
+@inproceedings{blasingame2025greed,
     title={Greed is Good: A Unifying Perspective on Guided Generation},
     author={Blasingame, Zander W. and Liu, Chen},
-    booktitle={The Thirty-ninth Annual Conference on Neural Information Processing Systems},
+    booktitle={NeurIPS},
     year={2025},
     url={https://openreview.net/forum?id=s14pdQgoLb},
     month={12},
@@ -23,7 +51,9 @@
     arxiv={2502.08006},
     slides={greed_neurips_slides.pdf},
     pdf={https://openreview.net/pdf?id=s14pdQgoLb},
-    abbr={NeurIPS},
+    abbr={NeurIPS,ICML,ICLR},
+    poster={poster_neurips_greed.pdf},
+    workshops={ICML 2025 EXAIT workshop and ICLR 2025 FPI workshop},
     abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of flow/diffusion models. Generally speaking, two families of techniques have emerged for solving this problem for gradient-based guidance: namely, posterior guidance (i.e., guidance via projecting the current sample to the target distribution via the target prediction model) and end-to-end guidance (i.e., guidance by performing backpropagation throughout the entire ODE solve). In this work, we show that these two seemingly separate families can actually be unified by looking at posterior guidance as a greedy strategy of end-to-end guidance. We explore the theoretical connections between these two families and provide an in-depth theoretical of these two techniques relative to the continuous ideal gradients. Motivated by this analysis we then show a method for interpolating between these two families enabling a trade-off between compute and accuracy of the guidance gradients. We then validate this work on several inverse image problems and property-guided molecular generation.}
 }
 
@@ -63,53 +93,8 @@ abbr={HASP},
     abbr={ASAP}
 }
 
-@misc{blasingame2025loraflexibleframeworksecuring,
-      title={LoRA as a Flexible Framework for Securing Large Vision Systems}, 
-      author={Zander W. Blasingame* and Richard E. Neddo* and Chen Liu},
-      year={2025},
-      month={07},
-      eprint={2506.00661},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV},
-      url={https://arxiv.org/abs/2506.00661},
-      arxiv={2506.00661},
-      bibtex_show={true},
-      pdf={https://arxiv.org/pdf/2506.00661},
-      abbr={arXiv},
-      abstract={Adversarial attacks have emerged as a critical threat to autonomous driving systems. These attacks exploit the underlying neural network, allowing small -- nearly invisible -- perturbations to completely alter the behavior of such systems in potentially malicious ways. E.g., causing a traffic sign classification network to misclassify a stop sign as a speed limit sign. Prior working in hardening such systems to adversarial attacks have looked at robust training of the system or adding additional pre-processing steps to the input pipeline. Such solutions either have a hard time generalizing, require knowledge of the adversarial attacks during training, or are computationally undesirable. Instead, we propose to take insights for parameter efficient fine-tuning and use low-rank adaptation (LoRA) to train a lightweight security patch -- enabling us to dynamically patch a large preexisting vision system as new vulnerabilities are discovered. We demonstrate that our framework can patch a pre-trained model to improve classification accuracy by up to 78.01% in the presence of adversarial examples.}
-}
 
-@workshop{blasingame2025greedb,
-    title={Greed is Good: A Unifying Perspective on Guided Generation},
-    author={Blasingame, Zander W. and Liu, Chen},
-    booktitle={The Exploration in AI Today Workshop at ICML 2025},
-    year={2025},
-    url={https://openreview.net/forum?id=cSU2jEzanw},
-    month={7},
-    bibtex_show={true},
-    arxiv={2502.08006},
-    pdf={https://openreview.net/pdf?id=cSU2jEzanw},
-    poster={greed_exait.pdf},
-    abbr={ICML},
-    abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of flow/diffusion models. Generally speaking, two families of techniques have emerged for solving this problem for gradient-based guidance: namely, posterior guidance (i.e., guidance via projecting the current sample to the target distribution via the target prediction model) and end-to-end guidance (i.e., guidance by performing backpropagation throughout the entire ODE solve). In this work, we show that these two seemingly separate families can actually be unified by looking at posterior guidance as a greedy strategy of end-to-end guidance. We explore the theoretical connections between these two families and provide an in-depth theoretical of these two techniques relative to the continuous ideal gradients. Motivated by this analysis we then show a method for interpolating between these two families enabling a trade-off between compute and accuracy of the guidance gradients. We then validate this work on several inverse image problems and property-guided molecular generation.}
-}
-
-@workshop{blasingame2025greeda,
-    title={Greed is Good: Guided Generation from a Greedy Perspective},
-    author={Blasingame, Zander W. and Liu, Chen},
-    booktitle={Frontiers in Probabilistic Inference: Learning meets Sampling},
-    year={2025},
-    month={4},
-    url={https://openreview.net/forum?id=o4yQzZ5qCW},
-    bibtex_show={true},
-    arxiv={2502.08006},
-    pdf={https://openreview.net/pdf?id=o4yQzZ5qCW},
-    poster={greed_fpi.pdf},
-    abbr={ICLR},
-    abstract={Training-free guided generation is a widely used and powerful technique that allows the end user to exert further control over the generative process of diffusion models. In this work, we explore the guided generation from the perspective of optimizing the solution trajectory of a neural differential equation in a greedy manner. We present such a strategy as a unifying view on training-free guidance by showing that the greedy strategy is a first-order discretization of end-to-end optimization techniques. We show that a greedy guidance strategy makes good decisions and compare it to a guidance strategy using the ideal gradients found via the continuous adjoint equations. We then show how other popular training-free guidance strategies can be viewed in a unified manner from this perspective.}
-}
-
-@workshop{blasingame2025reversible,
+@misc{blasingame2025reversible,
     title={A Reversible Solver for Diffusion {SDE}s},
     author={Zander W. Blasingame and Chen Liu},
     booktitle={ICLR 2025 Workshop on Deep Generative Model in Machine Learning: Theory, Principle and Efficacy},
@@ -119,7 +104,7 @@ abbr={HASP},
     bibtex_show={true},
     arxiv={2502.08834},
     pdf={https://openreview.net/pdf?id=0gEFLVUL6n},
-    abbr={ICLR},
+    abbr={-,ICLR},
     poster={reversible_delta.pdf},
     abstract={Diffusion models have quickly become the state-of-the-art for generation tasks across many different data modalities. An important ability of diffusion models is the ability to encode samples from the data distribution back into the sampling prior distribution. This is useful for performing alterations to real data samples along with guided generation via the continuous adjoint equations. We propose an algebraically reversible solver for diffusion SDEs that can exactly invert real data samples into the prior distribution.}
 }
@@ -169,27 +154,9 @@ models. We hope this thesis provides a useful reference of the current state-of-
     abbr={IEEE MOST}
 }
 
-@workshop{blasingame2024adjointdeis,
-    author = {Blasingame, Zander W. and Liu, Chen},
-    title = {AdjointDEIS: Efficient Gradients for Diffusion Models},
-    booktitle={The Third Workshop on New Frontiers in Adversarial Machine Learning},
-    url={https://openreview.net/forum?id=4Bggd6HRes},
-    year = {2024},
-    month = {12},
-    abbr={NeurIPS},
-    bibtex_show={true},
-    arxiv={2405.15020},
-    poster={adjointdeis_neurips.pdf},
-    bibtex_show={true},
-    pdf={https://openreview.net/pdf?id=4Bggd6HRes},
-    code={https://github.com/zblasingame/AdjointDEIS},
-    website={https://zblasingame.github.io/AdjointDEIS},
-
-}
-
 @inproceedings{blasingame2024adjointdeis,
     author = {Blasingame, Zander W. and Liu, Chen},
-    booktitle = {Advances in Neural Information Processing Systems},
+    booktitle = {NeurIPS},
     editor = {A. Globerson and L. Mackey and D. Belgrave and A. Fan and U. Paquet and J. Tomczak and C. Zhang},
     pages = {2449--2483},
     publisher = {Curran Associates, Inc.},
@@ -199,7 +166,7 @@ models. We hope this thesis provides a useful reference of the current state-of-
     volume = {37},
     year = {2024},
     month={12},
-    abbr={NeurIPS},
+    abbr={NeurIPS,NeurIPS},
     bibtex_show={true},
     arxiv={2405.15020},
     poster={adjointdeis_neurips.pdf},
@@ -209,6 +176,7 @@ models. We hope this thesis provides a useful reference of the current state-of-
     code={https://github.com/zblasingame/AdjointDEIS},
     website={https://zblasingame.github.io/AdjointDEIS},
     selected={true},
+    workshops={NeurIPS - New Frontiers in Adversarial Machine Learning},
     abstract={
                The optimization of the latents and parameters of diffusion models with respect to some differentiable metric defined on the output of the model is a challenging and complex problem. The sampling for diffusion models is done by solving either the probability flow ODE or diffusion SDE wherein a neural network approximates the score function or related quantity, allowing a numerical ODE/SDE solver to be used. However, naïve backpropagation techniques are memory intensive, requiring the storage of all intermediate states, and face additional complexity in handling the injected noise from the diffusion term of the diffusion SDE. We propose a novel method based on the stochastic adjoint sensitivity method to calculate the gradientwith respect to the initial noise, conditional information, and model parameters by solving an additional SDE whose solution is the gradient of the diffusion SDE. We exploit the unique construction of diffusion SDEs to further simplify the formulation of the adjoint diffusion SDE and use a change-of-variables to simplify the solution to an exponentially weighted integral. Using this formulation we derive a custom solver for the adjoint SDE as well as the simpler adjoint ODE. The proposed adjoint diffusion solvers can efficiently compute the gradients for both the probability flow ODE and diffusion SDE for latents and parameters of the model. Lastly, we demonstrate the effectiveness of the adjoint diffusion solvers onthe face morphing problem.
   },
@@ -253,6 +221,7 @@ models. We hope this thesis provides a useful reference of the current state-of-
   abstract={Face morphing attacks seek to deceive a Face Recognition (FR) system by presenting a morphed image consisting of the biometric qualities from two different identities with the aim of triggering a false acceptance with one of the two identities, thereby presenting a significant threat to biometric systems. The success of a morphing attack is dependent on the ability of the morphed image to represent the biometric characteristics of both identities that were used to create the image. We present a novel morphing attack that uses a Diffusion-based architecture to improve the visual fidelity of the image and the ability of the morphing attack to represent characteristics from both identities. We demonstrate the effectiveness of the proposed attack by evaluating its visual fidelity via Fréchet Inception Distance (FID). Also, extensive experiments are conducted to measure the vulnerability of FR systems to the proposed attack. The ability of a morphing attack detector to detect the proposed attack is measured and compared against two state-of-the-art GAN-based morphing attacks along with two Landmark-based attacks. Additionally, a novel metric to measure the relative strength between different morphing attacks is introduced and evaluated.},
   abbr={IEEE TBIOM},
   award={Oral @ IJCB},
+  workshops={IJCB (Oral)},
   arxiv={2301.04218},
   bibtex_show={true},
   code={https://github.com/zblasingame/DiM},

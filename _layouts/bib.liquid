@@ -4,32 +4,39 @@
   {% if site.enable_publication_thumbnails %}
     <div class="col col-sm-2 abbr">
       {%- if entry.abbr -%}
-        {%- if site.data.venues[entry.abbr] -%}
-          {% assign venue_style = null %}
-          {% if site.data.venues[entry.abbr].color != blank %}
-            {% assign venue_style = site.data.venues[entry.abbr].color | prepend: 'style="background-color:' | append: '"' %}
-          {%- endif -%}
-          <abbr
-            class="badge rounded"
-            {% if venue_style %}
-              {{ venue_style }}
-            {% endif -%}
-          >
-            {% if site.data.venues[entry.abbr].url %}
-              <a href="{{ site.data.venues[entry.abbr].url }}">{{ entry.abbr }}</a>
-            {% else %}
-              <div>{{- entry.abbr -}}</div>
-            {% endif %}
-          </abbr>
-        {% else %}
-          <abbr class="badge rounded">{{ entry.abbr }}</abbr>
-        {% endif %}
+        {% assign abbr_venues = entry.abbr | split: ',' %}
+        {% assign main_venue = abbr_venues[0] | strip %}
+        {%- if main_venue != '-' -%}
+          {%- if site.data.venues[main_venue] -%}
+            {% assign venue_style = null %}
+            {% if site.data.venues[main_venue].color != blank %}
+              {% assign venue_style = site.data.venues[main_venue].color | prepend: 'style="background-color:' | append: '"' %}
+            {%- endif -%}
+            <abbr
+              class="badge rounded"
+              {% if venue_style %}
+                {{ venue_style }}
+              {% endif -%}
+            >
+              {% if site.data.venues[main_venue].url %}
+                <a href="{{ site.data.venues[main_venue].url }}">{{ main_venue }}</a>
+              {% else %}
+                <div>{{- main_venue -}}</div>
+              {% endif %}
+            </abbr>
+          {% else %}
+            <abbr class="badge rounded">{{ main_venue }}</abbr>
+          {% endif %}
+        {%- endif -%}
       {% endif %}
+    {% comment %}
     {%- if entry.award -%}
-        {%- if site.data.venues[entry.abbr] -%}
+        {% assign abbr_venues = entry.abbr | split: ',' %}
+        {% assign main_venue = abbr_venues[0] | strip %}
+        {%- if site.data.venues[main_venue] -%}
           {% assign venue_style = null %}
-          {% if site.data.venues[entry.abbr].color != blank %}
-            {% assign venue_style = site.data.venues[entry.abbr].color | prepend: 'style="color:' | append: '"' %}
+          {% if site.data.venues[main_venue].color != blank %}
+            {% assign venue_style = site.data.venues[main_venue].color | prepend: 'style="color:' | append: '"' %}
           {%- endif -%}
           <abbr
             class="badge award rounded"
@@ -43,6 +50,28 @@
           <abbr class="badge award rounded">{{ entry.award }}</abbr>
         {% endif %}
       {% endif %}
+    {% endcomment %}
+      {%- if entry.abbr contains ',' -%}
+        {% assign abbr_venues = entry.abbr | split: ',' %}
+        {% for workshop_venue in abbr_venues offset:1 %}
+          {% assign ws_venue = workshop_venue | strip %}
+          {%- if site.data.venues[ws_venue] -%}
+            <abbr class="badge workshop rounded">
+              {% if site.data.venues[ws_venue].url %}
+                <a href="{{ site.data.venues[ws_venue].url }}">{{ ws_venue }}</a>
+              {% else %}
+                <div>{{- ws_venue -}}</div>
+              {% endif %}
+              <br><span class="workshop-label">Workshop</span>
+            </abbr>
+          {% else %}
+            <abbr class="badge workshop rounded">
+              <div>{{- ws_venue -}}</div>
+              <br><span class="workshop-label">Workshop</span>
+            </abbr>
+          {% endif %}
+        {% endfor %}
+      {%- endif -%}
 
       {% if entry.preview %}
         {% if entry.preview contains '://' %}
@@ -165,22 +194,18 @@
     </div>
 
     <!-- Journal/Book title and date -->
-    {% assign proceedings = 'inproceedings,incollection,workshop' | split: ',' %}
+    {% assign proceedings = 'inproceedings,incollection' | split: ',' %}
     {% assign thesis = 'thesis,mastersthesis,phdthesis' | split: ',' %}
     {% if entry.type == 'article' %}
-      {% capture entrytype %}<em>{{ entry.journal }}</em>{% endcapture %}
+      {% capture entrytype %}Published in {{ entry.journal }}{% endcapture %}
     {% elsif proceedings contains entry.type %}
-      {% capture entrytype %}<em>In {{ entry.booktitle }}</em>{% endcapture %}
+      {% capture entrytype %}Published at {{ entry.booktitle }}{% endcapture %}
+    {% elsif entry.booktitle %}
+      {% capture entrytype %}Published at {{ entry.booktitle }}{% endcapture %}
     {% elsif thesis contains entry.type %}
-      {% capture entrytype %}<em>{{ entry.school }}</em>{% endcapture %}
+      {% capture entrytype %}{{ entry.school }}{% endcapture %}
     {% else %}
       {% capture entrytype %}{% endcapture %}
-    {% endif %}
-    {% if entry.month %}
-      {% capture entrymonth %}{{ " " }}{{ entry.month | capitalize }}{% endcapture %}
-    {% endif %}
-    {% if entry.year %}
-      {% capture entryyear %}{{ " " }}{{ entry.year }}{% endcapture %}
     {% endif %}
     {% if entry.location %}
       {% capture entrytype %}{{ entrytype }}{{ ", " }}{{ entry.location }}{% endcapture %}
@@ -193,13 +218,29 @@
       {% include hook/bib.liquid %}
     {% endif %}
     {% assign entrytype_text = entrytype | strip_html | strip %}
-    {% capture periodical %}{{ entrytype }}{% if entrytype_text != "" and entryyear != "" %}, {% endif %}{{ entrymonth }}{{ entryyear }}{% endcapture %}
+    {% if entrytype_text != "" and entry.year %}
+      {% capture periodical %}{{ entrytype }} ({{ entry.year }}){% endcapture %}
+    {% elsif entrytype_text != "" %}
+      {% capture periodical %}{{ entrytype }}{% endcapture %}
+    {% else %}
+      {% capture periodical %}{% endcapture %}
+    {% endif %}
     <div class="periodical">
       {{ periodical | strip }}
     </div>
+    {% if entry.workshops %}
+      <div class="periodical">
+        <i>Presented at {{ entry.workshops }}</i>
+      </div>
+    {% endif %}
     <div class="periodical">
       {{ entry.note | strip }}
     </div>
+    {% if entry.award %}
+      <div class="award-text">
+        <i class="fa-solid fa-award"></i> {{ entry.award }}
+      </div>
+    {% endif %}
 
     <!-- Links/Buttons -->
     <div class="links">

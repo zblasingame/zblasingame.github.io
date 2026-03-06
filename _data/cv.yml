@@ -8,27 +8,16 @@
     #- name: Languages
       #value: English
 
-- title: Education
-  type: time_table
-  contents:
-    - title: Ph.D. in Electrical and Computer Engineering
-      institution: Clarkson University
-      location: Postdam, NY 
-      year: 2020 - 2025
-      description:
-        - Advised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>
-    - title: M.Sc. in Electrical and Computer Engineering
-      institution: Clarkson University
-      location: Postdam, NY 
-      year: 2018 - 2025
-    - title: B.Sc. in Computer Engineering <br> Minors in Mathematics and Computer Science
-      institution: Clarkson University
-      location: Postdam, NY 
-      year: 2015 - 2018
-
 - title: Experience
   type: time_table
   contents:
+    - title: Postdoctoral Fellow
+      location: Vienna, Austria
+      institution: AITHYRA
+      year: 2026 - now 
+      description:
+        - Researching flow-based generative models for life sciences
+
     - title: Graduate Research Assistant
       location: Postsdam, NY
       institution: Clarkson University
@@ -69,6 +58,24 @@
       description:
         - Designed a custom Linux image for embedded systems using the Yocto Project
         - Created a web application capable of monitoring and maintaining server processes
+
+- title: Education
+  type: time_table
+  contents:
+    - title: Ph.D. in Electrical and Computer Engineering
+      institution: Clarkson University
+      location: Postdam, NY 
+      year: 2020 - 2025
+      description:
+        - Advised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>
+    - title: M.Sc. in Electrical and Computer Engineering
+      institution: Clarkson University
+      location: Postdam, NY 
+      year: 2018 - 2025
+    - title: B.Sc. in Computer Engineering <br> Minors in Mathematics and Computer Science
+      institution: Clarkson University
+      location: Postdam, NY 
+      year: 2015 - 2018
 
 - title: Invited Talks
   type: time_table

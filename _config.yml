@@ -6,7 +6,7 @@ title: blank # the website title (if blank, full name will be used instead)
 first_name: Zander
 middle_name: W.
 last_name: Blasingame
-email: blasinzw@clarkson.edu
+email:  zblasingame@aithyra.at
 description: > # the ">" symbol means to ignore newlines until "footer_text:"
   My webpage. Based on [*folio](https://github.com/bogoli/-folio) design.
 footer_text: >
@@ -70,16 +70,16 @@ og_image: # The site-wide (default for all links) Open Graph preview image
 # Social integration
 # -----------------------------------------------------------------------------
 
-acm_id: 99659274639 # your dl.acm.org/profile/id
+acm_id: #99659274639 # your dl.acm.org/profile/id
 blogger_url: # your blogger URL
 bluesky_url: # your bluesky URL
-dblp_url: https://dblp.org/pid/250/5790.html # your DBLP profile url
+dblp_url: #
 discord_id: # your discord id (18-digit unique numerical identifier)
 facebook_id: # your facebook id
 flickr_id: # your flickr id
 github_username: zblasingame # your GitHub user name
 gitlab_username: # your GitLab user name
-ieee_id: 37088915308 # your ieeexplore.ieee.org/author/id
+ieee_id: #37088915308 # your ieeexplore.ieee.org/author/id
 inspirehep_id:  # Inspire HEP author ID
 instagram_id: # your instagram id
 kaggle_id: # your kaggle id
@@ -89,7 +89,7 @@ lattes_id: # your ID on Lattes (Brazilian Lattes CV)
 linkedin_username: zander-blasingame # your LinkedIn user name
 mastodon_username: # your mastodon instance+username in the format instance.tld/@username
 medium_username: # your Medium username
-orcid_id: 0000-0002-9508-8425 # your ORCID ID
+orcid_id: #0000-0002-9508-8425 # your ORCID ID
 osf_id: # your OSF ID
 pinterest_id: # your pinterest id
 publons_id: # your ID on Publons
@@ -317,7 +317,7 @@ display_categories: [] # these categories will be displayed on the front page of
 
 scholar:
   last_name: [Blasingame]
-  first_name: ["Zander", "Zander W."]
+  first_name: [Zander, Zander W., Z. W.]
 
   style: apa
   locale: en
@@ -337,12 +337,12 @@ scholar:
   details_link: Details
 
   query: "@*"
-  group_by: year, type
-  sort_by: year, type
-  group_order: descending, ascending
+  group_by: year
+  sort_by: year
+  group_order: descending
 
-  type_order: [unpublished, misc, inbook, conference, incollections, inproceedings, proceedings, article, workshop, book, techreport]
-  type_names: {unpublished: Pre-prints, misc: Pre-prints, article: Journals, inproceedings: Conferences, workshop: Workshops}
+  type_order: [unpublished, misc, inbook, conference, incollections, inproceedings, proceedings, article, book, techreport]
+  type_names: {unpublished: Pre-prints, misc: Pre-prints, article: Journals, inproceedings: Conferences}
 
 # Display different badges withs stats for your publications
 # Customize badge behavior in _layouts/bib.liquid
@@ -377,6 +377,7 @@ filtered_bibtex_keywords:
     supp,
     video,
     website,
+    workshops,
   ]
 
 # Maximum number of authors to be shown for each publication (more authors are visible on click)
@@ -496,7 +497,7 @@ third_party_libraries:
     version: "5.5.0"
   google_fonts:
     url:
-      fonts: "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:100,300,400,500,700|Material+Icons&display=swap"
+      fonts: "https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,300;1,8..60,400;1,8..60,600&family=Source+Sans+3:wght@300;400;600;700&family=Material+Icons&display=swap"
   highlightjs:
     integrity:
       css:

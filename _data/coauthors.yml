@@ -1,7 +1,15 @@
-"Liu":
+"liu":
   - firstname: ["Chen", "C.", "Chen Liu"]
     url: https://scholar.google.com/citations?user=dpKWP8oAAAAJ
 
-"Chutitep":
-  - firstname: ["Chutitep", "C.","Chutitep Woralet"]
+"woralert":
+  - firstname: ["Chutitep", "C.", "Chutitep Woralert"]
     url: https://scholar.google.com/citations?user=86BtX0cAAAAJ
+
+"tong":
+  - firstname: ["Alexander", "A.", "Alexander Tong"]
+    url: https://www.alextong.net/
+
+"bronstein":
+  - firstname: ["Michael", "Michael M.", "Michael M. Bronstein"]
+    url: https://www.cs.ox.ac.uk/people/michael.bronstein/
