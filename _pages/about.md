@@ -15,7 +15,7 @@ social: true # includes social icons at the bottom of the page
 ---
 
 I am a postdoctoral fellow at [Aithyra](aithyra.at) in Vienna, Austria working with [Alex Tong](https://www.alextong.net/) where I study on generative models for life sciences.
-My research interests are in mostly in the use of diffusion/flow-based generative models for controllable generation and editing. 
+My research interests are mostly in the use of diffusion/flow-based generative models for controllable generation and editing. 
 
 Previously, I received my Ph.D. in Electrical and Computer Engineering from Clarkson University in 2025 supervised by [Chen Liu](https://camel.clarkson.edu/members.html).
 During my Ph.D. I focused on controllable generation with flow/diffusion models along with downstream applications in biometrics.
