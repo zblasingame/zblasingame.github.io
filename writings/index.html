@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Writings &middot; Zander W. Blasingame</title>
+<meta name="description" content="Notes on diffusion models, neural differential equations, and face morphing.">
+<link rel="icon" type="image/svg+xml" href="../assets/img/favicon.svg">
+<link rel="alternate icon" href="../assets/img/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/style.css">
+<script>(function(){var t;try{t=localStorage.getItem('theme');}catch(e){}if(!t){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);if(m)t=decodeURIComponent(m[1]);}if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);})();</script>
+</head>
+<body>
+<div class="page">
+
+<nav class="top">
+  <span class="brand"><a href="../index.html">Zander W. Blasingame</a></span>
+  <ul>
+    <li><a href="../index.html#about">about</a></li>
+    <li><a href="../news/index.html">news</a></li>
+    <li><a href="../publications/index.html">publications</a></li>
+    <li><a href="../talks/index.html">talks</a></li>
+    <li><a href="index.html">writings</a></li>
+    <li><a href="../index.html#repositories">code</a></li>
+    <li><a href="../assets/pdf/cv.pdf">cv</a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle color scheme">auto</button></li>
+  </ul>
+</nav>
+
+<header class="page-heading">
+  <h1>Writings</h1>
+  <div class="lede">Marginalia on diffusion models, neural differential equations, and morphs</div>
+</header>
+
+<ul class="posts">
+  <li>
+    <span class="date">2025 May 23</span>
+    <div>
+      <span class="post-title"><a href="noise-schedules/index.html">Deriving the Drift and Diffusion Coefficients for Diffusion Models</a></span>
+      <span class="post-desc">Where do the popular variance-preserving SDE coefficients <em>actually</em> come from? A derivation, working backwards from the desired transition kernel.</span>
+    </div>
+  </li>
+  <li>
+    <span class="date">2024 Dec 3</span>
+    <div>
+      <span class="post-title"><a href="cadlag-conditional/index.html">Gradients for Time-Scheduled Conditional Variables in Neural Differential Equations</a></span>
+      <span class="post-desc">A càdlàg extension of the continuous adjoint equations for piecewise-continuous conditional inputs.</span>
+    </div>
+  </li>
+  <li>
+    <span class="date">2024 Nov 20</span>
+    <div>
+      <span class="post-title"><a href="adjointdeis/index.html">The Continuous Adjoint Equations for Diffusion Models</a></span>
+      <span class="post-desc">A guided tour through AdjointDEIS — exponential integrators for the adjoint ODE/SDE of diffusion models.</span>
+    </div>
+  </li>
+  <li>
+    <span class="date">2024 Aug 27</span>
+    <div>
+      <span class="post-title"><a href="face-morphing-dim/index.html">Face Morphing with Diffusion Models</a></span>
+      <span class="post-desc">An expository walk through DiM, Fast-DiM, and Greedy-DiM — using diffusion to attack face recognition systems.</span>
+    </div>
+  </li>
+</ul>
+
+<footer>
+  <div class="socials">
+    <a href="mailto:zblasingame@aithyra.at">email</a> /
+    <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
+    <a href="https://github.com/zblasingame">github</a> /
+    <a href="https://twitter.com/zwblasingame">x</a> /
+    <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
+    <a href="../assets/pdf/cv.pdf">cv</a>
+  </div>
+  <span class="colophon">Email is generally the best way to contact me.</span>
+  <span>&copy; 2026 Zander W. Blasingame</span>
+</footer>
+
+</div>
+<script src="../assets/js/theme.js"></script>
+</body>
+</html>

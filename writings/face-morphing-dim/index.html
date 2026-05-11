@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Face Morphing with Diffusion Models &middot; Zander W. Blasingame</title>
+<meta name="description" content="An expository walk through Diffusion Morphs (DiM), Fast-DiM, and Greedy-DiM — using diffusion models to construct face-morphing attacks on face recognition systems.">
+<meta name="author" content="Zander W. Blasingame">
+<link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+<link rel="alternate icon" href="../../assets/img/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<script>(function(){var t;try{t=localStorage.getItem('theme');}catch(e){}if(!t){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);if(m)t=decodeURIComponent(m[1]);}if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);})();</script>
+
+<script>
+window.MathJax = {
+  tex: {
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    tags: 'ams',
+    macros: {
+      R: '\\mathbb{R}', X: '\\mathcal{X}', Y: '\\mathcal{Y}',
+      Z: '\\mathcal{Z}', N: '\\mathbb{N}', T: '\\mathbb{T}',
+      Q: '\\mathbb{Q}', B: '\\mathcal{B}', pr: '\\mathbb{P}',
+      bfx: '\\boldsymbol{x}', bfX: '\\boldsymbol{X}',
+      bfy: '\\boldsymbol{y}', bfz: '\\boldsymbol{z}',
+      bfa: '\\boldsymbol{a}', bfw: '\\boldsymbol{w}',
+      bfW: '\\boldsymbol{W}',
+      bsf: '\\boldsymbol{f}', bsg: '\\boldsymbol{g}',
+      bseps: '\\boldsymbol{\\epsilon}',
+      rmd: '\\mathrm{d}',
+      var: '\\operatorname{Var}', ex: '\\mathbb{E}',
+      argmin: '\\operatorname*{arg\\,min}',
+      argmax: '\\operatorname*{arg\\,max}',
+      lerp: '\\operatorname{lerp}',
+      slerp: '\\operatorname{slerp}'
+    }
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+<div class="page post">
+
+<nav class="top">
+  <span class="brand"><a href="../../index.html">Zander W. Blasingame</a></span>
+  <ul>
+    <li><a href="../../index.html#about">about</a></li>
+    <li><a href="../../news/index.html">news</a></li>
+    <li><a href="../../publications/index.html">publications</a></li>
+    <li><a href="../../talks/index.html">talks</a></li>
+    <li><a href="../index.html">writings</a></li>
+    <li><a href="../../index.html#repositories">code</a></li>
+    <li><a href="../../assets/pdf/cv.pdf">cv</a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle color scheme">auto</button></li>
+  </ul>
+</nav>
+
+<article>
+<header class="post-heading">
+  <h1>Face Morphing with Diffusion Models</h1>
+  <div class="post-meta">
+    <span class="date">2024 Aug 27</span>
+    <span class="sep">·</span>
+    <span>Zander W. Blasingame</span>
+    <span class="sep">·</span>
+    <span>18 min read</span>
+  </div>
+  <div class="post-description">An expository walk through DiM, Fast-DiM, and Greedy-DiM — a family of face-morphing attacks built atop diffusion models that achieve state-of-the-art visual fidelity and morphing performance.</div>
+</header>
+
+<nav class="post-toc" aria-label="Table of contents">
+  <div class="post-toc-label">Contents</div>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#diffusion">Diffusion</a>
+      <ol>
+        <li><a href="#reversing-sde">Reversing the diffusion SDE</a></li>
+        <li><a href="#pf-ode">Probability Flow ODE</a></li>
+      </ol>
+    </li>
+    <li><a href="#dim">DiM</a>
+      <ol>
+        <li><a href="#high-order">High-order ODE solvers</a></li>
+      </ol>
+    </li>
+    <li><a href="#greedy">Greedy guided generation</a>
+      <ol>
+        <li><a href="#search-space">The search space of Greedy-DiM is well-posed</a></li>
+      </ol>
+    </li>
+    <li><a href="#concluding">Concluding remarks</a></li>
+  </ol>
+</nav>
+
+<div class="post-body">
+
+<h2 id="introduction">Introduction</h2>
+
+<p class="lead"><span class="newthought">Face morphing is</span> a kind of attack wherein the attacker attempts to combine the faces of two real identities into <em>one</em> face. This attack exploits the structure of the embedding space of the face recognition (FR) system<span class="cite" data-key="Ferrara2016,morphed_first"></span>. FR systems generally work by embedding the image — which is hard to compare — into some kind of vector space which makes it easier to compare; this space is referred to as the <em>feature space</em> of the FR system. Once a user is enrolled into the FR system, an acceptance region<span class="footnote">If the measure of distance is a proper metric, like $\ell^2$, and not just a semi-metric, this forms a ball around the enrolled user.</span> is defined around the enrolled user in the feature space. If there exists an overlap between the acceptance regions of two identities in the feature space, then a face morphing attack can be performed.</p>
+
+<figure>
+  <img src="../../assets/img/dim/morph_diagram.png" alt="Overview of the face morphing attack.">
+  <figcaption><span class="figlabel">Figure&nbsp;1</span>Overview of the face morphing attack. The goal is to create a morphed face that lies within the acceptance regions of <em>both</em> identities. Bona fide images from the FRLL dataset<span class="cite" data-key="frll"></span>.</figcaption>
+</figure>
+
+<p>Face morphing attacks fall broadly into two categories.</p>
+
+<ul>
+  <li><strong>Landmark-based attacks</strong> create morphed images by warping and aligning facial landmarks of the two face images before performing a pixel-wise average to obtain the morph<span class="cite" data-key="can_gan_beat_landmark,multe-scale-block-fusion"></span>.</li>
+  <li><strong>Representation-based attacks</strong> create morphs by first embedding the original images into a representational space; once embedded into this space, an interpolation between the two embeddings is constructed to a morphed representation. This morphed representation is then projected back into the image space to create the morphed image<span class="cite" data-key="morgan"></span>.</li>
+</ul>
+
+<div class="fig-row" style="--cols:4">
+  <figure><img src="../../assets/img/dim/frll/bona_fide/001_03.png" alt="Face a"><figcaption>Face <em>a</em></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/opencv/001_013.png" alt="OpenCV morph"><figcaption>OpenCV<span class="cite" data-key="syn-mad22"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/mipgan2/001_013.png" alt="MIPGAN-II morph"><figcaption>MIPGAN-II<span class="cite" data-key="mipgan"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/bona_fide/013_03.png" alt="Face b"><figcaption>Face <em>b</em></figcaption></figure>
+</div>
+<p class="figrow-caption"><em>Comparison between a landmark-based morph (OpenCV) and a representation-based morph (MIPGAN-II).</em></p>
+
+<p>Historically, representation-based morphs have been created using Generative Adversarial Networks (GANs)<span class="cite" data-key="gan"></span> — a type of generative model which learns a mapping from a representation space to image space in an adversarial manner. One challenge with GAN-based morphing is learning how to embed the original images into the representation space. Researchers have proposed several techniques for this, ranging from training an encoder network jointly with the GAN<span class="cite" data-key="bigan,aae,alae"></span>, training an additional encoding network<span class="cite" data-key="e4e"></span>, to inverting an image into the representation space via optimization<span class="cite" data-key="gan_opt_invert,Abdal_2019_ICCV"></span>. Once the original faces are mapped into the representation space, the representations can be morphed using linear interpolation<span class="cite" data-key="morgan"></span> and additionally optimized w.r.t. some identity loss<span class="cite" data-key="mipgan"></span>.</p>
+
+<p>Landmark-based attacks are simple and surprisingly effective<span class="cite" data-key="sebastien_gan_threaten"></span> when compared to representation-based attacks. However, they struggle with prominent visual artefacts — especially outside the central face region. While representation-based attacks do not suffer from the glaring visual artefacts which plague the landmark-based attacks, their ability to fool an FR system is severely lacking<span class="cite" data-key="sebastien_gan_threaten"></span>.</p>
+
+<p>In this post, I introduce a novel family of representation-based attacks collectively known as <strong>Di</strong>ffusion <strong>M</strong>orphs (<strong>DiM</strong>), which addresses both the issues of prominent visual artefacts and the inability to adequately fool an FR system. The key idea is to use a type of iterative generative model known as <em>diffusion models</em> or <em>score-based models</em><span class="cite" data-key="song2021scorebased"></span>. DiMs have achieved state-of-the-art performance on the face morphing task<span class="cite" data-key="blasingame_dim,fast_dim,greedy_dim"></span> and have even yielded insight on related tasks, <em>e.g.</em>, guided generation of diffusion models<span class="cite" data-key="greedy_dim"></span>.</p>
+
+<h2 id="diffusion">Diffusion</h2>
+
+<p class="lead"><span class="newthought">Diffusion models start</span> with a diffusion process which perturbs the original data distribution $p(\bfx)$ on some subset of Euclidean space $\X \subseteq \R^n$ into isotropic Gaussian noise $\mathcal{N}(\mathbf 0, \mathbf I)$. This process can be modeled with an Itô <a href="https://en.wikipedia.org/wiki/Stochastic_differential_equation">stochastic differential equation</a> (SDE) of the form</p>
+
+\begin{equation}
+\rmd\bfx_t = f(t)\bfx_t\; \rmd t + g(t)\; \rmd\bfw_t,
+\end{equation}
+
+<p>where $f, g$ are real-valued functions, $\{\bfw_t\}_{t \in [0, T]}$ is the standard <a href="https://en.wikipedia.org/wiki/Wiener_process">Wiener process</a> on time $[0, T]$, and $\rmd\bfw_t$ can be thought of as infinitesimal white noise. The drift coefficient $f(t)\bfx_t$ is the deterministic part of the SDE and $f(t)\bfx_t\;\rmd t$ can be thought of as the <a href="https://en.wikipedia.org/wiki/Ordinary_differential_equation">ODE</a> term of the SDE. Conversely, the diffusion coefficient $g(t)$ is the stochastic part of the SDE which controls how much noise is injected into the system. We can think of $g(t)\;\rmd\bfw_t$ as the <em>control</em> term of the SDE.</p>
+
+<p>The solution to this SDE is a continuous collection of random variables $\{\bfx_t\}_{t \in [0, T]}$ over the real interval $[0, T]$; these random variables trace stochastic trajectories over the time interval. Let $p_t(\bfx_t)$ denote the marginal <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> of $\bfx_t$. Then $p_0(\bfx_0) = p(\bfx)$ is the data distribution; likewise, for some sufficiently large $T \in \R$ the terminal distribution $p_T(\bfx_T)$ is <em>close</em> to some tractable noise distribution $\pi(\bfx)$, called the <strong>prior distribution</strong>.</p>
+
+<figure>
+  <img src="../../assets/img/dim/diffusion_overview.png" alt="Overview of the diffusion SDE.">
+  <figcaption><span class="figlabel">Figure&nbsp;2</span>Overview of the diffusion SDE. The original clean image (left) is slowly perturbed by additions of white noise until there is only noise (right).</figcaption>
+</figure>
+
+<h3 id="reversing-sde">Reversing the diffusion SDE</h3>
+
+<p class="lead sub"><span class="newthought">So far we have</span> only covered how to destroy data by perturbing it with white noise; however, for sampling we need to be able to reverse this process to <em>create</em> data from noise. Remarkably, <span class="cite" data-key="anderson_diffusion" data-style="narrative"></span> showed that any Itô SDE has a corresponding reverse SDE given in closed form by</p>
+
+\begin{equation}
+\label{eq:rev_sde}
+\rmd\bfx_t = [f(t)\bfx_t - g^2(t)\nabla_\bfx\log p_t(\bfx_t)]\;\rmd t + g(t)\; \rmd\tilde\bfw_t,
+\end{equation}
+
+<p>where $\nabla_\bfx\log p_t(\bfx_t)$ denotes the <strong>score function</strong> of $p_t(\bfx_t)$. Note that the <em>control</em> term is now driven by the <em>backwards</em> Wiener process defined as $\tilde\bfw_t := \bfw_t - \bfw_T$. To train a diffusion model, then, we just need to learn the score function<span class="cite" data-key="song2021scorebased"></span> or some closely related quantity like the added noise or $\bfx_0$-prediction<span class="cite" data-key="ddpm,progressive_distillation"></span>. Many diffusion models use the following choice of drift and diffusion coefficients</p>
+
+\begin{equation}
+f(t) = \frac{\rmd \log \alpha_t}{\rmd t},\qquad g^2(t)= \frac{\rmd \sigma_t^2}{\rmd t} - 2 \frac{\rmd \log \alpha_t}{\rmd t} \sigma_t^2,
+\end{equation}
+
+<p>where $\alpha_t,\sigma_t$ form a noise schedule such that $\alpha_t^2 + \sigma_t^2 = 1$ and</p>
+
+\begin{equation}
+\bfx_t = \alpha_t\bfx_0 + \sigma_t\bseps_t, \qquad \bseps_t \sim \mathcal{N}(\mathbf 0, \mathbf I).
+\end{equation}
+
+<p>Diffusion models which use noise prediction train a neural network $\bseps_\theta(\bfx_t, t)$ parameterized by $\theta$ to predict $\bseps_t$ given $\bfx_t$, which is equivalent to learning $\bseps_\theta(\bfx_t, t) = -\sigma_t\nabla_\bfx \log p_t(\bfx_t)$. This choice of drift and coefficients forms the Variance Preserving SDE (VP SDE) type of diffusion SDE<span class="cite" data-key="song2021scorebased"></span>.</p>
+
+<h3 id="pf-ode">Probability Flow ODE</h3>
+
+<p class="lead sub"><span class="newthought">Song et al.</span> <span class="cite" data-key="song2021scorebased" data-style="year"></span> showed the existence of an ODE, dubbed the <em>Probability Flow</em> ODE, whose trajectories have the same marginals as <a href="#eq:rev_sde">Equation&nbsp;(\ref{eq:rev_sde})</a>, of the form</p>
+
+\begin{equation}
+\label{eq:pf_ode}
+\frac{\rmd\bfx_t}{\rmd t} = f(t)\bfx_t - \frac 12 g^2(t) \nabla_\bfx \log p_t(\bfx_t).
+\end{equation}
+
+<p>One of the key benefits of expressing diffusion models in ODE form is that ODEs are easily reversible — by simply integrating forwards and backwards in time we can encode images from $p_0(\bfx_0)$ into $p_T(\bfx_T)$ and back again. With a neural network, often a U-Net<span class="cite" data-key="unet"></span>, $\bseps_\theta(\bfx_t, t)$ trained on noise prediction, the <em>empirical Probability Flow</em> ODE is now</p>
+
+\begin{equation}
+\label{eq:empirical_pf_ode}
+\frac{\rmd\bfx_t}{\rmd t} = f(t)\bfx_t  + \frac{g^2(t)}{2\sigma_t} \bseps_\theta(\bfx_t, t).
+\end{equation}
+
+<h2 id="dim">DiM</h2>
+
+<p class="lead"><span class="newthought">Diffusion Morphs (DiM)</span> are a novel kind of face morphing algorithm which solve the <em>Probability Flow</em> ODE <em>both</em> forwards and backwards in time to achieve state-of-the-art visual fidelity and morphing performance far surpassing previous representation-based morphing attacks. The DiM framework could use many different diffusion backbones like DDPM<span class="cite" data-key="ddpm"></span>, LDM<span class="cite" data-key="ldm"></span>, DiT<span class="cite" data-key="Peebles2022DiT"></span>, <em>&amp;c.</em> However, in our work we opted to use the Diffusion Autoencoder<span class="cite" data-key="diffae"></span> trained on the FFHQ dataset<span class="cite" data-key="stylegan"></span> which conditions the noise prediction network $\bseps_\theta(\bfx_t, \bfz, t)$ on a latent representation, $\bfz$, of the target image.</p>
+
+<figure>
+  <img src="../../assets/img/dim/dim_overview.png" alt="DiM face morphing pipeline.">
+  <figcaption><span class="figlabel">Figure&nbsp;3</span>The DiM face morphing pipeline.</figcaption>
+</figure>
+
+<p>Before discussing the DiM pipeline let's establish some nomenclature. Let $\bfx_0^{(a)}$ and $\bfx_0^{(b)}$ denote two bona fide images of identities $a$ and $b$. Let $\Z$ denote the latent vector space and let $\bfz_a = E(\bfx_0^{(a)})$ denote the latent representation of $a$ and likewise for $\bfz_b$, where $E: \X \to \Z$ is an encoding network<span class="cite" data-key="diffae"></span>. Let $\Phi(\bfx_0, \bfz, \mathbf{h}_\theta, \{t_n\}_{n=1}^N) \mapsto \bfx_T$ denote a numerical ODE solver which takes an initial image $\bfx_0$, latent representation $\bfz$, the ODE in <a href="#eq:empirical_pf_ode">Equation&nbsp;(\ref{eq:empirical_pf_ode})</a> denoted by $\rmd\bfx_t / \rmd t = \mathbf{h}_\theta(\bfx_t, \bfz, t)$, and timesteps $\{t_n\}_{n=1}^N \subseteq [0, T]$. Let $\lerp(\cdot, \cdot; \gamma)$ denote linear interpolation by a weight of $\gamma$ on the first argument, and likewise $\slerp(\cdot, \cdot; \gamma)$ for <a href="https://en.wikipedia.org/wiki/Slerp">spherical linear interpolation</a>.</p>
+
+<p>The DiM pipeline works by first solving the <em>Probability Flow</em> ODE as time flows with $N_F \in \N$ timesteps forwards for both identities, <em>i.e.</em>,</p>
+
+\begin{equation}
+\bfx_T^{(\{a, b\})} = \Phi(\bfx_0^{(\{a, b\})}, \bfz_{\{a, b\}}, \mathbf{h}_\theta, \{t_n\}_{n=1}^{N_F}),
+\end{equation}
+
+<p>to find the noisy representations of the original images. We then morph both the noisy and latent representations by a factor of $\gamma = 0.5$ to find</p>
+
+\begin{equation}
+\bfx_T^{(ab)} = \slerp(\bfx_T^{(a)}, \bfx_T^{(b)}; \gamma), \qquad \bfz_{ab} = \lerp(\bfz_a, \bfz_b; \gamma).
+\end{equation}
+
+<p>Then we solve the <em>Probability Flow</em> ODE as time runs <em>backwards</em> with $N \in \N$ timesteps $\{\tilde t_n\}_{n=1}^N$ where $\tilde t_1 = T$ such that</p>
+
+\begin{equation}
+\bfx_0^{(ab)} = \Phi(\bfx_T^{(ab)}, \bfz_{ab}, \mathbf{h}_\theta, \{\tilde t_n\}_{n=1}^{N}).
+\end{equation}
+
+<p>All these equations for DiM can be summarized with the following PyTorch pseudo-code.</p>
+
+<pre><code class="language-python">def dim(model, encoder, diff_eq, ode_solver, x_a, x_b, eps=0.002, T=80., n_encode=250, n_sample=100):
+    """
+    DiM algorithm.
+
+    Args:
+        model (nn.Module): Noise prediction U-Net (or x-prediction / v-prediction).
+        encoder (nn.Module): Encoder network.
+        diff_eq (function): RHS of Probability Flow ODE.
+        ode_solver (function): Numerical ODE solver, e.g., RK-4, Adams-Bashforth.
+        x_a (torch.Tensor): Image of identity a.
+        x_b (torch.Tensor): Image of identity b.
+        eps (float): Starting timestep. Defaults to 0.002. For numeric stability.
+        T (float): Terminal timestep. Defaults to 80.
+        n_encode (int): Number of encoding steps. Defaults to 250.
+        n_sample (int): Number of sampling steps. Defaults to 100.
+
+    Returns:
+        x_morph (torch.Tensor): The morphed image.
+    """
+
+    # Create latents
+    z_a = encoder(x_a)
+    z_b = encoder(x_b)
+
+    # Encode images into noise
+    timesteps = torch.linspace(eps, T, n_encode)
+    xs = ode_solver(torch.cat((x_a, x_b), dim=1), torch.cat((z_a, z_b), dim=1), diff_eq, timesteps)
+    x_a, x_b = xs.chunk(2, dim=1)
+
+    # Morph representations
+    z_ab = torch.lerp(z_a, z_b, 0.5)
+    x_ab = slerp(x_a, x_b, 0.5)  # assumes slerp is defined somewhere
+
+    # Generate morph
+    timesteps = torch.linspace(T, eps, n_sample)
+    x_morph = ode_solver(x_ab, z_ab, diff_eq, timesteps)
+
+    return x_morph
+</code></pre>
+
+<p>A few important observations:</p>
+
+<ul>
+  <li>The number of encoding steps $N_F$ does not need to equal the number of sampling steps $N$ — <em>i.e.</em>, these processes are decoupled.</li>
+  <li>We can use separate numerical ODE solvers for encoding and sampling.</li>
+  <li>Samples are iteratively generated, meaning there are more ways to guide the morph generation process.</li>
+</ul>
+
+<p>By using the powerful and flexible framework of diffusion models we can achieve <strong>state-of-the-art</strong> visual fidelity and morphing performance, measured in MMPMR.<span class="footnote">The Mated Morph Presentation Match Rate (MMPMR)<span class="cite" data-key="mmpmr"></span> metric is a measure of how vulnerable an FR system is to a morphing attack and is defined as $M(\delta) = \frac{1}{M} \sum_{n=1}^M \big\{\big[\min_{n \in \{1,\ldots,N_m\}} S_m^n\big] &gt; \delta\big\}$, where $\delta$ is the verification threshold, $S_m^n$ is the similarity score of the $n$-th subject of morph $m$, $N_m$ is the total number of contributing subjects to morph $m$, and $M$ is the total number of morphed images.</span> Visually, the morphs produced by DiM look more realistic than the landmark-based morphs with their prominent artefacts, and even better than the GAN-based morphs.</p>
+
+<div class="fig-row" style="--cols:5">
+  <figure><img src="../../assets/img/dim/frll/bona_fide/004_03.png" alt="Face a"><figcaption>Face <em>a</em></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/opencv/004_012.png" alt="OpenCV morph"><figcaption>OpenCV<span class="cite" data-key="syn-mad22"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/dim_a/004_012.png" alt="DiM morph"><figcaption>DiM<span class="cite" data-key="blasingame_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/mipgan2/004_012.png" alt="MIPGAN-II morph"><figcaption>MIPGAN-II<span class="cite" data-key="mipgan"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/bona_fide/012_03.png" alt="Face b"><figcaption>Face <em>b</em></figcaption></figure>
+</div>
+
+<div class="fig-row" style="--cols:5">
+  <figure><img src="../../assets/img/dim/frll/bona_fide/009_03.png" alt="Face a"><figcaption>Face <em>a</em></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/opencv/009_112.png" alt="OpenCV morph"><figcaption>OpenCV<span class="cite" data-key="syn-mad22"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/dim_a/009_112.png" alt="DiM morph"><figcaption>DiM<span class="cite" data-key="blasingame_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/mipgan2/009_112.png" alt="MIPGAN-II morph"><figcaption>MIPGAN-II<span class="cite" data-key="mipgan"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/bona_fide/112_03.png" alt="Face b"><figcaption>Face <em>b</em></figcaption></figure>
+</div>
+<p><em>Comparison between morphed images generated via OpenCV, DiM, and MIPGAN-II.<span class="footnote">Due to the computational demands needed to train a diffusion model on the image space, the U-Net we use was trained at a $256 \times 256$ resolution, whereas less computationally demanding morphs are at a higher resolution. This difference is trivial, however, as most images are cropped and down-sampled, <em>e.g.</em>, to $112 \times 112$, before being passed to the FR system.</span></em></p>
+
+<table>
+  <thead>
+    <tr><th>Morphing attack</th><th>AdaFace</th><th>ArcFace</th><th>ElasticFace</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>FaceMorpher<span class="cite" data-key="syn-mad22"></span></td><td>89.78</td><td>87.73</td><td>89.57</td></tr>
+    <tr><td>OpenCV<span class="cite" data-key="syn-mad22"></span></td><td>94.48</td><td>92.43</td><td>94.27</td></tr>
+    <tr><td>MIPGAN-I<span class="cite" data-key="mipgan"></span></td><td>72.19</td><td>77.51</td><td>66.46</td></tr>
+    <tr><td>MIPGAN-II<span class="cite" data-key="mipgan"></span></td><td>70.55</td><td>72.19</td><td>65.24</td></tr>
+    <tr><td>DiM<span class="cite" data-key="blasingame_dim"></span></td><td>92.23</td><td>90.18</td><td>93.05</td></tr>
+  </tbody>
+</table>
+<p><em>Vulnerability of different FR systems across different morphing attacks on the SYN-MAD 2022 dataset. False Match Rate (FMR) is set at 0.1% for all FR systems. Higher is better.</em></p>
+
+<h3 id="high-order">High-order ODE solvers</h3>
+
+<p class="lead sub"><span class="newthought">The Probability Flow</span> ODE in <a href="#eq:empirical_pf_ode">Equation&nbsp;(\ref{eq:empirical_pf_ode})</a> can be transformed from a <a href="https://en.wikipedia.org/wiki/Stiff_equation">stiff ODE</a> into a semi-linear ODE by using <a href="https://en.wikipedia.org/wiki/Exponential_integrator"><em>exponential integrators</em></a>. <span class="cite" data-key="dpm_solver" data-style="narrative"></span> showed that the exact solution at time $t$ given $\bfx_s$ starting from time $s$ is given by</p>
+
+\begin{equation}
+\bfx_t = \underbrace{\vphantom{\int_{\lambda_s}}\frac{\alpha_t}{\alpha_s}\bfx_s}_{\textrm{analytically computed}} - \alpha_t \underbrace{\int_{\lambda_s}^{\lambda_t} e^{-\lambda} \bseps_\theta(\bfx_\lambda, \lambda)\;\rmd\lambda}_{\textrm{approximated}},
+\end{equation}
+
+<p>where $\lambda_t := \log(\alpha_t / \sigma_t)$ is one half of the log-<a href="https://en.wikipedia.org/wiki/Signal-to-noise_ratio">SNR</a>, which removes the error for the linear term. The remaining integral term is approximated by exploiting the wealth of literature on exponential integrators — <em>e.g.</em>, take a $k$-th order Taylor expansion around $\lambda_s$ and apply multi-step methods to approximate the $n$-th order derivatives.</p>
+
+<p>Previously, DiM used <em>DDIM</em>, a first-order ODE solver of the form</p>
+
+\begin{equation}
+\bfx_{t_n} = \frac{\alpha_{t_n}}{\alpha_{t_{n-1}}}\bfx_{t_{n-1}} - \sigma_{t_n}(e^{h_n} - 1)\bseps_\theta(\bfx_{t_{n-1}}, \bfz, t_{n-1}),
+\end{equation}
+
+<p>where $h_n = \lambda_{t_n} - \lambda_{t_{n-1}}$ is the step size of the ODE solver. This, however, means that we have a <a href="https://en.wikipedia.org/wiki/Truncation_error_(numerical_integration)">global truncation error</a> of $\mathcal{O}(h)$ (Theorem 3.2 in<span class="cite" data-key="dpm_solver"></span>). This means that we need a very small step size to keep the error small, or in other words, we need a <strong>large</strong> number of sampling steps to accurately encode <em>and</em> sample the <em>Probability Flow</em> ODE. The initial DiM implementation<span class="cite" data-key="blasingame_dim"></span> used $N_F = 250$ encoding steps and $N = 100$ sampling steps. An initial study we conducted found these to be optimal with the first-order solver.</p>
+
+<p>By using a second-order multistep ODE solver — <em>DPM++ 2M</em><span class="cite" data-key="lu2023dpmsolver"></span> — we can significantly reduce the number of network function evaluations (NFE), <em>i.e.</em>, the number of times we run the neural network (a very expensive operation), without meaningfully reducing the performance of the morphing attack. Likewise, the visual impact on the appearance of the morphed face seems to be quite small. Therefore, by switching to a high-order ODE solver we can <strong>significantly</strong> reduce the NFE while retaining comparable performance to vanilla DiM. We call this approach <em>Fast-DiM</em> due to its reduced computational demand.</p>
+
+<table>
+  <thead>
+    <tr><th>ODE solver</th><th>NFE&nbsp;↓</th><th>AdaFace (MMPMR&nbsp;↑)</th><th>ArcFace (MMPMR&nbsp;↑)</th><th>ElasticFace (MMPMR&nbsp;↑)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>DDIM</td><td>100</td><td>92.23</td><td>90.18</td><td>93.05</td></tr>
+    <tr><td>DPM++ 2M</td><td>50</td><td>92.02</td><td>90.18</td><td>93.05</td></tr>
+    <tr><td>DPM++ 2M</td><td>20</td><td>91.26</td><td>89.98</td><td>93.25</td></tr>
+  </tbody>
+</table>
+<p><em>Impact of the ODE solver in the sampling process of DiM.</em></p>
+
+<figure>
+  <img src="../../assets/img/dim/fast_dim_ddim_vs_dpm_pp_2m.png" alt="DDIM vs DPM++ 2M comparison.">
+  <figcaption><span class="figlabel">Figure&nbsp;4</span>From left to right: face <em>a</em>, morph generated with DDIM <em>(N = 100)</em>, morph generated with DPM++ 2M <em>(N = 20)</em>, face <em>b</em>.</figcaption>
+</figure>
+
+<p>While we have shown that by solving the <em>Probability Flow</em> ODE as time runs backwards with high-order solvers we can significantly reduce the NFE with no downside, we have yet to explore the impact on the encoding process. Interestingly, we discovered that the success of DiM morphs is highly sensitive to the accuracy of the encoding process. Merely dropping the number of encoding steps from 250 to 100 showed a marked decline in performance; conversely, increasing sampling steps over 100 showed no benefit. We posit that this might be due to the odd nature of the encoded images.</p>
+
+<figure>
+  <img src="../../assets/img/dim/ddim_encode.png" alt="Encoded image versus true noise.">
+  <figcaption><span class="figlabel">Figure&nbsp;5</span>From left to right: original image, encoded image, true white noise. The encoded noise has strange artefacts in what was the background of the image, and the outline of the head is still visible even when fully encoded into noise.</figcaption>
+</figure>
+
+<table>
+  <thead>
+    <tr><th>ODE solver</th><th>NFE&nbsp;↓</th><th>AdaFace (MMPMR&nbsp;↑)</th><th>ArcFace (MMPMR&nbsp;↑)</th><th>ElasticFace (MMPMR&nbsp;↑)</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>DDIM</td><td>100</td><td>91.82</td><td>88.75</td><td>91.21</td></tr>
+    <tr><td>DPM++ 2M</td><td>100</td><td>90.59</td><td>87.15</td><td>90.80</td></tr>
+    <tr><td>DDIM</td><td>50</td><td>89.78</td><td>86.30</td><td>89.37</td></tr>
+    <tr><td>DPM++ 2M</td><td>50</td><td>90.18</td><td>86.50</td><td>88.96</td></tr>
+  </tbody>
+</table>
+<p><em>Impact of the ODE solver in the encoding process of DiM. Sampling was all done with DPM++ 2M <em>(N = 50)</em>.</em></p>
+
+<h2 id="greedy">Greedy guided generation</h2>
+
+<p class="lead"><span class="newthought">Identity-guided generation</span> massively improved the effectiveness of GAN-based morphs<span class="cite" data-key="mipgan"></span>; however, these techniques relied on being able to solve</p>
+
+\begin{equation}
+\bfz^* = \argmin_{\bfz \in \Z} \quad \mathcal{L}(g(\bfz), \bfx_0^{(a)}, \bfx_0^{(b)})
+\end{equation}
+
+<p>efficiently w.r.t. some loss function $\mathcal{L}$ with generator network $g: \Z \to \X$ and requires the gradient $\partial \mathcal{L} / \partial \bfz$ to perform optimization in the latent space. However, obtaining an analogous gradient in DiM is not a trivial task due to the iterative generative nature of diffusion models. Naïvely trying to estimate the gradient by backpropagating through all the neural network evaluations is horrendously inefficient and will consume the memory of all but the largest of rigs. While there is active research on <em>efficiently</em> estimating the gradients for diffusion models $\partial \mathcal{L} / \partial \bfx_T$ and $\partial \mathcal{L} / \partial \bfz$ — see <span class="cite" data-key="marion2024implicit" data-style="narrative"></span> and our own work<span class="cite" data-key="adjoint_deis"></span> — we instead propose an <em>elegant</em> solution tailored for the face morphing problem.</p>
+
+<blockquote>We don't actually care about the intermediate latents $\bfx_T^{(ab)}, \bfz_{ab}$ — just the output $\bfx_0^{(ab)}$.</blockquote>
+
+<p>With this insight we instead propose a greedy strategy that optimizes each step of the ODE solver $\Phi$ w.r.t. the identity loss. We propose a new family of DiM algorithms called <em>Greedy-DiM</em> which leverages this greedy strategy to generate optimal morphs.</p>
+
+<table>
+  <thead>
+    <tr><th></th><th>DiM</th><th>Fast-DiM</th><th>Morph-PIPE</th><th>Greedy-DiM</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>ODE solver</td><td>DDIM</td><td>DPM++ 2M</td><td>DDIM</td><td>DDIM</td></tr>
+    <tr><td>Number of sampling steps</td><td>100</td><td>50</td><td>2100</td><td>20</td></tr>
+    <tr><td>Heuristic function</td><td>✘</td><td>✘</td><td>$\mathcal{L}_{ID}^*$</td><td>$\mathcal{L}_{ID}^*$</td></tr>
+    <tr><td>Search strategy</td><td>✘</td><td>✘</td><td>Brute-force search</td><td>Greedy optimization</td></tr>
+    <tr><td>Search space</td><td>✘</td><td>✘</td><td>Set of 21 morphs</td><td>$\X$</td></tr>
+    <tr><td>Probability the search space contains the optimal solution</td><td>✘</td><td>✘</td><td>0</td><td>1</td></tr>
+  </tbody>
+</table>
+<p><em>High-level overview of all current DiM algorithms.</em></p>
+
+<p>To further motivate Greedy-DiM we highlight recent work by <span class="cite" data-key="morph_pipe" data-style="narrative"></span> who also explored the problem of identity-guided generation with DiMs. They proposed <em>Morph-PIPE</em>, a simple extension of our DiM algorithm by incorporating identity information, and succeed in improving upon vanilla DiM. The approach can be summarized as:</p>
+
+<ol>
+  <li>Find latent representations $\bfx_T^{(a)},\bfx_T^{(b)},\bfz_a,\bfz_b$.</li>
+  <li>Create a set of $N = 21$ blend parameters $\{\gamma_n\}_{n=1}^N \subseteq [0, 1]$.</li>
+  <li>Generate $N$ morphs with latents $\slerp(\bfx_T^{(a)},\bfx_T^{(b)};\gamma_n)$ and $\lerp(\bfz_a, \bfz_b; \gamma_n)$.</li>
+  <li>Select the best morph w.r.t. the identity loss $\mathcal{L}_{ID}^*$.<span class="footnote">The identity loss was initially proposed by <span class="cite" data-key="mipgan" data-style="narrative"></span> and was slightly modified by<span class="cite" data-key="morph_pipe"></span>, defined as the sum of two sub-losses: $\mathcal{L}_{ID} = d(v_{ab}, v_a) + d(v_{ab}, v_b)$, $\mathcal{L}_{diff} = \big|d(v_{ab}, v_a) - d(v_{ab}, v_b)\big|$, with $\mathcal{L}_{ID}^* = \mathcal{L}_{ID} + \mathcal{L}_{diff}$, where $v_a = F(\bfx_0^{(a)})$, $v_b = F(\bfx_0^{(b)})$, $v_{ab} = F(\bfx_0^{(ab)})$, and $F: \X \to V$ is an FR system which embeds images into a vector space $V$ equipped with a measure of distance $d$, <em>e.g.</em>, cosine distance.</span></li>
+</ol>
+
+<p>While Morph-PIPE does outperform DiM, it has a few notable drawbacks.</p>
+
+<ol>
+  <li>The approach is very computationally expensive, requiring the user to fully generate a set of $N = 21$ morphs.</li>
+  <li>The probability that Morph-PIPE actually finds the optimal morph is 0, even as $N \to \infty$. More on this later.</li>
+</ol>
+
+<p>In contrast, our Greedy-DiM algorithm addresses both of these issues. First, by greedily optimizing a neighborhood around the predicted noise at each step of the ODE solver, we <strong>significantly</strong> reduce the number of calls to the U-Net while simultaneously expanding the size of the search space.</p>
+
+<figure>
+  <img src="../../assets/img/dim/greedy_dim_star.png" alt="Greedy-DiM step diagram.">
+  <figcaption><span class="figlabel">Figure&nbsp;6</span>Overview of a single step of the Greedy-DiM algorithm. Additions compared to vanilla DiM are highlighted in green.</figcaption>
+</figure>
+
+<p>Remember that for VP-type SDEs a sample at time $t$ can be expressed as $\bfx_t = \alpha_t\bfx_0 + \sigma_t\bseps_t$ — this means we can rearrange the equation to solve for the denoised image $\bfx_0$ to find</p>
+
+\begin{equation}
+\label{eq:x-pred}
+\bfx_0 = \frac{\bfx_t - \sigma_t\bseps_t}{\alpha_t}.
+\end{equation}
+
+<p>Therefore, we recast our noise prediction from $\bseps_\theta(\bfx_t, \bfz, t)$ into a prediction of $\bfx_0$. It is this approximation which we then pass to the identity loss $\mathcal{L}_{ID}^*$. We can then easily calculate $\nabla_{\bseps} \mathcal{L}_{ID}^*$ using an automatic differentiation library and perform gradient descent on $\bseps$ to find the optimal $\bseps$ w.r.t. the identity loss. We outline the Greedy-DiM algorithm with the following PyTorch pseudo-code.</p>
+
+<pre><code class="language-python">def greedy_dim(model, encoder, diff_eq, ode_solver, x_a, x_b, loss_fn,
+               eps=0.002, T=80., n_encode=250, n_sample=20, n_opt_steps=50, opt_kwargs={}):
+    """
+    Greedy-DiM algorithm.
+
+    Args:
+        model (nn.Module): Noise prediction U-Net (or x-prediction / v-prediction).
+        encoder (nn.Module): Encoder network.
+        diff_eq (function): RHS of Probability Flow ODE.
+        ode_solver (function): Numerical ODE solver, must be first-order!
+        x_a (torch.Tensor): Image of identity a.
+        x_b (torch.Tensor): Image of identity b.
+        loss_fn (callable): Loss function to guide generation.
+        eps (float): Starting timestep. Defaults to 0.002. For numeric stability.
+        T (float): Terminal timestep. Defaults to 80.
+        n_encode (int): Number of encoding steps. Defaults to 250.
+        n_sample (int): Number of sampling steps. Defaults to 20.
+        n_opt_steps (int): Optimization steps per ODE-solver step. Defaults to 50.
+        opt_kwargs (dict): Dictionary of optimizer arguments. Defaults to {}.
+
+    Returns:
+        x_morph (torch.Tensor): The morphed image.
+    """
+
+    # Create latents
+    z_a = encoder(x_a)
+    z_b = encoder(x_b)
+
+    # Encode images into noise
+    timesteps = torch.linspace(eps, T, n_encode)
+    xs = ode_solver(torch.cat((x_a, x_b), dim=1), torch.cat((z_a, z_b), dim=1), diff_eq, timesteps)
+    x_a, x_b = xs.chunk(2, dim=1)
+
+    # Morph representations
+    z  = torch.lerp(z_a, z_b, 0.5)
+    xt = slerp(x_a, x_b, 0.5)  # assumes slerp is defined somewhere
+
+    # Generate morph
+    timesteps = torch.linspace(T, eps, n_sample)
+
+    # Perform greedy optimization
+    for i, t in enumerate(timesteps[:-1]):
+        with torch.no_grad():
+            eps = model(xt, z, t)
+
+        eps = eps.detach().clone().requires_grad_(True)
+        opt = torch.optim.RAdam([eps], **opt_kwargs)
+
+        x0_pred  = convert_eps_to_x0(eps, t, xt.detach())  # assumes Eq. (15) is implemented
+        best_loss = loss_fn(x0_pred)
+        best_eps  = eps
+
+        # Gradient descent on epsilon to find epsilon*
+        for _ in range(n_opt_steps):
+            opt.zero_grad()
+
+            x0_pred = convert_eps_to_x0(eps, t, xt.detach())
+            loss    = loss_fn(x0_pred)
+
+            do_update = (loss &lt; best_loss).float()  # handles batches of morphs
+            best_loss = do_update * loss + (1. - do_update) * best_loss
+            best_eps  = do_update[:, None, None, None] * eps + (1. - do_update)[:, None, None, None] * best_eps
+
+            loss.mean().backward()
+            opt.step()
+
+        eps = best_eps
+
+        # Use the approximated epsilon* to take the next step of the ODE solver
+        xt = ode_solver(xt, z, diff_eq, [t, timesteps[i+1]])
+
+    return xt
+</code></pre>
+
+<p>This simple greedy strategy results in <strong>massive</strong> improvements over DiM in both visual fidelity and morphing performance. The performance of Greedy-DiM is <strong>unreasonably effective</strong>, fooling the studied FR systems <strong>100%</strong> of the time.</p>
+
+<table>
+  <thead>
+    <tr><th>Morphing attack</th><th>NFE&nbsp;↓</th><th>AdaFace&nbsp;↑</th><th>ArcFace&nbsp;↑</th><th>ElasticFace&nbsp;↑</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>FaceMorpher<span class="cite" data-key="syn-mad22"></span></td><td>—</td><td>89.78</td><td>87.73</td><td>89.57</td></tr>
+    <tr><td>OpenCV<span class="cite" data-key="syn-mad22"></span></td><td>—</td><td>94.48</td><td>92.43</td><td>94.27</td></tr>
+    <tr><td>MIPGAN-I<span class="cite" data-key="mipgan"></span></td><td>—</td><td>72.19</td><td>77.51</td><td>66.46</td></tr>
+    <tr><td>MIPGAN-II<span class="cite" data-key="mipgan"></span></td><td>—</td><td>70.55</td><td>72.19</td><td>65.24</td></tr>
+    <tr><td>DiM<span class="cite" data-key="blasingame_dim"></span></td><td>350</td><td>92.23</td><td>90.18</td><td>93.05</td></tr>
+    <tr><td>Fast-DiM<span class="cite" data-key="fast_dim"></span></td><td>300</td><td>92.02</td><td>90.18</td><td>93.05</td></tr>
+    <tr><td>Morph-PIPE<span class="cite" data-key="morph_pipe"></span></td><td>2350</td><td>95.91</td><td>92.84</td><td>95.30</td></tr>
+    <tr><td>Greedy-DiM<span class="cite" data-key="greedy_dim"></span></td><td>270</td><td><strong>100</strong></td><td><strong>100</strong></td><td><strong>100</strong></td></tr>
+  </tbody>
+</table>
+<p><em>Vulnerability of different FR systems across different morphing attacks on the SYN-MAD 2022 dataset. False Match Rate (FMR) is set at 0.1% for all FR systems. Higher is better.</em></p>
+
+<div class="fig-row" style="--cols:5">
+  <figure><img src="../../assets/img/dim/frll/bona_fide/066_03.png" alt="Face a"><figcaption>Face <em>a</em></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/dim_a/066_087.png" alt="DiM morph"><figcaption>DiM<span class="cite" data-key="blasingame_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/greedy_dim/066_087.png" alt="Greedy-DiM morph"><figcaption>Greedy-DiM<span class="cite" data-key="greedy_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/morph_pipe/066_087.png" alt="Morph-PIPE morph"><figcaption>Morph-PIPE<span class="cite" data-key="morph_pipe"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/bona_fide/087_03.png" alt="Face b"><figcaption>Face <em>b</em></figcaption></figure>
+</div>
+
+<div class="fig-row" style="--cols:5">
+  <figure><img src="../../assets/img/dim/frll/bona_fide/096_03.png" alt="Face a"><figcaption>Face <em>a</em></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/dim_a/096_137.png" alt="DiM morph"><figcaption>DiM<span class="cite" data-key="blasingame_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/greedy_dim/096_137.png" alt="Greedy-DiM morph"><figcaption>Greedy-DiM<span class="cite" data-key="greedy_dim"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/morph_pipe/096_137.png" alt="Morph-PIPE morph"><figcaption>Morph-PIPE<span class="cite" data-key="morph_pipe"></span></figcaption></figure>
+  <figure><img src="../../assets/img/dim/frll/bona_fide/137_03.png" alt="Face b"><figcaption>Face <em>b</em></figcaption></figure>
+</div>
+<p><em>Visual comparison of DiM methods. Notice the prominent red and blue saturation artefacts present in DiM and Morph-PIPE. These are absent in Greedy-DiM.</em></p>
+
+<p>Given the unreasonably strong empirical performance, a natural question is to ask why Greedy-DiM performs so well. First, this greedy strategy is globally optimal (Theorem 3.1 in<span class="cite" data-key="greedy_dim"></span>). This means that at every timestep the locally optimal choice is globally optimal. Because of <a href="#eq:x-pred">Equation&nbsp;(\ref{eq:x-pred})</a> it follows that for any two points along the <em>same</em> solution trajectory $\bfx_s, \bfx_t$ with $s, t \in [0, T]$ and using a first-order solver for the <em>Probability Flow</em> ODE, $\bseps_s = \bseps_t$ — <em>i.e.</em>, they have the same realization of noise.<span class="footnote">This is only true for diffusion models using the <em>Probability Flow</em> ODE formulation. It is more complicated to ensure this for diffusion SDEs, the math of which is beyond the scope of this post.</span> Hence, at any time $t$, the $\bseps_t$ which minimizes the identity loss is globally optimal. The second justification for the <em>unreasonable</em> performance of Greedy-DiM lies in the structure of its search space.</p>
+
+<h3 id="search-space">The search space of Greedy-DiM is well-posed</h3>
+
+<p class="lead sub"><span class="newthought">The search space</span> of Greedy-DiM is well-posed, meaning the probability the search space contains the optimal solution is 1. Formally, let $\pr$ be a probability measure on a compact subset $\X$ which denotes the distribution of the optimal face morph. For technical reasons we also assume $\pr$ is absolutely continuous<span class="footnote">A measure $\mu$ on measurable space $(\X, \Sigma)$ is said to be absolutely continuous w.r.t. $\nu$ iff $(\forall A \in \Sigma) \; \nu(A) = 0 \implies \mu(A) = 0$.</span> w.r.t. the $n$-dimensional Lebesgue measure $\lambda^n$ on $\X$. The probability that the optimal face morph lies on some set $A \subseteq \X$ is denoted as $\pr(A)$. Then let $\mathcal{S}_P$ denote the search space of Morph-PIPE and $\mathcal{S}^*$ that of Greedy-DiM. With some measure theory it is simple to prove that $\pr(\mathcal{S}_P) = 0$ and $\pr(\mathcal{S}^*) = 1$ (Theorem 3.2 in<span class="cite" data-key="greedy_dim"></span>).</p>
+
+<figure>
+  <img src="../../assets/img/dim/search_space.png" alt="Search-space illustration.">
+  <figcaption><span class="figlabel">Figure&nbsp;7</span>Illustration of the search space of different DiM algorithms on $\R^2$. The purple denotes Morph-PIPE while green denotes the search space of Greedy-DiM.</figcaption>
+</figure>
+
+<p>Intuitively, the $N = 21$ countably finite number of morphs that Morph-PIPE explores is infinitesimally small compared to the whole search space, which is a compact subset of Euclidean space.</p>
+
+<blockquote>The search space of Greedy-DiM allows it to find the optimal morph, while Morph-PIPE's forbids this.</blockquote>
+
+<p>Due to this ability of Greedy-DiM to better explore the space of morphs, we can find the optimal morph. This, combined with the globally optimal substructure of the identity-guided DiM problem, gives a reasonable explanation for why Greedy-DiM fooled the studied FR systems <strong>100%</strong> of the time.</p>
+
+<p>Note: the reason the numerical ODE solver $\Phi$ must be first-order is that our greedy strategy breaks the guarantees needed to accurately estimate the $n$-th order derivatives used in high-order solvers.</p>
+
+<h2 id="concluding">Concluding remarks</h2>
+
+<p class="lead"><span class="newthought">This post</span> gives a detailed introduction to DiM. I develop the motivation for DiM and its successors Fast-DiM and Greedy-DiM through a principled analysis of the face morphing problem. I was then able to demonstrate that this new family of morphing attacks pose a serious threat to FR systems and represent a significant advance in face morphing attacks. This post is a compilation of several papers we have published in the last few years; please visit them if you are interested in more details.</p>
+
+<ul>
+  <li><a href="https://arxiv.org/abs/2404.06025">Zander W. Blasingame and Chen Liu. <em>Greedy-DiM: Greedy Algorithms for Unreasonably Effective Face Morphs</em>. IJCB 2024</a>.</li>
+  <li><a href="https://arxiv.org/abs/2301.04218">Zander W. Blasingame and Chen Liu. <em>Leveraging Diffusion for Strong and High Quality Face Morphing Attacks</em>. IEEE TBIOM 2024</a>.</li>
+  <li><a href="https://arxiv.org/abs/2310.09484">Zander W. Blasingame and Chen Liu. <em>Fast-DiM: Towards Fast Diffusion Morphs</em>. IEEE Security &amp; Privacy 2024</a>.</li>
+  <li><a href="https://arxiv.org/abs/2404.06559">Richard E. Neddo, Zander W. Blasingame, and Chen Liu. <em>The Impact of Print-and-Scan in Heterogeneous Morph Evaluation Scenarios</em>. IJCB 2024</a>.</li>
+</ul>
+
+<p>For more reading on more <em>efficiently</em> estimating the gradients of diffusion models, please check out our recent paper.</p>
+
+<ul>
+  <li><a href="https://openreview.net/forum?id=fAlcxvrOEX">Zander W. Blasingame and Chen Liu. <em>AdjointDEIS: Efficient Gradients for Diffusion Models</em>. NeurIPS 2024</a>.</li>
+</ul>
+
+<p>Interestingly, our work on Greedy-DiM bears some similarity to recent work done by <span class="cite" data-key="yu2023freedom" data-style="narrative"></span>, as they also end up doing a one-shot gradient estimation via $\bfx_0$-prediction; however, they develop their approach from the perspective of energy guidance.</p>
+
+<p>It is my belief that the insights gained here are not only relevant to face morphing, but also to other downstream tasks with diffusion models — <em>e.g.</em>, template inversion<span class="cite" data-key="template_inversion_sebastien"></span>, guided generation<span class="cite" data-key="yu2023freedom,doodl"></span>, adversarial attacks<span class="cite" data-key="chen2023diffusion"></span>, and even other modalities like audio.</p>
+
+</div><!-- /.post-body -->
+</article>
+
+<footer>
+  <div class="socials">
+    <a href="mailto:zblasingame@aithyra.at">email</a> /
+    <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
+    <a href="https://github.com/zblasingame">github</a> /
+    <a href="https://twitter.com/zwblasingame">x</a> /
+    <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
+    <a href="../../assets/pdf/cv.pdf">cv</a>
+  </div>
+  <span class="colophon">Email is generally the best way to contact me.</span>
+  <span>&copy; 2026 Zander W. Blasingame</span>
+</footer>
+
+</div>
+<script src="../../assets/js/citations.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>

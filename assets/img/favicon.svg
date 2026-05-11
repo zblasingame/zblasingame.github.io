@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Jerusalem cross — central cross potent with four Greek crosses in quadrants.
+     Gilt #b8862c. 64×64 viewBox, centered at (32, 32). -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <g fill="#b8862c">
+    <!-- ─── Central cross potent ─────────────────────────────────────
+         Vertical arm: x=30, y=14..50 (w=4, h=36)
+         Horizontal arm: x=14, y=30..34 (w=36, h=4)
+         Crossbars (potent): 12 long × 2 thick at each arm-end. -->
+    <rect x="30" y="14" width="4" height="36"/>
+    <rect x="14" y="30" width="36" height="4"/>
+    <!-- top crossbar -->
+    <rect x="26" y="12" width="12" height="2"/>
+    <!-- bottom crossbar -->
+    <rect x="26" y="50" width="12" height="2"/>
+    <!-- left crossbar -->
+    <rect x="12" y="26" width="2" height="12"/>
+    <!-- right crossbar -->
+    <rect x="50" y="26" width="2" height="12"/>
+
+    <!-- ─── Four small Greek crosses in the quadrants ─────────────────
+         Each is an 8×8 plus with 2-unit-wide arms, centered in its quadrant.
+         Quadrant centres: (20,20), (44,20), (20,44), (44,44) — pulled
+         further inward toward the central cross. -->
+    <!-- top-left -->
+    <rect x="19" y="16" width="2" height="8"/>
+    <rect x="16" y="19" width="8" height="2"/>
+    <!-- top-right -->
+    <rect x="43" y="16" width="2" height="8"/>
+    <rect x="40" y="19" width="8" height="2"/>
+    <!-- bottom-left -->
+    <rect x="19" y="40" width="2" height="8"/>
+    <rect x="16" y="43" width="8" height="2"/>
+    <!-- bottom-right -->
+    <rect x="43" y="40" width="2" height="8"/>
+    <rect x="40" y="43" width="8" height="2"/>
+  </g>
+</svg>

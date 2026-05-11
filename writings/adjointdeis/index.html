@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The Continuous Adjoint Equations for Diffusion Models &middot; Zander W. Blasingame</title>
+<meta name="description" content="An introduction to the continuous adjoint equations for diffusion models — an efficient way to calculate gradients, with bespoke ODE/SDE solvers and the surprising result that adjoint diffusion SDEs are actually ODEs.">
+<meta name="author" content="Zander W. Blasingame">
+<link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
+<link rel="alternate icon" href="../../assets/img/favicon.ico">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/style.css">
+<script>(function(){var t;try{t=localStorage.getItem('theme');}catch(e){}if(!t){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);if(m)t=decodeURIComponent(m[1]);}if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);})();</script>
+
+<script>
+window.MathJax = {
+  loader: { load: ['[tex]/html'] },
+  tex: {
+    packages: { '[+]': ['html'] },
+    inlineMath: [['$','$'], ['\\(','\\)']],
+    displayMath: [['$$','$$'], ['\\[','\\]']],
+    tags: 'ams',
+    macros: {
+      R: '\\mathbb{R}', X: '\\mathcal{X}', Y: '\\mathcal{Y}',
+      Z: '\\mathcal{Z}', N: '\\mathbb{N}', T: '\\mathbb{T}',
+      Q: '\\mathbb{Q}', B: '\\mathcal{B}', pr: '\\mathbb{P}',
+      bfx: '\\boldsymbol{x}', bfX: '\\boldsymbol{X}',
+      bfy: '\\boldsymbol{y}', bfz: '\\boldsymbol{z}',
+      bfa: '\\boldsymbol{a}', bfw: '\\boldsymbol{w}',
+      bfW: '\\boldsymbol{W}', bfA: '\\boldsymbol{A}', bfV: '\\boldsymbol{V}',
+      bsf: '\\boldsymbol{f}', bsg: '\\boldsymbol{g}',
+      bseps: '\\boldsymbol{\\epsilon}',
+      rmd: '\\mathrm{d}',
+      var: '\\operatorname{Var}', ex: '\\mathbb{E}',
+      argmin: '\\operatorname*{arg\\,min}',
+      argmax: '\\operatorname*{arg\\,max}',
+      innerprod: ['\\left\\langle #1, #2 \\right\\rangle', 2],
+      gilt:  ['{\\color{##b8862c}#1}', 1],
+      lapis: ['{\\color{##3a6b8c}#1}', 1],
+      term:  ['\\class{deriv-term deriv-term-#1}{#2}', 2]
+    }
+  },
+  svg: { fontCache: 'global' }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+<div class="page post">
+
+<nav class="top">
+  <span class="brand"><a href="../../index.html">Zander W. Blasingame</a></span>
+  <ul>
+    <li><a href="../../index.html#about">about</a></li>
+    <li><a href="../../news/index.html">news</a></li>
+    <li><a href="../../publications/index.html">publications</a></li>
+    <li><a href="../../talks/index.html">talks</a></li>
+    <li><a href="../index.html">writings</a></li>
+    <li><a href="../../index.html#repositories">code</a></li>
+    <li><a href="../../assets/pdf/cv.pdf">cv</a></li>
+    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle color scheme">auto</button></li>
+  </ul>
+</nav>
+
+<article>
+<header class="post-heading">
+  <h1>The Continuous Adjoint Equations for Diffusion Models</h1>
+  <div class="post-meta">
+    <span class="date">2024 Nov 20</span>
+    <span class="sep">·</span>
+    <span>Zander W. Blasingame</span>
+    <span class="sep">·</span>
+    <span>16 min read</span>
+  </div>
+  <div class="post-description">A guided tour through the continuous adjoint equations for diffusion models — how to design bespoke ODE/SDE solvers and the surprising fact that adjoint diffusion SDEs simplify to ODEs.</div>
+</header>
+
+<nav class="post-toc" aria-label="Table of contents">
+  <div class="post-toc-label">Contents</div>
+  <ol>
+    <li><a href="#introduction">Introduction</a></li>
+    <li><a href="#diffusion-models">Diffusion models</a>
+      <ol>
+        <li><a href="#reversing-sde">Reversing the diffusion SDE</a></li>
+        <li><a href="#pf-ode">Probability Flow ODE</a></li>
+      </ol>
+    </li>
+    <li><a href="#guided-generation">Guided generation for diffusion models</a></li>
+    <li><a href="#continuous-adjoint">Continuous adjoint equations for diffusion models</a>
+      <ol>
+        <li><a href="#simplified">Simplified formulation</a></li>
+        <li><a href="#numerical-solvers">Numerical solvers</a></li>
+        <li><a href="#implementation">Implementation</a></li>
+        <li><a href="#sde-are-ode">Adjoint diffusion SDEs are actually ODEs</a></li>
+      </ol>
+    </li>
+    <li><a href="#concluding">Concluding remarks</a></li>
+  </ol>
+</nav>
+
+<div class="post-body">
+
+<h2 id="introduction">Introduction</h2>
+
+<p class="lead"><span class="newthought">Guided generation</span> is an important problem within machine learning. Solutions to this problem enable us to steer the output of the generative process to some desired output. This is especially important for allowing us to inject creative control into generative models. While there are several forms of this problem, we focus on problems which optimize the output of a generative model towards some goal defined by a guidance (or loss) function defined on the output. These particular approaches excel in steering the generative process to perform <a href="https://en.wikipedia.org/wiki/Adversarial_machine_learning">adversarial ML</a> attacks, <em>e.g.</em>, bypassing security features, attacking Face Recognition (FR) systems, <em>&amp;c.</em></p>
+
+<p>More formally, suppose we have some $\R^d$ generative model, $\bsg_\theta: \R^z \times \R^c \to \R^d$ parameterized by $\theta \in \R^m$ which takes an initial latent $\bfz \in \R^z$ and conditional information $\mathbf{c} \in \R^c$. Furthermore, assume we have a scalar-valued guidance function $\mathcal{L}: \R^d \to \R$. Then the guided generation problem can be expressed as an optimization problem:</p>
+
+\begin{equation}
+\label{eq:opt_init}
+\argmin_{\bfz, \mathbf{c}, \theta} \quad \mathcal{L}(\bsg_\theta(\bfz, \mathbf{c})).
+\end{equation}
+
+<p><em>I.e.</em>, we wish to find the optimal $\bfz$, $\mathbf{c}$, and $\theta$ which minimize our guidance function. A very natural solution to this kind of problem is to perform <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a> by using <a href="https://en.wikipedia.org/wiki/Automatic_differentiation">reverse-mode automatic differentiation</a> to find the gradients.</p>
+
+<p>In this post we focus on a technique for finding the gradients of a very popular class of generative models known as <em>diffusion models</em><span class="cite" data-key="song2021denoising,ddpm"></span> by solving the <em>continuous adjoint equations</em><span class="cite" data-key="kidger_thesis"></span>.</p>
+
+<h2 id="diffusion-models">Diffusion models</h2>
+
+<p class="lead"><span class="newthought">First we give</span> a brief introduction on diffusion models and score-based generative modeling. More comprehensive coverage can be found in <a href="https://yang-song.net/blog/2021/score/">Yang Song's blog post</a> and <a href="https://lilianweng.github.io/posts/2021-07-11-diffusion-models/">Lilian Weng's blog post</a> on this topic.</p>
+
+<p>Diffusion models start with a diffusion process which perturbs the original data distribution $p_{\textrm{data}}(\bfx)$ on $\R^d$ into isotropic Gaussian noise $\mathcal{N}(\mathbf 0, \mathbf I)$. This process can be modeled with an Itô <a href="https://en.wikipedia.org/wiki/Stochastic_differential_equation">stochastic differential equation</a> (SDE) of the form</p>
+
+\begin{equation}
+\label{eq:ito_diffusion}
+\rmd\bfx_t = \underbrace{f(t)\bfx_t\; \rmd t}_{\textrm{deterministic term $\approx$ an ODE}} + \underbrace{g(t)\; \rmd\bfw_t,}_{\textrm{stochastic term}}
+\end{equation}
+
+<p>where $f, g$ are real-valued functions, $\{\bfw_t\}_{t \in [0, T]}$ is the standard <a href="https://en.wikipedia.org/wiki/Wiener_process">Wiener process</a> on time $[0, T]$, and $\rmd\bfw_t$ can be thought of as infinitesimal white noise. The drift coefficient $f(t)\bfx_t$ is the deterministic part of the SDE and $f(t)\bfx_t\;\rmd t$ can be thought of as the <a href="https://en.wikipedia.org/wiki/Ordinary_differential_equation">ODE</a> term of the SDE. Conversely, the diffusion coefficient $g(t)$ is the stochastic part of the SDE which controls how much noise is injected into the system.</p>
+
+<p>The solution to this SDE is a continuous collection of random variables $\{\bfx_t\}_{t \in [0, T]}$ over the real interval $[0, T]$; these random variables trace stochastic trajectories over the time interval. Let $p_t(\bfx_t)$ denote the marginal <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> of $\bfx_t$. Then $p_0(\bfx_0) = p_{\textrm{data}}(\bfx)$ is the data distribution; likewise, for some sufficiently large $T \in \R$ the terminal distribution $p_T(\bfx_T)$ is <em>close</em> to some tractable noise distribution $\pi(\bfx)$, called the <strong>prior distribution</strong>.</p>
+
+<figure>
+  <img src="../../assets/img/dim/diffusion_overview.png" alt="Overview of the diffusion SDE.">
+  <figcaption><span class="figlabel">Figure&nbsp;1</span>Overview of the diffusion SDE. The original clean image (left) is slowly perturbed by additions of white noise until there is only noise (right). To sample a clean image from a noisy image we only need to solve the SDE in reverse-time, see <a href="#eq:rev_sde">Equation&nbsp;(\ref{eq:rev_sde})</a>.</figcaption>
+</figure>
+
+<h3 id="reversing-sde">Reversing the diffusion SDE</h3>
+
+<p class="lead sub"><span class="newthought">So far we have</span> only covered how to destroy data by perturbing it with white noise; however, for sampling we need to be able to reverse this process to <em>create</em> data from noise. Remarkably, <span class="cite" data-key="reverse_time_sdes" data-style="narrative"></span> showed that the Itô SDE in <a href="#eq:ito_diffusion">Equation&nbsp;(\ref{eq:ito_diffusion})</a> has a corresponding reverse SDE given in closed form by</p>
+
+\begin{equation}
+\label{eq:rev_sde}
+\rmd\bfx_t = [f(t)\bfx_t - g^2(t)\underbrace{\nabla_\bfx\log p_t(\bfx_t)}_{\textrm{score function}}]\;\rmd t + g(t)\; \rmd\bar\bfw_t,
+\end{equation}
+
+<p>where $\rmd t$ denotes a <em>negative</em> infinitesimal timestep and $\nabla_\bfx\log p_t(\bfx_t)$ denotes the <strong>score function</strong> of $p_t(\bfx_t)$. Note that the stochastic term is now driven by a <em>different</em> Wiener process defined on the backwards flow of time, <em>i.e.</em>, $\bar\bfw_T = \mathbf 0$ a.s.<span class="footnote">For technical reasons we use the abbreviation a.s. which denotes <em>almost surely</em>, <em>i.e.</em>, an event happens <em>almost surely</em> if it happens with probability 1.</span> For a modern derivation of Anderson's result we recommend checking out the excellent <a href="https://ludwigwinkler.github.io/blog/ReverseTimeAnderson/">blog post by Ludwig Winkler on this topic</a>.</p>
+
+<p>To train a diffusion model, then, we just need to learn the score function via score matching<span class="cite" data-key="song2021scorebased"></span> or some closely related quantity like the added noise or $\bfx_0$-prediction<span class="cite" data-key="ddpm,progressive_distillation"></span>. Many diffusion models use the following choice of drift and diffusion coefficients:</p>
+
+\begin{equation}
+f(t) = \frac{\rmd \log \alpha_t}{\rmd t},\qquad g^2(t)= \frac{\rmd \sigma_t^2}{\rmd t} - 2 \frac{\rmd \log \alpha_t}{\rmd t} \sigma_t^2,
+\end{equation}
+
+<p>where $\alpha_t,\sigma_t$ form a noise schedule such that $\alpha_t^2 + \sigma_t^2 = 1$ and</p>
+
+\begin{equation}
+\bfx_t = \alpha_t\bfx_0 + \sigma_t\bseps_t, \qquad \bseps_t \sim \mathcal{N}(\mathbf 0, \mathbf I).
+\end{equation}
+
+<p>Diffusion models which use noise prediction train a neural network $\bseps_\theta(\bfx_t, t)$ parameterized by $\theta$ to predict $\bseps_t$ given $\bfx_t$, which is equivalent to learning $\bseps_\theta(\bfx_t, t) \approx -\sigma_t\nabla_\bfx \log p_t(\bfx_t)$. This choice of drift and coefficients forms the Variance Preserving type SDE (VP-type SDE)<span class="cite" data-key="song2021scorebased"></span>.</p>
+
+<h3 id="pf-ode">Probability Flow ODE</h3>
+
+<p class="lead sub"><span class="newthought">Song et al.</span> <span class="cite" data-key="song2021scorebased" data-style="year"></span> showed the existence of an ODE, dubbed the <em>Probability Flow</em> ODE, whose trajectories have the same marginals as <a href="#eq:rev_sde">Equation&nbsp;(\ref{eq:rev_sde})</a>, of the form</p>
+
+\begin{equation}
+\label{eq:pf_ode}
+\frac{\rmd\bfx_t}{\rmd t} = f(t)\bfx_t - \frac 12 g^2(t) \nabla_\bfx \log p_t(\bfx_t).
+\end{equation}
+
+<p><em>N.B.</em>, this form can be found by following the derivation used by <span class="cite" data-key="reverse_time_sdes" data-style="narrative"></span> and manipulating <a href="https://en.wikipedia.org/wiki/Kolmogorov_equations">Kolmogorov equations</a> to write a reverse-time SDE with $\mathbf 0$ for the diffusion coefficient, <em>i.e.</em>, an ODE.</p>
+
+<p>One of the key benefits of expressing diffusion models in ODE form is that ODEs are easily reversible — by simply integrating forwards and backwards in time we can encode images from $p_0(\bfx_0)$ into $p_T(\bfx_T)$ and back again. With a neural network, often a U-Net<span class="cite" data-key="unet"></span>, $\bseps_\theta(\bfx_t, t)$ trained on noise prediction the <em>empirical Probability Flow</em> ODE is now</p>
+
+\begin{equation}
+\label{eq:empirical_pf_ode}
+\frac{\rmd\bfx_t}{\rmd t} = f(t)\bfx_t  + \frac{g^2(t)}{2\sigma_t} \bseps_\theta(\bfx_t, t).
+\end{equation}
+
+
+<h2 id="guided-generation">Guided generation for diffusion models</h2>
+
+<p class="lead"><span class="newthought">Researchers have proposed</span> many ways to perform guided generation with diffusion models. Outside of directly conditioning the noise-prediction network on additional latent information, Dhariwal and Nichol <span class="cite" data-key="diff_beat_gan" data-style="year"></span> proposed classifier guidance, in which an external classifier $p(\bfz|\bfx)$ is used to augment the score function $\nabla_\bfx \log p_t(\bfx_t|\bfz)$. Later work by Ho and Salimans <span class="cite" data-key="ho2021classifierfree" data-style="year"></span> showed the classifier could be omitted by incorporating the conditional information at training time with the following parameterization of the noise-prediction model</p>
+
+\begin{equation}
+\tilde{\bseps}_\theta(\bfx_t, \bfz, t) := \gamma \bseps_\theta(\bfx_t, \bfz, t) + (1 - \gamma) \bseps_\theta(\bfx_t, \mathbf 0, t),
+\end{equation}
+
+<p>where $\gamma \geq 0$ is the guidance scale.</p>
+
+<p>Outside of methods which require additional training to the diffusion model, or some external network, there are <strong>training-free methods</strong> which we broadly categorize into the following two camps:</p>
+
+<ol>
+  <li>Techniques which directly optimize the solution trajectory during sampling<span class="cite" data-key="yu2023freedom,greedy_dim,liu2023flowgrad"></span>.</li>
+  <li>Techniques which search for the optimal generation parameters, <em>e.g.</em>, $(\bfx_T, \bfz, \theta)$, (this can include optimizing the solution trajectory as well)<span class="cite" data-key="doodl,pan2024adjointdpm,adjointdeis,marion2024implicit"></span>.</li>
+</ol>
+
+<p>The second class of techniques is related to our initial problem statement in the introduction from <a href="#eq:opt_init">Equation&nbsp;(\ref{eq:opt_init})</a>. We reframe this problem for the specific case of diffusion ODEs.</p>
+
+<div class="proposition">
+<span class="thm-title">Problem statement</span>
+Given the diffusion ODE in <a href="#eq:empirical_pf_ode">Equation&nbsp;(\ref{eq:empirical_pf_ode})</a>, we wish to solve the following optimization problem:
+\begin{equation}
+\label{eq:problem_stmt_ode}
+\argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t\bigg).
+\end{equation}
+</div>
+
+<p><em>N.B.</em>, without loss of generality we let $\bseps_\theta(\bfx_t, \bfz, t)$ denote a noise-prediction network conditioned either directly on $\bfz$ or as the classifier-free guidance model $\tilde \bseps_\theta(\bfx_t, \bfz, t)$.</p>
+
+<p>From this formulation it is readily apparent that the difficulty introduced by diffusion models — over, say, other methods like <a href="https://en.wikipedia.org/wiki/Generative_adversarial_network">GANs</a> or <a href="https://en.wikipedia.org/wiki/Variational_autoencoder">VAEs</a> — is that we need to perform backpropagation through an ODE solve. Luckily, diffusion models are a type of Neural ODE<span class="cite" data-key="neural_ode"></span>, which means we can solve the <em>continuous adjoint equations</em> to calculate these gradients.</p>
+
+<h2 id="continuous-adjoint">Continuous adjoint equations for diffusion models</h2>
+
+<figure>
+  <img src="../../assets/img/adjointdeis/overview.png" alt="Overview of solving the continuous adjoint equations with diffusion models.">
+  <figcaption><span class="figlabel">Figure&nbsp;2</span>Overview of solving the continuous adjoint equations with diffusion models. The sampling schedule consists of <em>N</em> timesteps for the diffusion model and <em>M</em> timesteps for solving the continuous adjoint equations. In this example we use the AdjointDEIS solver for the continuous adjoint equations<span class="cite" data-key="adjointdeis"></span>.</figcaption>
+</figure>
+
+<p class="lead"><span class="newthought">The technique of solving</span> an <em>adjoint</em> backwards-in-time ODE to calculate the gradients of an ODE is a widely used and widespread technique initially proposed by <span class="cite" data-key="adjoint_sensitivity_method" data-style="narrative"></span>. The technique was recently popularized in the ML community by <span class="cite" data-key="neural_ode" data-style="narrative"></span> in their seminal work on Neural ODEs, with extensions to other models such as SDEs<span class="cite" data-key="adjointsde,kidger_thesis"></span>.</p>
+
+<p>We can write the diffusion ODE as a Neural ODE of the form:</p>
+
+\begin{equation}
+\frac{\rmd \bfx_t}{\rmd t} = \bsf_\theta(\bfx_t, \bfz, t) := f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t).
+\end{equation}
+
+<p>Assuming $\bsf_\theta$ is continuous in $t$ and uniformly Lipschitz in $\bfx$,<span class="footnote">These conditions are to ensure that the Picard–Lindelöf theorem holds, guaranteeing a unique solution to the IVP.</span> then $\bsf_\theta(\bfx_t, \bfz, t)$ describes a Neural ODE which has a unique solution with the initial condition $\bfx_T$ and admits an adjoint state $\bfa_\bfx(t) := \partial\mathcal{L} / \partial \bfx_t$ (and likewise for $\bfa_\bfz(t)$ and $\bfa_\theta(t)$), which solves the continuous adjoint equations, see Theorem 5.2 in<span class="cite" data-key="kidger_thesis"></span>, in the form of the <a href="https://en.wikipedia.org/wiki/Initial_value_problem">initial value problem</a> (IVP):</p>
+
+<div class="l-body-outset">
+\begin{equation}
+\label{eq:adjoint_ode}
+\begin{split}
+\bfa_{\bfx}(0) &= \frac{\partial \mathcal{L}}{\partial \bfx_0}, \qquad & \frac{\rmd \bfa_{\bfx}}{\rmd t}(t) &= -\bfa_{\bfx}(t)^\top \frac{\partial \bsf_\theta(\bfx_t, \bfz, t)}{\partial \bfx_t},\\
+\bfa_{\bfz}(0) &= \mathbf 0, \qquad & \frac{\rmd \bfa_{\bfz}}{\rmd t}(t) &= -\bfa_{\bfx}(t)^\top \frac{\partial \bsf_\theta(\bfx_t, \bfz, t)}{\partial \bfz},\\
+\bfa_{\theta}(0) &= \mathbf 0, \qquad & \frac{\rmd \bfa_{\theta}}{\rmd t}(t) &= -\bfa_{\bfx}(t)^\top \frac{\partial \bsf_\theta(\bfx_t, \bfz, t)}{\partial \theta}.
+\end{split}
+\end{equation}
+</div>
+
+<p>We call this augmented ODE system an <strong>adjoint diffusion ODE</strong>. The adjoint state models the following gradients:</p>
+
+<ul>
+  <li>$\bfa_\bfx(t) := \partial \mathcal L / \partial \bfx_t$. The gradient of the guidance function w.r.t. the solution trajectory at any time $t$.</li>
+  <li>$\bfa_\bfz(T) := \partial \mathcal L / \partial \bfz$. The gradient of the guidance function w.r.t. the model conditional information.</li>
+  <li>$\bfa_\theta(T) := \partial \mathcal L / \partial \theta$. The gradient of the guidance function w.r.t. the model parameters.</li>
+</ul>
+
+<p>While this formulation can calculate the desired gradients to solve the optimization problem, it fails to account for the unique construction of diffusion models — in particular the special formulation of $f$ and $g$. Recent work<span class="cite" data-key="pan2024adjointdpm,adjointdeis"></span> has shown that by taking this construction into consideration the adjoint diffusion ODE can be considerably simplified, enabling the creation of efficient solvers for the continuous adjoint equations.<span class="footnote"><strong>A note on the flow of time.</strong> In the literature of diffusion models the sampling process is often done in reverse-time, <em>i.e.</em>, the initial noise is $\bfx_T$ and the final sample is $\bfx_0$. Due to this convention, solving the adjoint diffusion ODE <em>backwards</em> actually means integrating <em>forwards</em> in time. Thus while diffusion models learn to compute $\bfx_t$ from $\bfx_s$ with $s &gt; t$, the adjoint diffusion ODE seeks to compute $\bfa_\bfx(s)$ from $\bfa_\bfx(t)$.</span></p>
+
+<h3 id="simplified">Simplified formulation</h3>
+
+<p class="lead sub"><span class="newthought">Recent work on efficient</span> ODE solvers for diffusion models<span class="cite" data-key="dpm_solver,deis_georgiatech"></span> has shown that by using <em>exponential integrators</em><span class="cite" data-key="exponential_integrators"></span>, diffusion ODEs can be simplified and the error in the linear term removed entirely. Likewise,<span class="cite" data-key="pan2024adjointdpm,adjointdeis"></span> showed that this same property follows for adjoint diffusion ODEs.</p>
+
+<p>The continuous adjoint equation for $\bfa_\bfx(t)$ in <a href="#eq:adjoint_ode">Equation&nbsp;(\ref{eq:adjoint_ode})</a> can be rewritten as</p>
+
+\begin{equation}
+\label{eq:empirical_adjoint_ode}
+\frac{\rmd\bfa_\bfx}{\rmd t}(t) = -f(t)\bfa_\bfx(t) - \frac{g^2(t)}{2\sigma_t}\bfa_\bfx(t)^\top \frac{\partial \bseps_\theta(\bfx_t, \bfz, t)}{\partial \bfx_t}.
+\end{equation}
+
+<p>Due to the gradient of the drift term in <a href="#eq:empirical_adjoint_ode">Equation&nbsp;(\ref{eq:empirical_adjoint_ode})</a>, further manipulations are required to put the empirical adjoint probability flow ODE into a sufficiently &ldquo;nice&rdquo; form. We can transform this <a href="https://en.wikipedia.org/wiki/Stiff_equation">stiff ODE</a> into a non-stiff form by applying the integrating factor $\exp\!\big(\int_0^t f(\tau)\;\rmd\tau\big)$ to <a href="#eq:empirical_adjoint_ode">Equation&nbsp;(\ref{eq:empirical_adjoint_ode})</a>, which is expressed as:</p>
+
+\begin{equation}
+\label{eq:empirical_adjoint_ode_IF}
+\frac{\rmd}{\rmd t}\bigg[e^{\int_0^t f(\tau)\;\rmd\tau} \bfa_\bfx(t)\bigg] = -e^{\int_0^t f(\tau)\;\rmd\tau} \frac{g^2(t)}{2\sigma_t}\bfa_\bfx(t)^\top \frac{\partial \bseps_\theta(\bfx_t, \bfz, t)}{\partial \bfx_t}.
+\end{equation}
+
+<p>Then the exact solution at time $s$ given time $t &lt; s$ is found to be</p>
+
+<div class="l-body-outset">
+\begin{equation}
+\label{eq:empirical_adjoint_ode_x}
+\bfa_\bfx(s) = \underbrace{\vphantom{\int_t^s}e^{\int_s^t f(\tau)\;\rmd\tau} \bfa_\bfx(t)}_{\textrm{linear}} - \underbrace{\int_t^s e^{\int_s^u f(\tau)\;\rmd\tau} \frac{g^2(u)}{2\sigma_u} \bfa_\bfx(u)^\top \frac{\partial \bseps_\theta(\bfx_u, \bfz, u)}{\partial \bfx_u}\;\rmd u}_{\textrm{non-linear}}.
+\end{equation}
+</div>
+
+<p>With this transformation we can compute the linear term in closed form, thereby <strong>eliminating</strong> the discretization error in the linear term. However, we still need to approximate the non-linear term which consists of a difficult integral about the complex noise-prediction model. This is where the insight of <span class="cite" data-key="dpm_solver" data-style="narrative"></span> to integrate in the log-SNR domain becomes invaluable.</p>
+
+<p>Let $\lambda_t := \log(\alpha_t/\sigma_t)$ be one half of the log-SNR. Then, using this new variable and computing the drift and diffusion coefficients in closed form, we can rewrite <a href="#eq:empirical_adjoint_ode_x">Equation&nbsp;(\ref{eq:empirical_adjoint_ode_x})</a> as</p>
+
+\begin{equation}
+\label{eq:empirical_adjoint_ode_x2}
+\bfa_\bfx(s) = \frac{\alpha_t}{\alpha_s} \bfa_\bfx(t) + \frac{1}{\alpha_s}\int_t^s \alpha_u\sigma_u \frac{\rmd \lambda_u}{\rmd u} \bfa_\bfx(u)^\top \frac{\partial \bseps_\theta(\bfx_u, \bfz, u)}{\partial \bfx_u}\;\rmd u.
+\end{equation}
+
+<p>As $\lambda_t$ is a strictly decreasing function w.r.t. $t$, it therefore has an inverse function $t_{\lambda}$ which satisfies $t_{\lambda}(\lambda_t) = t$. With abuse of notation, we let $\bfx_{\lambda} := \bfx_{t_\lambda(\lambda)}$, $\bfa_\bfx(\lambda) := \bfa_\bfx(t_{\lambda}(\lambda))$, <em>&amp;c.</em>, and let the reader infer from context whether the function is mapping the log-SNR back into the time domain or already in the time domain. Then by rewriting <a href="#eq:empirical_adjoint_ode_x2">Equation&nbsp;(\ref{eq:empirical_adjoint_ode_x2})</a> as an exponentially weighted integral and performing an analogous derivation for $\bfa_\bfz(t)$ and $\bfa_\theta(t)$, we arrive at:</p>
+
+<div class="proposition">
+<span class="thm-title">Exact solution of adjoint diffusion ODEs</span>
+Given initial values $[\bfa_\bfx(t), \bfa_\bfz(t), \bfa_\theta(t)]$ at time $t \in (0,T)$, the solution $[\bfa_\bfx(s), \bfa_\bfz(s), \bfa_\theta(s)]$ at time $s \in (t, T]$ of the adjoint diffusion ODEs in <a href="#eq:adjoint_ode">Equation&nbsp;(\ref{eq:adjoint_ode})</a> is
+\begin{equation}
+\label{eq:exact_sol_x}
+\bfa_\bfx(s) = \frac{\alpha_t}{\alpha_s} \bfa_\bfx(t) + \frac{1}{\alpha_s}\int_{\lambda_t}^{\lambda_s} \alpha_\lambda^2 e^{-\lambda} \bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \bfx_\lambda}\;\rmd \lambda,
+\end{equation}
+\begin{equation}
+\label{eq:exact_sol_z}
+\bfa_\bfz(s) = \bfa_\bfz(t) + \int_{\lambda_t}^{\lambda_s}\alpha_\lambda e^{-\lambda} \bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \bfz}\;\rmd\lambda,
+\end{equation}
+\begin{equation}
+\label{eq:exact_sol_theta}
+\bfa_\theta(s) = \bfa_\theta(t) + \int_{\lambda_t}^{\lambda_s}\alpha_\lambda e^{-\lambda} \bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \theta}\;\rmd\lambda.
+\end{equation}
+</div>
+
+<h3 id="numerical-solvers">Numerical solvers</h3>
+
+<p class="lead sub"><span class="newthought">Now that we have</span> a simplified formulation of the continuous adjoint equations we can construct bespoke numerical solvers. To do this we approximate the integral term via a Taylor expansion, which we illustrate for <a href="#eq:exact_sol_x">Equation&nbsp;(\ref{eq:exact_sol_x})</a>. For $k \geq 1$, a $(k-1)$-th Taylor expansion of the scaled vector–Jacobian product about $\lambda_t$ is equal to</p>
+
+<div class="l-body-outset">
+\begin{equation}
+\alpha_\lambda^2\bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \bfx_\lambda} = \sum_{n=0}^{k-1} \frac{(\lambda - \lambda_t)^n}{n!} \frac{\rmd^n}{\rmd\lambda^n}\bigg[\alpha_\lambda^2\bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \bfx_\lambda}\bigg]_{\lambda = \lambda_t} + \mathcal{O}((\lambda  - \lambda_t)^k).
+\end{equation}
+</div>
+
+<p>For notational convenience we denote the $n$-th order derivative of the scaled vector–Jacobian product at $\lambda_t$ as</p>
+
+\begin{equation}
+\label{eq:vjp_def_x}
+\bfV^{(n)}(\bfx; \lambda_t) = \frac{\rmd^n}{\rmd \lambda^n}\bigg[\alpha_\lambda^2\bfa_\bfx(\lambda)^\top \frac{\partial \bseps_\theta(\bfx_\lambda, \bfz, \lambda)}{\partial \bfx_\lambda}\bigg]_{\lambda = \lambda_t}.
+\end{equation}
+
+<p>Then substituting our Taylor expansion into <a href="#eq:exact_sol_x">Equation&nbsp;(\ref{eq:exact_sol_x})</a> and letting $h = \lambda_s - \lambda_t$ denote the step size, we have a $k$-th order solver for the continuous adjoint equation for $\bfa_\bfx(t)$:</p>
+
+<div class="l-body-outset">
+\begin{equation}
+\label{eq:kth_solver}
+\bfa_\bfx(s) =
+\underbrace{
+    \vphantom{\int_{\lambda_t}^{\lambda_s}}
+    \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)
+}_{\substack{\textrm{linear term}\\\textbf{exactly computed}}}
++\frac{1}{\alpha_s} \sum_{n=0}^{k-1}
+\underbrace{
+    \vphantom{\int_{\lambda_t}^{\lambda_s}}
+    \bfV^{(n)}(\bfx; \lambda_t)
+}_{\substack{\textrm{derivatives}\\\textbf{approximated}}}\;
+\underbrace{
+    \int_{\lambda_t}^{\lambda_s}  \frac{(\lambda - \lambda_t)^n}{n!} e^{-\lambda}\;\rmd\lambda
+}_{\substack{\textrm{coefficients}\\\textbf{analytically computed}}}
++
+\underbrace{
+    \vphantom{\int_{\lambda_t}^{\lambda_s}}
+    \mathcal{O}(h^{k+1}).
+}_{\substack{\textrm{higher-order errors}\\\textbf{omitted}}}
+\end{equation}
+</div>
+
+<p>Let's break this down term by term.</p>
+
+<ol>
+  <li><strong>Linear term.</strong> The linear term of the adjoint diffusion ODE can be calculated exactly using the ratio of the signal schedule $\alpha_t / \alpha_s$. As $\alpha_t \geq \alpha_s$ for $t \leq s$, this implies $\alpha_t / \alpha_s \geq 1$.
+  <div class="l-body-outset">
+  $$
+  \bfa_\bfx(s) =
+  \gilt{\underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)
+  }_{\substack{\textrm{linear term}\\\textbf{exactly computed}}}}
+  +\frac{1}{\alpha_s} \sum_{n=0}^{k-1}
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \bfV^{(n)}(\bfx; \lambda_t)
+  }_{\substack{\textrm{derivatives}\\\textbf{approximated}}}\;
+  \underbrace{
+      \int_{\lambda_t}^{\lambda_s}  \frac{(\lambda - \lambda_t)^n}{n!} e^{-\lambda}\;\rmd\lambda
+  }_{\substack{\textrm{coefficients}\\\textbf{analytically computed}}}
+  +
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \mathcal{O}(h^{k+1}).
+  }_{\substack{\textrm{higher-order errors}\\\textbf{omitted}}}
+  $$
+  </div>
+  </li>
+
+  <li><strong>Derivatives.</strong> The $n$-th order derivatives of the scaled vector–Jacobian product can be efficiently estimated using multi-step methods<span class="cite" data-key="atkinson2011numerical"></span>.
+  <div class="l-body-outset">
+  $$
+  \bfa_\bfx(s) =
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)
+  }_{\substack{\textrm{linear term}\\\textbf{exactly computed}}}
+  +\frac{1}{\alpha_s} \sum_{n=0}^{k-1}
+  \gilt{\underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \bfV^{(n)}(\bfx; \lambda_t)
+  }_{\substack{\textrm{derivatives}\\\textbf{approximated}}}}\;
+  \underbrace{
+      \int_{\lambda_t}^{\lambda_s}  \frac{(\lambda - \lambda_t)^n}{n!} e^{-\lambda}\;\rmd\lambda
+  }_{\substack{\textrm{coefficients}\\\textbf{analytically computed}}}
+  +
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \mathcal{O}(h^{k+1}).
+  }_{\substack{\textrm{higher-order errors}\\\textbf{omitted}}}
+  $$
+  </div>
+  </li>
+
+  <li><strong>Coefficients.</strong> The exponentially weighted integral can be analytically computed in closed form.<span class="footnote"><strong>Computing the exponentially weighted integral.</strong> The exponentially weighted integral can be solved <em>analytically</em> by applying integration by parts $n$ times<span class="cite" data-key="dpm_solver,exponential_integrators"></span> such that $\int_{\lambda_t}^{\lambda_s} e^{-\lambda} \frac{(\lambda - \lambda_t)^n}{n!}\;\rmd\lambda = \frac{\sigma_s}{\alpha_s} h^{n+1}\varphi_{n+1}(h)$, with special $\varphi$-functions<span class="cite" data-key="exponential_integrators"></span> defined as $\varphi_{n+1}(h) := \int_0^1 e^{(1-u)h} \frac{u^n}{n!}\;\rmd u$, $\varphi_0(h) = e^h$, which satisfy the recurrence relation $\varphi_{k+1}(h) = (\varphi_{k}(h) - \varphi_k(0)) / h$ and have closed forms for $k = 1, 2$: $\varphi_1(h) = (e^h - 1)/h$, $\varphi_2(h) = (e^h - h - 1)/h^2$.</span>
+  <div class="l-body-outset">
+  $$
+  \bfa_\bfx(s) =
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)
+  }_{\substack{\textrm{linear term}\\\textbf{exactly computed}}}
+  +\frac{1}{\alpha_s} \sum_{n=0}^{k-1}
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \bfV^{(n)}(\bfx; \lambda_t)
+  }_{\substack{\textrm{derivatives}\\\textbf{approximated}}}\;
+  \gilt{\underbrace{
+      \int_{\lambda_t}^{\lambda_s}  \frac{(\lambda - \lambda_t)^n}{n!} e^{-\lambda}\;\rmd\lambda
+  }_{\substack{\textrm{coefficients}\\\textbf{analytically computed}}}}
+  +
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \mathcal{O}(h^{k+1}).
+  }_{\substack{\textrm{higher-order errors}\\\textbf{omitted}}}
+  $$
+  </div>
+  </li>
+
+  <li><strong>Higher-order errors.</strong> The remaining higher-order error terms are discarded. If $h^{k+1}$ is sufficiently small then these errors are negligible.
+  <div class="l-body-outset">
+  $$
+  \bfa_\bfx(s) =
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)
+  }_{\substack{\textrm{linear term}\\\textbf{exactly computed}}}
+  +\frac{1}{\alpha_s} \sum_{n=0}^{k-1}
+  \underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \bfV^{(n)}(\bfx; \lambda_t)
+  }_{\substack{\textrm{derivatives}\\\textbf{approximated}}}\;
+  \underbrace{
+      \int_{\lambda_t}^{\lambda_s}  \frac{(\lambda - \lambda_t)^n}{n!} e^{-\lambda}\;\rmd\lambda
+  }_{\substack{\textrm{coefficients}\\\textbf{analytically computed}}}
+  +
+  \gilt{\underbrace{
+      \vphantom{\int_{\lambda_t}^{\lambda_s}}
+      \mathcal{O}(h^{k+1}).
+  }_{\substack{\textrm{higher-order errors}\\\textbf{omitted}}}}
+  $$
+  </div>
+  </li>
+</ol>
+
+<p>From this construction there are only two sources of error: the error in approximating the $n$-th order derivative of the vector–Jacobian and the higher-order errors. Therefore, as long as we pick a sufficiently small step size $h$ and an appropriate order $k$, we can achieve accurate (enough) estimates of the gradients. The derivations for the solvers of $\bfa_\bfz(t)$ and $\bfa_\theta(t)$ are omitted for brevity but follow an analogous derivation. The $k$-th order solvers resulting from this method are called <strong>AdjointDEIS-$k$</strong>. In<span class="cite" data-key="adjointdeis"></span> we prove that AdjointDEIS-$k$ are $k$-th order solvers for $k = 1, 2$.</p>
+
+<h3 id="implementation">Implementation</h3>
+
+<p class="lead sub"><span class="newthought">Consider the case</span> when $k=1$. Then we have the following first-order solver.</p>
+
+<div class="proposition">
+<span class="thm-title">AdjointDEIS-1</span>
+Given an initial augmented adjoint state $[\bfa_\bfx(t), \bfa_\bfz(t), \bfa_\theta(t)]$ at time $t \in (0, T)$, the solution $[\bfa_\bfx(s), \bfa_\bfz(s), \bfa_\theta(s)]$ at time $s \in (t, T]$ is approximated by
+\begin{equation}
+\label{eq:adjoint_deis_1}
+\begin{split}
+\bfa_\bfx(s) &= \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t) + \sigma_s (e^h - 1) \frac{\alpha_t^2}{\alpha_s^2}\bfa_\bfx(t)^\top \frac{\partial \bseps_\theta(\bfx_t, \bfz, t)}{\partial \bfx_t},\\
+\bfa_\bfz(s) &= \bfa_\bfz(t) + \sigma_s (e^h - 1) \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)^\top \frac{\partial \bseps_\theta(\bfx_t, \bfz, t)}{\partial \bfz},\\
+\bfa_\theta(s) &= \bfa_\theta(t) + \sigma_s (e^h - 1) \frac{\alpha_t}{\alpha_s}\bfa_\bfx(t)^\top \frac{\partial \bseps_\theta(\bfx_t, \bfz, t)}{\partial \theta}.
+\end{split}
+\end{equation}
+</div>
+
+<p>The vector–Jacobian product can be easily calculated using reverse-mode automatic differentiation provided by most modern ML frameworks. We illustrate an implementation of this first-order solver using PyTorch. For simplicity we omit the code for calculating $\bfa_\theta$, as it requires more boilerplate.</p>
+
+<pre><code class="language-python">def adjointdeis_1(model, scheduler, x0, z, guidance_function, timesteps):
+    """
+    Args:
+        model (torch.nn.Module): Noise prediction model takes `(x, z, t)` as inputs.
+        scheduler: Object which manages the noise schedule and sampling solver for the diffusion model.
+        x0 (torch.Tensor): Generated image `x0`.
+        z (torch.Tensor): Conditional information.
+        guidance_function: A scalar-valued guidance function which takes `x0` as input.
+        timesteps (torch.Tensor): A sequence of strictly monotonically increasing timesteps.
+    """
+    x0.requires_grad_(True)
+    adjoint_x = torch.autograd.grad(guidance_function(x0).mean(), x0)[0]
+    adjoint_z = torch.zeros_like(z)
+    xt = x0
+
+    for i in range(timesteps):
+        if i == 0:
+            t, s = 0, timesteps[i]
+        else:
+            t, s = timesteps[i], timesteps[i + 1]
+
+        model_out = model(xt, z, t)
+
+        # Compute vector Jacobians
+        vec_J_xt = torch.autograd.grad(model_out, xt, adjoint_x, retain_graph=True)[0]
+        vec_J_z  = torch.autograd.grad(model_out, z, adjoint_z)[0]
+
+        # Compute noise schedule parameters
+        lambda_t, lambda_s = scheduler.lambda_t([t, s])
+        alpha_t, alpha_s   = scheduler.alpha_t([t, s])
+        sigma_t, sigma_s   = scheduler.sigma_t([t, s])
+
+        h = lambda_s - lambda_t
+
+        # Solve AdjointDEIS-1
+        adjoint_x = (alpha_t / alpha_s) * adjoint_x + sigma_s * torch.expm1(h) * (alpha_t**2 / alpha_s**2) * vec_J_xt
+        adjoint_z = adjoint_z + sigma_s * torch.expm1(h) * (alpha_t / alpha_s) * vec_J_z
+
+        # Use some ODE solver to find next xt
+        xt = scheduler.step(xt, t, s)
+
+    return xt, adjoint_x, adjoint_z
+</code></pre>
+
+<h3 id="sde-are-ode">Adjoint diffusion SDEs are actually ODEs</h3>
+
+<p class="lead sub"><span class="newthought">What about diffusion SDEs?</span> The problem statement in <a href="#eq:problem_stmt_ode">Equation&nbsp;(\ref{eq:problem_stmt_ode})</a> would become</p>
+
+\begin{equation}
+\label{eq:problem_stmt_sde}
+\argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t + \int_T^0 g(t) \; \rmd \bar\bfw_t\bigg).
+\end{equation}
+
+<p>The technical details of working with SDEs are beyond the scope of this post; however, we will highlight one of the key insights from our work<span class="cite" data-key="adjointdeis"></span>.</p>
+
+<p>Suppose we have an SDE in the <a href="https://en.wikipedia.org/wiki/Stratonovich_integral">Stratonovich</a> sense of the form</p>
+
+\begin{equation}
+\label{eq:stratonovich_sde}
+\rmd \bfx_t = \bsf(\bfx_t, t)\;\rmd t + \bsg(t) \circ \rmd \bfw_t,
+\end{equation}
+
+<p>where $\circ \rmd \bfw_t$ denotes integration in the Stratonovich sense and $\bsf \in \mathcal{C}_b^{\infty, 1}(\R^d)$, <em>i.e.</em>, $\bsf$ is a continuous function to $\R^d$ and has infinitely many bounded derivatives w.r.t. the state and bounded first derivatives w.r.t. time. Likewise, let $\bsg \in \mathcal{C}_b^1(\R^{d \times w})$ be a continuous function with bounded first derivatives. Lastly, let $\bfw_t: [0,T] \to \R^w$ be a $w$-dimensional Wiener process. Then <a href="#eq:stratonovich_sde">Equation&nbsp;(\ref{eq:stratonovich_sde})</a> has a unique strong solution given by $\bfx_t: [0, T] \to \R^d$.</p>
+
+<p>We show in<span class="cite" data-key="adjointdeis"></span> that the continuous adjoint equations of such an SDE reduce to a backwards-in-time SDE of the form</p>
+
+\begin{equation}
+\label{eq:sde_is_ode}
+\rmd \bfa_\bfx(t) = -\bfa_\bfx(t)^\top \frac{\partial \bsf}{\partial \bfx_t}(\bfx_t, t)\;\rmd t
+\end{equation}
+
+<p>with a $\mathbf 0$ coefficient for the diffusion term, and that there exists a unique strong solution to this SDE of the form $\bfa_\bfx: [0,T] \to \R^d$. As the diffusion coefficient for this SDE is $\mathbf 0$, it is essentially an ODE. While glossing over some technical details, this result should be straightforwardly apparent, as the diffusion coefficient $\bsg(t)$ relies only on time and not on the state, nor other parameters of interest.</p>
+
+<div class="remark">
+While the adjoint state evolves with an ODE, the underlying state $\bfx_t$ still evolves with a backwards-in-time SDE! This was the reason for our choice of Stratonovich over Itô — the Stratonovich integral is symmetric.
+</div>
+
+<p>Now our diffusion SDE can be easily converted into Stratonovich form due to the diffusion coefficient depending only on time. Moreover, due to the shared derivation using the Kolmogorov equations in constructing diffusion SDEs and diffusion ODEs, the two forms differ only by a factor of 2 within the drift term.</p>
+
+\begin{equation}
+\gilt{\underbrace{\rmd \bfx_t = f(t)\bfx_t + \lapis{2} \frac{g^2(t)}{2\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)\;\rmd t}_{\textrm{diffusion ODE}}} + \lapis{g(t)\circ\rmd\bar\bfw_t.}
+\end{equation}
+
+<p>Furthermore, notice that this SDE has the form</p>
+
+\begin{equation}
+\rmd \bfx_t = \gilt{\underbrace{f(t)\bfx_t + \frac{g^2(t)}{\sigma_t} \bseps_\theta(\bfx_t, \bfz, t)}_{= \bsf_\theta(\bfx_t,\bfz, t)}}\;\rmd t + g(t)\circ\rmd\bar\bfw_t,
+\end{equation}
+
+<p>and then by our result from <a href="#eq:sde_is_ode">Equation&nbsp;(\ref{eq:sde_is_ode})</a> the adjoint diffusion SDE evolves with the following ODE</p>
+
+\begin{equation}
+\frac{\rmd \bfa_\bfx}{\rmd t}(t) = -\bfa_\bfx(t)^\top \frac{\partial \bsf_\theta(\bfx_t, \bfz, t)}{\partial \bfx_t}.
+\end{equation}
+
+<p>As the only difference between $\bsf_\theta$ for diffusion SDEs and ODEs is a factor of 2, we realize that:</p>
+
+<blockquote>We can use the <strong>same</strong> ODE solvers for adjoint diffusion SDEs!</blockquote>
+
+<p>With the only caveat being the factor of 2. Therefore, we can modify the update equations from our code above to now solve adjoint diffusion SDEs.</p>
+
+<pre><code class="language-python">adjoint_x = (alpha_t / alpha_s) * adjoint_x + 2 * sigma_s * torch.expm1(h) * (alpha_t**2 / alpha_s**2) * vec_J_xt
+adjoint_z = adjoint_z + 2 * sigma_s * torch.expm1(h) * (alpha_t / alpha_s) * vec_J_z
+</code></pre>
+
+<h2 id="concluding">Concluding remarks</h2>
+
+<p class="lead"><span class="newthought">This post</span> gives a detailed introduction to the continuous adjoint equations. We discuss the theory behind them and why they are an appropriate tool for solving guided generation problems for diffusion models. This post serves as a summary for our recent NeurIPS paper:</p>
+
+<ul>
+  <li><a href="https://openreview.net/forum?id=fAlcxvrOEX">Zander W. Blasingame and Chen Liu. <em>AdjointDEIS: Efficient Gradients for Diffusion Models</em>. NeurIPS 2024</a>.</li>
+</ul>
+
+<p>For examples of this technique used in practice, check out our full paper and concurrent work from our colleagues<span class="cite" data-key="marion2024implicit,pan2024adjointdpm"></span> which explore different experiments and focus on different aspects of implementing the continuous adjoint equations.</p>
+
+</div><!-- /.post-body -->
+</article>
+
+<footer>
+  <div class="socials">
+    <a href="mailto:zblasingame@aithyra.at">email</a> /
+    <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
+    <a href="https://github.com/zblasingame">github</a> /
+    <a href="https://twitter.com/zwblasingame">x</a> /
+    <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
+    <a href="../../assets/pdf/cv.pdf">cv</a>
+  </div>
+  <span class="colophon">Email is generally the best way to contact me.</span>
+  <span>&copy; 2026 Zander W. Blasingame</span>
+</footer>
+
+</div>
+<script src="../../assets/js/citations.js"></script>
+<script src="../../assets/js/theme.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-core.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+</body>
+</html>
