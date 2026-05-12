@@ -1,234 +1,627 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Zander W. Blasingame</title>
-<meta name="description" content="Postdoctoral Fellow at Aithyra. Generative models for the life sciences — diffusion and flow-based methods for controllable generation.">
-<meta name="author" content="Zander W. Blasingame">
-<meta name="theme-color" content="#fffff8" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#0f0f10" media="(prefers-color-scheme: dark)">
-<link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg">
-<link rel="alternate icon" href="assets/img/favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/style.css">
-<script>(function(){var t;try{t=localStorage.getItem('theme');}catch(e){}if(!t){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);if(m)t=decodeURIComponent(m[1]);}if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);})();</script>
-</head>
-<body>
-<div class="page">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Zander W. Blasingame</title>
+    <meta
+      name="description"
+      content="Postdoctoral Fellow at Aithyra. Generative models for the life sciences — diffusion and flow-based methods for controllable generation."
+    />
+    <meta name="author" content="Zander W. Blasingame" />
+    <meta
+      name="theme-color"
+      content="#fffff8"
+      media="(prefers-color-scheme: light)"
+    />
+    <meta
+      name="theme-color"
+      content="#0f0f10"
+      media="(prefers-color-scheme: dark)"
+    />
+    <link rel="icon" type="image/svg+xml" href="assets/img/favicon.svg" />
+    <link rel="alternate icon" href="assets/img/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      (function () {
+        var t;
+        try {
+          t = localStorage.getItem("theme");
+        } catch (e) {}
+        if (!t) {
+          var m = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
+          if (m) t = decodeURIComponent(m[1]);
+        }
+        if (t && t !== "auto")
+          document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="page">
+      <nav class="top">
+        <span class="brand"><a href="index.html">Zander W. Blasingame</a></span>
+        <ul>
+          <li><a href="#about">about</a></li>
+          <li><a href="subpages/news.html">news</a></li>
+          <li><a href="subpages/publications.html">publications</a></li>
+          <li><a href="subpages/writings.html">writings</a></li>
+          <li><a href="#repositories">code</a></li>
+          <li><a href="assets/pdf/cv.pdf">cv</a></li>
+          <li>
+            <button
+              type="button"
+              class="search-trigger"
+              data-search-open
+              aria-label="Open search"
+            >
+              <span class="search-trigger-icon" aria-hidden="true">⌕</span>
+              search
+              <span class="search-trigger-kbd">⌘K</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="theme-toggle"
+              id="themeToggle"
+              aria-label="Toggle color scheme"
+            >
+              auto
+            </button>
+          </li>
+        </ul>
+      </nav>
 
-<nav class="top">
-  <span class="brand"><a href="index.html">Zander W. Blasingame</a></span>
-  <ul>
-    <li><a href="#about">about</a></li>
-    <li><a href="news/index.html">news</a></li>
-    <li><a href="publications/index.html">publications</a></li>
-    <li><a href="talks/index.html">talks</a></li>
-    <li><a href="writings/index.html">writings</a></li>
-    <li><a href="#repositories">code</a></li>
-    <li><a href="assets/pdf/cv.pdf">cv</a></li>
-    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle color scheme">auto</button></li>
-  </ul>
-</nav>
+      <header class="hero" id="about">
+        <h1>Zander W. Blasingame</h1>
+        <div class="role">
+          Postdoctoral Fellow &middot;
+          <a href="https://aithyra.at">Aithyra</a> &middot; Vienna
+        </div>
 
-<header class="hero" id="about">
-  <h1>Zander W. Blasingame</h1>
-  <div class="role">Postdoctoral Fellow &middot; <a href="https://aithyra.at">Aithyra</a> &middot; Vienna</div>
+        <div class="about-row">
+          <div class="bio">
+            <p>
+              <span class="lede">I am a postdoctoral fellow</span> at
+              <a href="https://aithyra.at">Aithyra</a> in Vienna, working with
+              <a href="https://www.alextong.net/">Alex Tong</a> on generative
+              modelling, stochatic processes, and sampling to solve fundamental
+              problems in natural sciences, <em>e.g.</em>, sampling from
+              Boltzmann distributions. Aithyra is a new research institute led
+              by
+              <a href="https://www.cs.ox.ac.uk/people/michael.bronstein/"
+                >Michael Bronstein</a
+              >
+              working at the interesection of machine learning and life
+              sciences.
+            </p>
 
-  <div class="about-row">
-    <div class="bio">
-      <p><span class="lede">I am a postdoctoral fellow</span> at <a href="https://aithyra.at">Aithyra</a> in Vienna, Austria, working with <a href="https://www.alextong.net/">Alex Tong</a> on generative models for the life sciences. My research interests are mostly in the use of diffusion- and flow-based generative models for <em>controllable generation</em> and <em>editing</em>.</p>
+            <p>
+              Previously, I received my Ph.D. in Electrical and Computer
+              Engineering from Clarkson University in 2025, supervised by
+              <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>,
+              focused on controllable generation with flow/diffusion models and
+              downstream applications in biometrics.
+              <!-- Examples include developing reversible numerical -->
+              <!-- schemes for diffusion SDEs, numerical schemes for computing the -->
+              <!-- gradients through the ODE/SDE solve of diffusion models, and -->
+              <!-- developing face morphing methods with diffusion models. -->
+            </p>
 
-      <p>Previously, I received my Ph.D. in Electrical and Computer Engineering from Clarkson University in 2025, supervised by <a href="https://camel.clarkson.edu/members.html">Chen Liu</a>. During my Ph.D. I focused on controllable generation with flow/diffusion models along with downstream applications in biometrics. Examples include developing reversible numerical schemes for diffusion SDEs, numerical schemes for computing the gradients through the ODE/SDE solve of diffusion models, and developing face morphing methods with diffusion models.</p>
+            <blockquote class="epigraph">
+              <span class="greek">Χριστὸς ὁ βασιλεὺς</span><br />
+              Christ the King
+            </blockquote>
 
-      <blockquote class="epigraph">
-        <span class="greek">Χριστὸς ὁ βασιλεὺς</span><br>
-        Christ the King
-      </blockquote>
+            <p>
+              In my free time I am an amateur athlete and theologian, actively
+              involved with local ministry. During grad school I played
+              <a href="https://www.instagram.com/clarksonmvb/"
+                >club volleyball</a
+              >
+              (MB/Oppo) at Clarkson and reached a 1145&nbsp;lb (520&nbsp;kg)
+              powerlifting total. These days I have gotten into olympic
+              weightlifting at <a href="https://www.dasgym.com">Das Gym</a>
+              and having been learning beach volleyball.
+            </p>
 
-      <p>In my free time I am an amateur athlete and theologian. I love athletics and reached a 1145&nbsp;lbs / 520&nbsp;kg powerlifting total, and currently spend my training on weightlifting and indoor / beach volleyball. During grad school I was a middle blocker / opposite hitter for the <a href="https://www.instagram.com/clarksonmvb/">Clarkson Men's Club Volleyball</a> team.</p>
+            <p class="bio-socials">
+              <a href="mailto:zblasingame@aithyra.at">email</a> /
+              <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ"
+                >scholar</a
+              >
+              / <a href="https://github.com/zblasingame">github</a> /
+              <a href="https://twitter.com/zwblasingame">x</a> /
+              <a href="https://www.linkedin.com/in/zander-blasingame"
+                >linkedin</a
+              >
+              /
+              <a href="assets/pdf/cv.pdf">cv</a>
+            </p>
 
-      <p class="bio-socials">
-        <a href="mailto:zblasingame@aithyra.at">email</a> /
-        <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
-        <a href="https://github.com/zblasingame">github</a> /
-        <a href="https://twitter.com/zwblasingame">x</a> /
-        <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
-        <a href="assets/pdf/cv.pdf">cv</a>
-      </p>
+            <p class="bio-collab">
+              Open to new collaborations &mdash; if you'd like to work together,
+              please don't hesitate to reach out.
+            </p>
+          </div>
+          <figure class="portrait-figure">
+            <div class="portrait">
+              <img
+                src="assets/img/zwblasingame.jpeg"
+                alt="Portrait of Zander W. Blasingame"
+              />
+            </div>
+            <figcaption class="portrait-caption">
+              At the
+              <a href="https://www.wissenschaftsball.at"
+                ><em>Wiener Ball der Wissenschaften</em></a
+              >, January 2026.
+            </figcaption>
+          </figure>
+        </div>
+      </header>
 
-      <p class="bio-collab">I am always open to new collaborations &mdash; if you'd like to work together, please don't hesitate to reach out.</p>
-    </div>
-    <div class="portrait">
-      <img src="assets/img/zwblasingame.jpeg" alt="Portrait of Zander W. Blasingame">
-    </div>
-  </div>
-</header>
+      <!-- ───── NEWS ───── -->
+      <section id="news">
+        <h2>
+          Recent highlights <a class="more" href="subpages/news.html">all →</a>
+        </h2>
+        <ul class="news">
+          <li>
+            <span class="date">2026 Apr 30</span
+            ><span class="item"
+              ><a href="https://openreview.net/forum?id=7pQIzVNctu"
+                ><em>Rex</em></a
+              >
+              accepted as a <strong>Spotlight</strong> at ICML 2026.</span
+            >
+          </li>
+          <li>
+            <span class="date">2026 Jan 12</span
+            ><span class="item"
+              >Moved to Vienna and joined
+              <a href="https://aithyra.at">Aithyra</a> as a Postdoctoral Fellow
+              with <a href="https://www.alextong.net">Alex Tong</a>.</span
+            >
+          </li>
+          <li>
+            <span class="date">2025 Oct 17</span
+            ><span class="item"
+              >Selected as a
+              <strong
+                ><a
+                  href="https://neurips.cc/Conferences/2025/ProgramCommittee#top-reviewer"
+                  >Top Reviewer</a
+                ></strong
+              >
+              at NeurIPS 2025.</span
+            >
+          </li>
+          <li>
+            <span class="date">2025 Sep 18</span
+            ><span class="item"
+              ><a href="https://openreview.net/forum?id=s14pdQgoLb"
+                ><em>Greed is Good</em></a
+              >
+              accepted at <a href="https://neurips.cc">NeurIPS</a> 2025.</span
+            >
+          </li>
+          <li>
+            <span class="date">2024 Sep 25</span
+            ><span class="item"
+              ><a href="https://zblasingame.github.io/AdjointDEIS"
+                ><em
+                  >AdjointDEIS: Efficient Gradients for Diffusion Models</em
+                ></a
+              >
+              accepted in the main track at
+              <a href="https://neurips.cc/">NeurIPS</a> 2024.</span
+            >
+          </li>
+        </ul>
+      </section>
 
-<!-- ───── NEWS ───── -->
-<section id="news">
-  <h2>Recent highlights <a class="more" href="news/index.html">all →</a></h2>
-  <ul class="news">
-    <li><span class="date">2026 Apr 30</span><span class="item"><a href="https://openreview.net/forum?id=7pQIzVNctu"><em>Rex</em></a> accepted as a <strong>Spotlight</strong> at ICML 2026.</span></li>
-    <li><span class="date">2026 Jan 12</span><span class="item">Moved to Vienna and joined <a href="https://aithyra.at">Aithyra</a> as a Postdoctoral Fellow with <a href="https://www.alextong.net">Alex Tong</a>.</span></li>
-    <li><span class="date">2025 Oct 17</span><span class="item">Selected as a <strong><a href="https://neurips.cc/Conferences/2025/ProgramCommittee#top-reviewer">Top Reviewer</a></strong> at NeurIPS 2025.</span></li>
-    <li><span class="date">2025 Sep 18</span><span class="item"><a href="https://openreview.net/forum?id=s14pdQgoLb"><em>Greed is Good</em></a> accepted at <a href="https://neurips.cc">NeurIPS</a> 2025.</span></li>
-    <li><span class="date">2024 Sep 25</span><span class="item"><a href="https://zblasingame.github.io/AdjointDEIS"><em>AdjointDEIS: Efficient Gradients for Diffusion Models</em></a> accepted in the main track at <a href="https://neurips.cc/">NeurIPS</a> 2024.</span></li>
-  </ul>
-</section>
+      <!-- ───── PUBLICATIONS ───── -->
+      <section id="publications">
+        <h2>
+          Selected publications
+          <a class="more" href="subpages/publications.html">all →</a>
+        </h2>
 
-<!-- ───── PUBLICATIONS ───── -->
-<section id="publications">
-  <h2>Selected publications <a class="more" href="publications/index.html">all →</a></h2>
-
-  <div class="pub">
-    <div class="venue">ICML<span class="sub">Spotlight</span></div>
-    <div>
-      <span class="title">Rex: A Family of Reversible Exponential (Stochastic) Runge–Kutta Solvers</span>
-      <span class="authors"><span class="me">Z. W. Blasingame</span>, C. Liu</span>
-      <span class="periodical">Published at ICML (2026)<span class="award">Spotlight</span><span class="award-note">[top 2.2% of submissions]</span></span>
-      <span class="presented">Presented at ICLR 2026 DeLTa and ReALM-GEN workshops</span>
-      <span class="extras">
-        <details class="bib-popup"><summary>bib</summary></details>
-        <a href="https://arxiv.org/abs/2502.08834">arxiv</a>
-        <a href="https://openreview.net/forum?id=7pQIzVNctu">openreview</a>
-        <a href="https://arxiv.org/pdf/2502.08834">pdf</a>
-      </span>
-      <div class="bib-panel"><button class="bib-copy" type="button" aria-label="Copy BibTeX"><svg class="icon-copy" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="9" height="11" rx="1.2"/><path d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"/></svg><svg class="icon-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg></button><pre>@inproceedings{blasingame2026rex,
+        <div class="pub">
+          <div class="venue">ICML<span class="sub">Spotlight</span></div>
+          <div>
+            <span class="title"
+              >Rex: A Family of Reversible Exponential (Stochastic) Runge–Kutta
+              Solvers</span
+            >
+            <span class="authors"
+              ><span class="me">Z. W. Blasingame</span>, C. Liu</span
+            >
+            <span class="periodical"
+              >Published at ICML (2026)<span class="award">Spotlight</span
+              ><span class="award-note">[top 2.2% of submissions]</span></span
+            >
+            <span class="presented"
+              >Presented at ICLR 2026 DeLTa and ReALM-GEN workshops</span
+            >
+            <span class="extras">
+              <details class="bib-popup"><summary>bib</summary></details>
+              <a href="https://arxiv.org/abs/2502.08834">arxiv</a>
+              <a href="https://openreview.net/forum?id=7pQIzVNctu"
+                >openreview</a
+              >
+              <a href="https://arxiv.org/pdf/2502.08834">pdf</a>
+            </span>
+            <div class="bib-panel">
+              <button class="bib-copy" type="button" aria-label="Copy BibTeX">
+                <svg
+                  class="icon-copy"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="9" height="11" rx="1.2" />
+                  <path
+                    d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"
+                  /></svg
+                ><svg
+                  class="icon-check"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3.5 8.5l3 3 6-6" />
+                </svg>
+              </button>
+              <pre>
+@inproceedings{blasingame2026rex,
   title     = {Rex: A Family of Reversible Exponential (Stochastic) Runge--Kutta Solvers},
   author    = {Blasingame, Zander W. and Liu, Chen},
   booktitle = {Forty-third International Conference on Machine Learning},
   year      = {2026},
-}</pre></div>
-    </div>
-  </div>
+}</pre
+              >
+            </div>
+          </div>
+        </div>
 
-  <div class="pub">
-    <div class="venue">ICLR<span class="sub">Workshop</span></div>
-    <div>
-      <span class="title">Stochastic Few-step Models</span>
-      <span class="authors">R. Passaro, <span class="me">Z. W. Blasingame</span>, M. M. Bronstein, A. Tong</span>
-      <span class="presented">Presented at ICLR 2026 DeLTa and ReALM-GEN workshops</span>
-      <span class="extras">
-        <details class="bib-popup"><summary>bib</summary></details>
-        <a href="https://openreview.net/forum?id=i31AUZF8kO">openreview</a>
-        <a href="https://openreview.net/pdf?id=i31AUZF8kO">pdf</a>
-      </span>
-      <div class="bib-panel"><button class="bib-copy" type="button" aria-label="Copy BibTeX"><svg class="icon-copy" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="9" height="11" rx="1.2"/><path d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"/></svg><svg class="icon-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg></button><pre>@inproceedings{passaro2026stochastic,
+        <div class="pub">
+          <div class="venue">ICLR<span class="sub">Workshop</span></div>
+          <div>
+            <span class="title">Stochastic Few-step Models</span>
+            <span class="authors"
+              >R. Passaro, <span class="me">Z. W. Blasingame</span>, M. M.
+              Bronstein, A. Tong</span
+            >
+            <span class="presented"
+              >Presented at ICLR 2026 DeLTa and ReALM-GEN workshops</span
+            >
+            <span class="extras">
+              <details class="bib-popup"><summary>bib</summary></details>
+              <a href="https://openreview.net/forum?id=i31AUZF8kO"
+                >openreview</a
+              >
+              <a href="https://openreview.net/pdf?id=i31AUZF8kO">pdf</a>
+            </span>
+            <div class="bib-panel">
+              <button class="bib-copy" type="button" aria-label="Copy BibTeX">
+                <svg
+                  class="icon-copy"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="9" height="11" rx="1.2" />
+                  <path
+                    d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"
+                  /></svg
+                ><svg
+                  class="icon-check"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3.5 8.5l3 3 6-6" />
+                </svg>
+              </button>
+              <pre>
+@inproceedings{passaro2026stochastic,
   title  = {Stochastic Few-step Models},
   author = {Passaro, Romeo and Blasingame, Zander W. and Bronstein, Michael M. and Tong, Alexander},
   booktitle = {ICLR 2026 DeLTa and ReALM-GEN workshops},
   year   = {2026},
-}</pre></div>
-    </div>
-  </div>
+}</pre
+              >
+            </div>
+          </div>
+        </div>
 
-  <div class="pub">
-    <div class="venue">NeurIPS</div>
-    <div>
-      <span class="title">Greed is Good: A Unifying Perspective on Guided Generation</span>
-      <span class="authors"><span class="me">Z. W. Blasingame</span>, C. Liu</span>
-      <span class="periodical">Published at NeurIPS (2025)</span>
-      <span class="presented">Presented at ICML 2025 EXAIT workshop and ICLR 2025 FPI workshop</span>
-      <span class="extras">
-        <details class="bib-popup"><summary>bib</summary></details>
-        <a href="https://arxiv.org/abs/2502.08006">arxiv</a>
-        <a href="https://openreview.net/forum?id=s14pdQgoLb">openreview</a>
-        <a href="https://openreview.net/pdf?id=s14pdQgoLb">pdf</a>
-        <a href="assets/pdf/poster_neurips_greed.pdf">poster</a>
-        <a href="assets/pdf/greed_neurips_slides.pdf">slides</a>
-      </span>
-      <div class="bib-panel"><button class="bib-copy" type="button" aria-label="Copy BibTeX"><svg class="icon-copy" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="9" height="11" rx="1.2"/><path d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"/></svg><svg class="icon-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg></button><pre>@inproceedings{blasingame2025greed,
+        <div class="pub">
+          <div class="venue">NeurIPS</div>
+          <div>
+            <span class="title"
+              >Greed is Good: A Unifying Perspective on Guided Generation</span
+            >
+            <span class="authors"
+              ><span class="me">Z. W. Blasingame</span>, C. Liu</span
+            >
+            <span class="periodical">Published at NeurIPS (2025)</span>
+            <span class="presented"
+              >Presented at ICML 2025 EXAIT workshop and ICLR 2025 FPI
+              workshop</span
+            >
+            <span class="extras">
+              <details class="bib-popup"><summary>bib</summary></details>
+              <a href="https://arxiv.org/abs/2502.08006">arxiv</a>
+              <a href="https://openreview.net/forum?id=s14pdQgoLb"
+                >openreview</a
+              >
+              <a href="https://openreview.net/pdf?id=s14pdQgoLb">pdf</a>
+              <a href="assets/pdf/poster_neurips_greed.pdf">poster</a>
+              <a href="assets/pdf/greed_neurips_slides.pdf">slides</a>
+            </span>
+            <div class="bib-panel">
+              <button class="bib-copy" type="button" aria-label="Copy BibTeX">
+                <svg
+                  class="icon-copy"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="9" height="11" rx="1.2" />
+                  <path
+                    d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"
+                  /></svg
+                ><svg
+                  class="icon-check"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3.5 8.5l3 3 6-6" />
+                </svg>
+              </button>
+              <pre>
+@inproceedings{blasingame2025greed,
   title     = {Greed is Good: A Unifying Perspective on Guided Generation},
   author    = {Blasingame, Zander W. and Liu, Chen},
   booktitle = {The Thirty-ninth Annual Conference on Neural Information Processing Systems},
   year      = {2025},
-}</pre></div>
-    </div>
-  </div>
+}</pre
+              >
+            </div>
+          </div>
+        </div>
 
-  <div class="pub">
-    <div class="venue">NeurIPS</div>
-    <div>
-      <span class="title">AdjointDEIS: Efficient Gradients for Diffusion Models</span>
-      <span class="authors"><span class="me">Z. W. Blasingame</span>, C. Liu</span>
-      <span class="periodical">Published at NeurIPS (2024)</span>
-      <span class="presented">Presented at NeurIPS - New Frontiers in Adversarial Machine Learning</span>
-      <span class="extras">
-        <details class="bib-popup"><summary>bib</summary></details>
-        <a href="https://arxiv.org/abs/2405.15020">arxiv</a>
-        <a href="https://github.com/zblasingame/AdjointDEIS">code</a>
-        <a href="https://zblasingame.github.io/AdjointDEIS">website</a>
-        <a href="https://proceedings.neurips.cc/paper_files/paper/2024/file/04badd3b048315c8c3a0ca17eff723d7-Paper-Conference.pdf">pdf</a>
-        <a href="assets/pdf/adjointdeis_neurips.pdf">poster</a>
-        <a href="assets/pdf/adjointdeis_neurips_slides.pdf">slides</a>
-      </span>
-      <div class="bib-panel"><button class="bib-copy" type="button" aria-label="Copy BibTeX"><svg class="icon-copy" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="3" width="9" height="11" rx="1.2"/><path d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"/></svg><svg class="icon-check" viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6"/></svg></button><pre>@inproceedings{blasingame2024adjointdeis,
+        <div class="pub">
+          <div class="venue">NeurIPS</div>
+          <div>
+            <span class="title"
+              >AdjointDEIS: Efficient Gradients for Diffusion Models</span
+            >
+            <span class="authors"
+              ><span class="me">Z. W. Blasingame</span>, C. Liu</span
+            >
+            <span class="periodical">Published at NeurIPS (2024)</span>
+            <span class="presented"
+              >Presented at NeurIPS - New Frontiers in Adversarial Machine
+              Learning</span
+            >
+            <span class="extras">
+              <details class="bib-popup"><summary>bib</summary></details>
+              <a href="https://arxiv.org/abs/2405.15020">arxiv</a>
+              <a href="https://github.com/zblasingame/AdjointDEIS">code</a>
+              <a href="https://zblasingame.github.io/AdjointDEIS">website</a>
+              <a
+                href="https://proceedings.neurips.cc/paper_files/paper/2024/file/04badd3b048315c8c3a0ca17eff723d7-Paper-Conference.pdf"
+                >pdf</a
+              >
+              <a href="assets/pdf/adjointdeis_neurips.pdf">poster</a>
+              <a href="assets/pdf/adjointdeis_neurips_slides.pdf">slides</a>
+            </span>
+            <div class="bib-panel">
+              <button class="bib-copy" type="button" aria-label="Copy BibTeX">
+                <svg
+                  class="icon-copy"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="9" height="11" rx="1.2" />
+                  <path
+                    d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"
+                  /></svg
+                ><svg
+                  class="icon-check"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3.5 8.5l3 3 6-6" />
+                </svg>
+              </button>
+              <pre>
+@inproceedings{blasingame2024adjointdeis,
   title     = {Adjoint{DEIS}: Efficient Gradients for Diffusion Models},
   author    = {Blasingame, Zander W. and Liu, Chen},
   booktitle = {The Thirty-eighth Annual Conference on Neural Information Processing Systems},
   year      = {2024},
-}</pre></div>
+}</pre
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ───── WRITINGS ───── -->
+      <section id="writings">
+        <h2>
+          Recent writings
+          <a class="more" href="subpages/writings.html">all →</a>
+        </h2>
+        <ul class="posts">
+          <li>
+            <span class="date">2025 May 23</span>
+            <div>
+              <span class="post-title"
+                ><a href="writings/noise-schedules/index.html"
+                  >Deriving the Drift and Diffusion Coefficients for Diffusion
+                  Models</a
+                ></span
+              >
+              <span class="post-desc"
+                >Where do the popular variance-preserving SDE coefficients
+                <em>actually</em> come from? A derivation, working backwards
+                from the desired transition kernel.</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="date">2024 Dec 03</span>
+            <div>
+              <span class="post-title"
+                ><a href="writings/cadlag-conditional/index.html"
+                  >Gradients for Time-Scheduled Conditional Variables in Neural
+                  Differential Equations</a
+                ></span
+              >
+              <span class="post-desc"
+                >A càdlàg extension of the continuous adjoint equations for
+                piecewise-continuous conditional inputs.</span
+              >
+            </div>
+          </li>
+          <li>
+            <span class="date">2024 Nov 20</span>
+            <div>
+              <span class="post-title"
+                ><a href="writings/adjointdeis/index.html"
+                  >The Continuous Adjoint Equations for Diffusion Models</a
+                ></span
+              >
+              <span class="post-desc"
+                >A guided tour through AdjointDEIS — exponential integrators for
+                the adjoint ODE/SDE of diffusion models.</span
+              >
+            </div>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ───── REPOS ───── -->
+      <section id="repositories">
+        <h2>Code</h2>
+        <ul class="repos">
+          <li>
+            <a href="https://github.com/zblasingame/AdjointDEIS"
+              >zblasingame/AdjointDEIS<span class="desc"
+                >Adjoint sensitivity for diffusion ODEs/SDEs.</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/zblasingame/Greedy-DiM"
+              >zblasingame/Greedy-DiM<span class="desc"
+                >Greedy strategies on diffusion morphs.</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/zblasingame/DiM"
+              >zblasingame/DiM<span class="desc"
+                >Diffusion-based face morphing.</span
+              ></a
+            >
+          </li>
+          <li>
+            <a href="https://github.com/zblasingame/add-gan"
+              >zblasingame/add-gan<span class="desc"
+                >Adversarial detection of GAN morphs.</span
+              ></a
+            >
+          </li>
+        </ul>
+      </section>
+
+      <footer>
+        <div class="socials">
+          <a href="mailto:zblasingame@aithyra.at">email</a> /
+          <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ"
+            >scholar</a
+          >
+          / <a href="https://github.com/zblasingame">github</a> /
+          <a href="https://twitter.com/zwblasingame">x</a> /
+          <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
+          <a href="assets/pdf/cv.pdf">cv</a> /
+          <a href="subpages/colophon.html">colophon</a>
+        </div>
+        <span>© 2026 Zander W. Blasingame</span>
+        <span
+          class="sdg"
+          lang="la"
+          title="Soli Deo gloria — To God alone be glory"
+          >Soli Deo gloria.</span
+        >
+      </footer>
     </div>
-  </div>
-</section>
-
-<!-- ───── WRITINGS ───── -->
-<section id="writings">
-  <h2>Recent writings <a class="more" href="writings/index.html">all →</a></h2>
-  <ul class="posts">
-    <li>
-      <span class="date">2025 May 23</span>
-      <div>
-        <span class="post-title"><a href="writings/noise-schedules/index.html">Deriving the Drift and Diffusion Coefficients for Diffusion Models</a></span>
-        <span class="post-desc">Where do the popular variance-preserving SDE coefficients <em>actually</em> come from? A derivation, working backwards from the desired transition kernel.</span>
-      </div>
-    </li>
-    <li>
-      <span class="date">2024 Dec 3</span>
-      <div>
-        <span class="post-title"><a href="writings/cadlag-conditional/index.html">Gradients for Time-Scheduled Conditional Variables in Neural Differential Equations</a></span>
-        <span class="post-desc">A càdlàg extension of the continuous adjoint equations for piecewise-continuous conditional inputs.</span>
-      </div>
-    </li>
-    <li>
-      <span class="date">2024 Nov 20</span>
-      <div>
-        <span class="post-title"><a href="writings/adjointdeis/index.html">The Continuous Adjoint Equations for Diffusion Models</a></span>
-        <span class="post-desc">A guided tour through AdjointDEIS — exponential integrators for the adjoint ODE/SDE of diffusion models.</span>
-      </div>
-    </li>
-  </ul>
-</section>
-
-<!-- ───── REPOS ───── -->
-<section id="repositories">
-  <h2>Code</h2>
-  <ul class="repos">
-    <li><a href="https://github.com/zblasingame/AdjointDEIS">zblasingame/AdjointDEIS<span class="desc">Adjoint sensitivity for diffusion ODEs/SDEs.</span></a></li>
-    <li><a href="https://github.com/zblasingame/Greedy-DiM">zblasingame/Greedy-DiM<span class="desc">Greedy strategies on diffusion morphs.</span></a></li>
-    <li><a href="https://github.com/zblasingame/DiM">zblasingame/DiM<span class="desc">Diffusion-based face morphing.</span></a></li>
-    <li><a href="https://github.com/zblasingame/add-gan">zblasingame/add-gan<span class="desc">Adversarial detection of GAN morphs.</span></a></li>
-  </ul>
-</section>
-
-<footer>
-  <div class="socials">
-    <a href="mailto:zblasingame@aithyra.at">email</a> /
-    <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
-    <a href="https://github.com/zblasingame">github</a> /
-    <a href="https://twitter.com/zwblasingame">x</a> /
-    <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
-    <a href="assets/pdf/cv.pdf">cv</a>
-  </div>
-  <span class="colophon">Email is generally the best way to contact me.</span>
-  <span>© 2026 Zander W. Blasingame</span>
-</footer>
-
-</div>
-<script src="assets/js/theme.js"></script>
-<script src="assets/js/bib.js" defer></script>
-</body>
+    <script src="assets/js/theme.js"></script>
+    <script src="assets/js/search-index.js" defer></script>
+    <script src="assets/js/search.js" defer></script>
+    <script src="assets/js/bib.js" defer></script>
+  </body>
 </html>

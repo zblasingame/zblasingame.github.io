@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Rebuild assets/js/search-index.json if relevant content has changed.
+# Enable with:  git config core.hooksPath .githooks
+set -euo pipefail
+
+# only files staged for this commit
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+
+trigger=0
+while IFS= read -r f; do
+  case "$f" in
+    index.html|subpages/*.html|writings/*/*.html|build-search-index.py)
+      trigger=1
+      break
+      ;;
+  esac
+done <<< "$staged"
+
+if [ "$trigger" -eq 0 ]; then
+  exit 0
+fi
+
+if ! command -v python3 >/dev/null 2>&1; then
+  echo "pre-commit: python3 not found; skipping search-index rebuild" >&2
+  exit 0
+fi
+
+echo "pre-commit: rebuilding search-index.json"
+python3 build-search-index.py >/dev/null
+
+# stage the regenerated index iff it actually changed
+if ! git diff --quiet -- assets/js/search-index.json assets/js/search-index.js; then
+  git add assets/js/search-index.json assets/js/search-index.js
+  echo "pre-commit: staged updated search-index"
+fi

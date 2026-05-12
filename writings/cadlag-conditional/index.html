@@ -1,226 +1,495 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Gradients for Time-Scheduled Conditional Variables in Neural Differential Equations &middot; Zander W. Blasingame</title>
-<meta name="description" content="A short derivation of the continuous adjoint equation for time-scheduled conditional variables.">
-<meta name="author" content="Zander W. Blasingame">
-<link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg">
-<link rel="alternate icon" href="../../assets/img/favicon.ico">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/css/style.css">
-<script>(function(){var t;try{t=localStorage.getItem('theme');}catch(e){}if(!t){var m=document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);if(m)t=decodeURIComponent(m[1]);}if(t&&t!=='auto')document.documentElement.setAttribute('data-theme',t);})();</script>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>
+      Gradients for Time-Scheduled Conditional Variables in Neural Differential
+      Equations &middot; Zander W. Blasingame
+    </title>
+    <meta
+      name="description"
+      content="A short derivation of the continuous adjoint equation for time-scheduled conditional variables."
+    />
+    <meta name="author" content="Zander W. Blasingame" />
+    <link rel="icon" type="image/svg+xml" href="../../assets/img/favicon.svg" />
+    <link rel="alternate icon" href="../../assets/img/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="../../assets/css/style.css" />
+    <script>
+      (function () {
+        var t;
+        try {
+          t = localStorage.getItem("theme");
+        } catch (e) {}
+        if (!t) {
+          var m = document.cookie.match(/(?:^|;\s*)theme=([^;]+)/);
+          if (m) t = decodeURIComponent(m[1]);
+        }
+        if (t && t !== "auto")
+          document.documentElement.setAttribute("data-theme", t);
+      })();
+    </script>
 
-<!-- MathJax v3 -->
-<script>
-window.MathJax = {
-  tex: {
-    inlineMath: [['$','$'], ['\\(','\\)']],
-    displayMath: [['$$','$$'], ['\\[','\\]']],
-    tags: 'ams',
-    macros: {
-      R: '\\mathbb{R}', X: '\\mathcal{X}', Y: '\\mathcal{Y}',
-      Z: '\\mathcal{Z}', N: '\\mathbb{N}', T: '\\mathbb{T}',
-      Q: '\\mathbb{Q}', B: '\\mathcal{B}', pr: '\\mathbb{P}',
-      bfx: '\\mathbf{x}', bfy: '\\mathbf{y}', bfz: '\\mathbf{z}',
-      bfa: '\\mathbf{a}', bfw: '\\mathbf{w}', bfA: '\\mathbf{A}',
-      bfV: '\\mathbf{V}',
-      bsf: '\\boldsymbol{f}', bsg: '\\boldsymbol{g}',
-      bseps: '\\boldsymbol{\\epsilon}',
-      rmd: '\\mathrm{d}',
-      var: '\\operatorname{Var}', ex: '\\mathbb{E}',
-      argmin: '\\operatorname*{arg\\,min}',
-      argmax: '\\operatorname*{arg\\,max}'
-    }
-  },
-  svg: { fontCache: 'global' }
-};
-</script>
-<script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
-</head>
-<body>
-<div class="page post">
+    <!-- MathJax v3 -->
+    <script>
+      window.MathJax = {
+        tex: {
+          inlineMath: [
+            ["$", "$"],
+            ["\\(", "\\)"],
+          ],
+          displayMath: [
+            ["$$", "$$"],
+            ["\\[", "\\]"],
+          ],
+          tags: "ams",
+          macros: {
+            R: "\\mathbb{R}",
+            X: "\\mathcal{X}",
+            Y: "\\mathcal{Y}",
+            Z: "\\mathcal{Z}",
+            N: "\\mathbb{N}",
+            T: "\\mathbb{T}",
+            Q: "\\mathbb{Q}",
+            B: "\\mathcal{B}",
+            pr: "\\mathbb{P}",
+            bfx: "\\mathbf{x}",
+            bfy: "\\mathbf{y}",
+            bfz: "\\mathbf{z}",
+            bfa: "\\mathbf{a}",
+            bfw: "\\mathbf{w}",
+            bfA: "\\mathbf{A}",
+            bfV: "\\mathbf{V}",
+            bsf: "\\boldsymbol{f}",
+            bsg: "\\boldsymbol{g}",
+            bseps: "\\boldsymbol{\\epsilon}",
+            rmd: "\\mathrm{d}",
+            var: "\\operatorname{Var}",
+            ex: "\\mathbb{E}",
+            argmin: "\\operatorname*{arg\\,min}",
+            argmax: "\\operatorname*{arg\\,max}",
+          },
+        },
+        svg: { fontCache: "global" },
+      };
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"
+      async
+    ></script>
+  </head>
+  <body>
+    <div class="page post">
+      <nav class="top">
+        <span class="brand"
+          ><a href="../../index.html">Zander W. Blasingame</a></span
+        >
+        <ul>
+          <li><a href="../../index.html#about">about</a></li>
+          <li><a href="../../subpages/news.html">news</a></li>
+          <li><a href="../../subpages/publications.html">publications</a></li>
+          <li><a href="../../subpages/writings.html">writings</a></li>
+          <li><a href="../../index.html#repositories">code</a></li>
+          <li><a href="../../assets/pdf/cv.pdf">cv</a></li>
+          <li>
+            <button
+              type="button"
+              class="search-trigger"
+              data-search-open
+              aria-label="Open search"
+            >
+              <span class="search-trigger-icon" aria-hidden="true">⌕</span>
+              search
+              <span class="search-trigger-kbd">⌘K</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="theme-toggle"
+              id="themeToggle"
+              aria-label="Toggle color scheme"
+            >
+              auto
+            </button>
+          </li>
+        </ul>
+      </nav>
 
-<nav class="top">
-  <span class="brand"><a href="../../index.html">Zander W. Blasingame</a></span>
-  <ul>
-    <li><a href="../../index.html#about">about</a></li>
-    <li><a href="../../news/index.html">news</a></li>
-    <li><a href="../../publications/index.html">publications</a></li>
-    <li><a href="../../talks/index.html">talks</a></li>
-    <li><a href="../index.html">writings</a></li>
-    <li><a href="../../index.html#repositories">code</a></li>
-    <li><a href="../../assets/pdf/cv.pdf">cv</a></li>
-    <li><button class="theme-toggle" id="themeToggle" aria-label="Toggle color scheme">auto</button></li>
-  </ul>
-</nav>
+      <article>
+        <header class="post-heading">
+          <h1>
+            Gradients for Time-Scheduled Conditional Variables in Neural
+            Differential Equations
+          </h1>
+          <div class="post-meta">
+            <span class="date">2024 Dec 03</span>
+            <span class="sep">·</span>
+            <span>Zander W. Blasingame</span>
+            <span class="sep">·</span>
+            <span>5 min read</span>
+          </div>
+          <div class="post-description">
+            A short derivation of the continuous adjoint equation for
+            time-scheduled conditional variables.
+          </div>
+        </header>
 
-<article>
-<header class="post-heading">
-  <h1>Gradients for Time-Scheduled Conditional Variables in Neural Differential Equations</h1>
-  <div class="post-meta">
-    <span class="date">2024 Dec 3</span>
-    <span class="sep">·</span>
-    <span>Zander W. Blasingame</span>
-    <span class="sep">·</span>
-    <span>5 min read</span>
-  </div>
-  <div class="post-description">A short derivation of the continuous adjoint equation for time-scheduled conditional variables.</div>
-</header>
+        <nav class="post-toc" aria-label="Table of contents">
+          <div class="post-toc-label">Contents</div>
+          <ol>
+            <li><a href="#introduction">Introduction</a></li>
+            <li>
+              <a href="#training-free-guidance">Training-free guidance</a>
+            </li>
+            <li>
+              <a href="#gradients"
+                >Gradients of time-scheduled conditional variables</a
+              >
+            </li>
+            <li><a href="#proof">Proof</a></li>
+          </ol>
+        </nav>
 
-<nav class="post-toc" aria-label="Table of contents">
-  <div class="post-toc-label">Contents</div>
-  <ol>
-    <li><a href="#introduction">Introduction</a></li>
-    <li><a href="#training-free-guidance">Training-free guidance</a></li>
-    <li><a href="#gradients">Gradients of time-scheduled conditional variables</a></li>
-    <li><a href="#proof">Proof</a></li>
-  </ol>
-</nav>
+        <div class="post-body">
+          <h2 id="introduction">Introduction</h2>
 
-<div class="post-body">
+          <p class="lead">
+            <span class="newthought">The advent of large-scale</span> diffusion
+            models conditioned on text embeddings<span
+              class="cite"
+              data-key="ldm,2022arXiv220406125R,NEURIPS2022_ec795aea"
+            ></span>
+            has allowed for creative control over the generative process. A
+            recent and powerful technique is that of <em>prompt scheduling</em>,
+            <em>i.e.</em>, instead of passing a fixed prompt to the diffusion
+            model, the prompt can be changed depending on the timestep. This
+            concept was initially proposed by Doggettx
+            <a
+              href="https://www.reddit.com/r/StableDiffusion/comments/xas2os/simple_prompt2prompt_implementation_with_prompt/"
+              >in this reddit post</a
+            >
+            and the code changes to the Stable Diffusion repository can be seen
+            <a
+              href="https://github.com/CompVis/stable-diffusion/commit/ccb17b55f2e7acbd1a112b55fb8f8415b4862521"
+              >here</a
+            >.
+          </p>
 
-<h2 id="introduction">Introduction</h2>
+          <figure>
+            <img
+              src="../../assets/img/scheduled_conditionals/prompt_scheduling_example.png"
+              alt="Examples of prompt scheduling."
+            />
+            <figcaption>
+              <span class="figlabel">Figure&nbsp;1</span>Examples of the prompt
+              scheduling technique proposed by Doggettx.
+            </figcaption>
+          </figure>
 
-<p class="lead"><span class="newthought">The advent of large-scale</span> diffusion models conditioned on text embeddings<span class="cite" data-key="ldm,2022arXiv220406125R,NEURIPS2022_ec795aea"></span> has allowed for creative control over the generative process. A recent and powerful technique is that of <em>prompt scheduling</em>, <em>i.e.</em>, instead of passing a fixed prompt to the diffusion model, the prompt can be changed depending on the timestep. This concept was initially proposed by Doggettx <a href="https://www.reddit.com/r/StableDiffusion/comments/xas2os/simple_prompt2prompt_implementation_with_prompt/">in this reddit post</a> and the code changes to the Stable Diffusion repository can be seen <a href="https://github.com/CompVis/stable-diffusion/commit/ccb17b55f2e7acbd1a112b55fb8f8415b4862521">here</a>.</p>
+          <p>
+            More generally, we can view this as having the conditional
+            information (in this case text embeddings) scheduled w.r.t. time.
+            Formally, assume we have a U-Net trained on the noise-prediction
+            task $\bseps_\theta(\bfx_t, \bfz, t)$ conditioned on a
+            time-scheduled text embedding $\bfz(t)$. The sampling procedure
+            amounts to solving the <em>probability flow ODE</em> from time $T$
+            to time $0$,
+          </p>
 
-<figure>
-  <img src="../../assets/img/scheduled_conditionals/prompt_scheduling_example.png" alt="Examples of prompt scheduling.">
-  <figcaption><span class="figlabel">Figure&nbsp;1</span>Examples of the prompt scheduling technique proposed by Doggettx.</figcaption>
-</figure>
+          \[ \frac{\rmd \bfx_t}{\rmd t} = f(t)\bfx_t +
+          \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t), \]
 
-<p>More generally, we can view this as having the conditional information (in this case text embeddings) scheduled w.r.t. time. Formally, assume we have a U-Net trained on the noise-prediction task $\bseps_\theta(\bfx_t, \bfz, t)$ conditioned on a time-scheduled text embedding $\bfz(t)$. The sampling procedure amounts to solving the <em>probability flow ODE</em> from time $T$ to time $0$,</p>
+          <p>
+            where $f, g$ define the drift and diffusion coefficients of a
+            variance-preserving (VP) type SDE<span
+              class="cite"
+              data-key="song2021denoising"
+            ></span
+            >.
+          </p>
 
-\[
-\frac{\rmd \bfx_t}{\rmd t} = f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t),
-\]
+          <h2 id="training-free-guidance">Training-free guidance</h2>
 
-<p>where $f, g$ define the drift and diffusion coefficients of a variance-preserving (VP) type SDE<span class="cite" data-key="song2021denoising"></span>.</p>
+          <p class="lead">
+            <span class="newthought">A closely related</span> area of active
+            research has been the development of techniques which search for the
+            optimal generation parameters. More specifically, they attempt to
+            solve the following optimization problem:
+          </p>
 
-<h2 id="training-free-guidance">Training-free guidance</h2>
+          \[ \argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\!\bigg(\bfx_T +
+          \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t,
+          \bfz, t)\;\rmd t\bigg), \]
 
-<p class="lead"><span class="newthought">A closely related</span> area of active research has been the development of techniques which search for the optimal generation parameters. More specifically, they attempt to solve the following optimization problem:</p>
+          <p>
+            where $\mathcal L$ is a real-valued loss function on the output
+            $\bfx_0$.
+          </p>
 
-\[
-\argmin_{\bfx_T, \bfz, \theta}\quad \mathcal{L}\!\bigg(\bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz, t)\;\rmd t\bigg),
-\]
+          <p>
+            Several recent works<span
+              class="cite"
+              data-key="pan2024adjointdpm,adjointdeis,marion2024implicit"
+            ></span>
+            explore solving the continuous adjoint equations<span
+              class="cite"
+              data-key="kidger_thesis"
+            ></span>
+            to find the gradients
+          </p>
 
-<p>where $\mathcal L$ is a real-valued loss function on the output $\bfx_0$.</p>
+          \[ \frac{\partial \mathcal L}{\partial \bfx_t}, \qquad \frac{\partial
+          \mathcal L}{\partial \bfz}, \qquad \frac{\partial \mathcal L}{\partial
+          \theta}. \]
 
-<p>Several recent works<span class="cite" data-key="pan2024adjointdpm,adjointdeis,marion2024implicit"></span> explore solving the continuous adjoint equations<span class="cite" data-key="kidger_thesis"></span> to find the gradients</p>
+          <p>
+            These gradients can then be used in combination with
+            gradient-descent algorithms to solve the optimization problem.
+            However, what if $\bfz$ is scheduled and not constant w.r.t. time?
+          </p>
 
-\[
-\frac{\partial \mathcal L}{\partial \bfx_t}, \qquad
-\frac{\partial \mathcal L}{\partial \bfz}, \qquad
-\frac{\partial \mathcal L}{\partial \theta}.
-\]
+          <p><strong>Problem statement.</strong> Given</p>
 
-<p>These gradients can then be used in combination with gradient-descent algorithms to solve the optimization problem. However, what if $\bfz$ is scheduled and not constant w.r.t. time?</p>
+          \[ \bfx_0 = \bfx_T + \int_T^0 f(t)\bfx_t +
+          \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t)\;\rmd t, \]
 
-<p><strong>Problem statement.</strong> Given</p>
+          <p>and $\mathcal L (\bfx_0)$, find</p>
 
-\[
-\bfx_0 = \bfx_T + \int_T^0 f(t)\bfx_t + \frac{g^2(t)}{2\sigma_t}\bseps_\theta(\bfx_t, \bfz(t), t)\;\rmd t,
-\]
+          \[ \frac {\partial \mathcal L}{\partial \bfz(t)}, \qquad t \in [0,T].
+          \]
 
-<p>and $\mathcal L (\bfx_0)$, find</p>
+          <p>
+            In an <a href="../adjointdeis/index.html">earlier post</a> we showed
+            how to find $\partial \mathcal L / \partial \bfz$ by solving the
+            continuous adjoint equations. How do the continuous adjoint
+            equations change when replacing $\bfz$ with a time-scheduled
+            $\bfz(t)$ in the sampling equation? What we will now show is that
+          </p>
 
-\[
-\frac {\partial \mathcal L}{\partial \bfz(t)}, \qquad t \in [0,T].
-\]
+          <blockquote>
+            we can <strong>simply</strong> replace $\bfz$ with $\bfz(t)$ in the
+            continuous adjoint equations.
+          </blockquote>
 
-<p>In an <a href="../adjointdeis/index.html">earlier post</a> we showed how to find $\partial \mathcal L / \partial \bfz$ by solving the continuous adjoint equations. How do the continuous adjoint equations change when replacing $\bfz$ with a time-scheduled $\bfz(t)$ in the sampling equation? What we will now show is that</p>
+          <p>
+            This result is intuitive, but does require some technical details to
+            show.
+          </p>
 
-<blockquote>we can <strong>simply</strong> replace $\bfz$ with $\bfz(t)$ in the continuous adjoint equations.</blockquote>
+          <h2 id="gradients">
+            Gradients of time-scheduled conditional variables
+          </h2>
 
-<p>This result is intuitive, but does require some technical details to show.</p>
+          <p class="lead">
+            <span class="newthought">It is well known</span> that diffusion
+            models are just a special type of neural differential equation,
+            either a neural ODE or SDE. As such we will show this result holds
+            more generally for neural ODEs.
+          </p>
 
-<h2 id="gradients">Gradients of time-scheduled conditional variables</h2>
+          <div class="theorem">
+            <span class="thm-title"
+              >Continuous adjoint equations for time-scheduled conditional
+              variables</span
+            >
+            Suppose there exists a function $\bfz: [0,T] \to \R^z$ which can be
+            defined as a càdlàg<span class="footnote"
+              >French: <em>continue à droite, limite à gauche</em>. In practice
+              $\bfz(t)$ is often a discrete set $\{\bfz_k\}_{k=1}^n$ where $n$
+              corresponds to the number of discretization steps the numerical
+              ODE solver takes. While the proof is easier for a continuously
+              differentiable function $\bfz(t)$, we opt for this construction
+              for the sake of generality &mdash; the càdlàg piecewise assumption
+              is mild and lets us define the augmented state on each continuous
+              interval in terms of the right derivative.</span
+            >
+            piecewise function where $\bfz$ is continuous on each partition of
+            $[0, T]$ given by $\Pi = \{0 = t_0 &lt; t_1 &lt; \cdots &lt; t_n =
+            T\}$ and whose right derivatives exist for all $t \in [0,T]$. Let
+            $\bsf_\theta: \R^d \times \R^z \times [0,T] \to \R^d$ be continuous
+            in $t$, uniformly Lipschitz in $\bfy$, and continuously
+            differentiable in $\bfy$. Let $\bfy: [0, T] \to \R^d$ be the unique
+            solution for the ODE \[ \frac{\rmd \bfy}{\rmd t}(t) =
+            \bsf_\theta(\bfy(t), \bfz(t), t), \] with initial condition $\bfy(0)
+            = \bfy_0$. Then $\partial \mathcal L / \partial \bfz(t) :=
+            \bfa_\bfz(t)$ and there exists a unique solution $\bfa_\bfz: [0, T]
+            \to \R^z$ to the following initial value problem: \[ \bfa_\bfz(T) =
+            \mathbf 0, \qquad \frac{\rmd \bfa_\bfz}{\rmd t}(t) = -
+            \bfa_\bfy(t)^\top \frac{\partial \bsf_\theta(\bfy(t), \bfz(t),
+            t)}{\partial \bfz(t)}. \]
+          </div>
 
-<p class="lead"><span class="newthought">It is well known</span> that diffusion models are just a special type of neural differential equation, either a neural ODE or SDE. As such we will show this result holds more generally for neural ODEs.</p>
+          <p>
+            In the remainder of this post we provide the proof of this result.
+            Our proof technique is an extension of the one used by Patrick
+            Kidger (Appendix C.3.1)<span
+              class="cite"
+              data-key="kidger_thesis"
+            ></span>
+            to prove the existence of a solution to the continuous adjoint
+            equations for neural ODEs.
+          </p>
 
-<div class="theorem">
-<span class="thm-title">Continuous adjoint equations for time-scheduled conditional variables</span>
-Suppose there exists a function $\bfz: [0,T] \to \R^z$ which can be defined as a càdlàg<span class="footnote">French: <em>continue à droite, limite à gauche</em>. In practice $\bfz(t)$ is often a discrete set $\{\bfz_k\}_{k=1}^n$ where $n$ corresponds to the number of discretization steps the numerical ODE solver takes. While the proof is easier for a continuously differentiable function $\bfz(t)$, we opt for this construction for the sake of generality &mdash; the càdlàg piecewise assumption is mild and lets us define the augmented state on each continuous interval in terms of the right derivative.</span> piecewise function where $\bfz$ is continuous on each partition of $[0, T]$ given by $\Pi = \{0 = t_0 &lt; t_1 &lt; \cdots &lt; t_n = T\}$ and whose right derivatives exist for all $t \in [0,T]$. Let $\bsf_\theta: \R^d \times \R^z \times [0,T] \to \R^d$ be continuous in $t$, uniformly Lipschitz in $\bfy$, and continuously differentiable in $\bfy$. Let $\bfy: [0, T] \to \R^d$ be the unique solution for the ODE
-\[
-\frac{\rmd \bfy}{\rmd t}(t) = \bsf_\theta(\bfy(t), \bfz(t), t),
-\]
-with initial condition $\bfy(0) = \bfy_0$. Then $\partial \mathcal L / \partial \bfz(t) := \bfa_\bfz(t)$ and there exists a unique solution $\bfa_\bfz: [0, T] \to \R^z$ to the following initial value problem:
-\[
-\bfa_\bfz(T) = \mathbf 0, \qquad \frac{\rmd \bfa_\bfz}{\rmd t}(t) = - \bfa_\bfy(t)^\top \frac{\partial \bsf_\theta(\bfy(t), \bfz(t), t)}{\partial \bfz(t)}.
-\]
-</div>
+          <h2 id="proof">Proof</h2>
 
-<p>In the remainder of this post we provide the proof of this result. Our proof technique is an extension of the one used by Patrick Kidger (Appendix C.3.1)<span class="cite" data-key="kidger_thesis"></span> to prove the existence of a solution to the continuous adjoint equations for neural ODEs.</p>
+          <div class="proof">
+            <p>
+              Recall that $\bfz(t)$ is a piecewise function of time with
+              partition of the time domain $\Pi$. Without loss of generality
+              consider some time interval $\pi = [t_{m-1}, t_m]$ for some $1
+              \leq m \leq n$. Consider the augmented state defined on the
+              interval $\pi$:
+            </p>
 
-<h2 id="proof">Proof</h2>
+            \[ \frac{\rmd}{\rmd t} \begin{bmatrix} \bfy\\ \bfz \end{bmatrix}(t)
+            = \bsf_{\text{aug}} = \begin{bmatrix} \bsf_\theta(\bfy_t, \bfz_t,
+            t)\\ \overrightarrow\partial\bfz(t) \end{bmatrix}, \]
 
-<div class="proof">
-<p>Recall that $\bfz(t)$ is a piecewise function of time with partition of the time domain $\Pi$. Without loss of generality consider some time interval $\pi = [t_{m-1}, t_m]$ for some $1 \leq m \leq n$. Consider the augmented state defined on the interval $\pi$:</p>
+            <p>
+              where $\overrightarrow\partial\bfz(t): [0,T] \to \R^z$ denotes the
+              right derivative of $\bfz$ at time $t$. Let $\bfa_\text{aug}$
+              denote the augmented adjoint state as
+            </p>
 
-\[
-\frac{\rmd}{\rmd t} \begin{bmatrix}
-    \bfy\\
-    \bfz
-\end{bmatrix}(t) = \bsf_{\text{aug}} = \begin{bmatrix}
-    \bsf_\theta(\bfy_t, \bfz_t, t)\\
-    \overrightarrow\partial\bfz(t)
-\end{bmatrix},
-\]
+            \[ \bfa_\text{aug}(t) := \begin{bmatrix} \bfa_\bfy\\\bfa_\bfz
+            \end{bmatrix}(t). \]
 
-<p>where $\overrightarrow\partial\bfz(t): [0,T] \to \R^z$ denotes the right derivative of $\bfz$ at time $t$. Let $\bfa_\text{aug}$ denote the augmented adjoint state as</p>
+            <p>Then the Jacobian of $\bsf_\text{aug}$ is defined as</p>
 
-\[
-\bfa_\text{aug}(t) := \begin{bmatrix} \bfa_\bfy\\\bfa_\bfz \end{bmatrix}(t).
-\]
+            \[ \frac{\partial \bsf_\text{aug}}{\partial [\bfy, \bfz]} =
+            \begin{bmatrix} \frac{\partial \bsf_\theta(\bfy, \bfz, t)}{\partial
+            \bfy} & \frac{\partial \bsf_\theta(\bfy, \bfz, t)}{\partial \bfz}\\
+            \mathbf 0 & \mathbf 0 \end{bmatrix}. \]
 
-<p>Then the Jacobian of $\bsf_\text{aug}$ is defined as</p>
+            <p>
+              As the state $\bfz(t)$ evolves with
+              $\overrightarrow\partial\bfz(t)$ on the interval $[t_{m-1}, t_m]$
+              in the forward direction, the derivative of this augmented vector
+              field w.r.t. $\bfz$ is clearly $\mathbf 0$ as it only depends on
+              time. Remark: as the bottom row of the Jacobian of
+              $\bsf_\text{aug}$ is all $\mathbf 0$ and $\bsf_\theta$ is
+              continuous in $t$ we can consider the evolution of
+              $\bfa_\text{aug}$ over the whole interval $[0,T]$ rather than just
+              a partition of it. The evolution of the augmented adjoint state on
+              $[0,T]$ is then given as
+            </p>
 
-\[
-\frac{\partial \bsf_\text{aug}}{\partial [\bfy, \bfz]} = \begin{bmatrix}
-    \frac{\partial \bsf_\theta(\bfy, \bfz, t)}{\partial \bfy} & \frac{\partial \bsf_\theta(\bfy, \bfz, t)}{\partial \bfz}\\
-    \mathbf 0 & \mathbf 0
-\end{bmatrix}.
-\]
+            \[ \frac{\rmd \bfa_\text{aug}}{\rmd t}(t) = -\begin{bmatrix}
+            \bfa_\bfy & \bfa_\bfz \end{bmatrix}(t) \frac{\partial
+            \bsf_\text{aug}}{\partial [\bfy, \bfz]}(t). \]
 
-<p>As the state $\bfz(t)$ evolves with $\overrightarrow\partial\bfz(t)$ on the interval $[t_{m-1}, t_m]$ in the forward direction, the derivative of this augmented vector field w.r.t. $\bfz$ is clearly $\mathbf 0$ as it only depends on time. Remark: as the bottom row of the Jacobian of $\bsf_\text{aug}$ is all $\mathbf 0$ and $\bsf_\theta$ is continuous in $t$ we can consider the evolution of $\bfa_\text{aug}$ over the whole interval $[0,T]$ rather than just a partition of it. The evolution of the augmented adjoint state on $[0,T]$ is then given as</p>
+            <p>
+              Therefore $\bfa_\bfz(t)$ is a solution to the initial value
+              problem
+            </p>
 
-\[
-\frac{\rmd \bfa_\text{aug}}{\rmd t}(t) = -\begin{bmatrix}
-        \bfa_\bfy & \bfa_\bfz
-    \end{bmatrix}(t)  \frac{\partial \bsf_\text{aug}}{\partial [\bfy, \bfz]}(t).
-\]
+            \[ \bfa_\bfz(T) = 0, \qquad \frac{\rmd \bfa_\bfz}{\rmd t}(t) =
+            -\bfa_\bfy(t)^\top \frac{\partial \bsf_\theta(\bfy(t), \bfz(t),
+            t)}{\partial \bfz(t)}. \]
 
-<p>Therefore $\bfa_\bfz(t)$ is a solution to the initial value problem</p>
+            <p>
+              Next we show that there exists a unique solution to the initial
+              value problem. Now as $\bfy$ is continuous and $\bsf_\theta$ is
+              continuously differentiable in $\bfy$, it follows that $t \mapsto
+              \tfrac{\partial \bsf_\theta}{\partial \bfy}(\bfy(t), \bfz(t), t)$
+              is a continuous function on the compact set $[t_{m-1}, t_m]$. As
+              such it is bounded by some $L > 0$. Likewise, for $\bfa_\bfy \in
+              \R^d$ the map $(t, \bfa_\bfy) \mapsto -\bfa_\bfy \tfrac{\partial
+              \bsf_\theta}{\partial [\bfy, \bfz]}(\bfy(t), \bfz(t), t)$ is
+              Lipschitz in $\bfa_\bfy$ with Lipschitz constant $L$, and this
+              constant is independent of $t$. Therefore, by the
+              <a
+                href="https://en.wikipedia.org/wiki/Picard%E2%80%93Lindel%C3%B6f_theorem"
+                >Picard–Lindelöf theorem</a
+              >, the solution $\bfa_\text{aug}(t)$ exists and is unique.
+            </p>
+          </div>
 
-\[
-\bfa_\bfz(T) = 0, \qquad \frac{\rmd \bfa_\bfz}{\rmd t}(t) = -\bfa_\bfy(t)^\top \frac{\partial \bsf_\theta(\bfy(t), \bfz(t), t)}{\partial \bfz(t)}.
-\]
+          <section class="cite-this" aria-label="Cite this post">
+            <p class="cite-intro">
+              If you would like to cite this post in an academic context, you
+              can use this <code>BibTeX</code> snippet:
+            </p>
+            <div class="bib-panel">
+              <button class="bib-copy" type="button" aria-label="Copy BibTeX">
+                <svg
+                  class="icon-copy"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.25"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <rect x="4" y="3" width="9" height="11" rx="1.2" />
+                  <path
+                    d="M6 3v-.4A1.1 1.1 0 0 1 7.1 1.5h2.8A1.1 1.1 0 0 1 11 2.6V3"
+                  /></svg
+                ><svg
+                  class="icon-check"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  height="14"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.4"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3.5 8.5l3 3 6-6" />
+                </svg>
+              </button>
+              <pre>
+@misc{blasingame2024cadlagblog,
+  title        = {Gradients for Time-Scheduled Conditional Variables in Neural Differential Equations},
+  author       = {Blasingame, Zander W.},
+  year         = {2024},
+  month        = dec,
+  howpublished = {\url{https://zblasingame.github.io/writings/cadlag-conditional/}},
+  note         = {Blog post},
+}</pre
+              >
+            </div>
+          </section>
+        </div>
+        <!-- /.post-body -->
+      </article>
 
-<p>Next we show that there exists a unique solution to the initial value problem. Now as $\bfy$ is continuous and $\bsf_\theta$ is continuously differentiable in $\bfy$, it follows that $t \mapsto \tfrac{\partial \bsf_\theta}{\partial \bfy}(\bfy(t), \bfz(t), t)$ is a continuous function on the compact set $[t_{m-1}, t_m]$. As such it is bounded by some $L > 0$. Likewise, for $\bfa_\bfy \in \R^d$ the map $(t, \bfa_\bfy) \mapsto -\bfa_\bfy \tfrac{\partial \bsf_\theta}{\partial [\bfy, \bfz]}(\bfy(t), \bfz(t), t)$ is Lipschitz in $\bfa_\bfy$ with Lipschitz constant $L$, and this constant is independent of $t$. Therefore, by the <a href="https://en.wikipedia.org/wiki/Picard%E2%80%93Lindel%C3%B6f_theorem">Picard–Lindelöf theorem</a>, the solution $\bfa_\text{aug}(t)$ exists and is unique.</p>
-</div>
-
-</div><!-- /.post-body -->
-</article>
-
-<footer>
-  <div class="socials">
-    <a href="mailto:zblasingame@aithyra.at">email</a> /
-    <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ">scholar</a> /
-    <a href="https://github.com/zblasingame">github</a> /
-    <a href="https://twitter.com/zwblasingame">x</a> /
-    <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
-    <a href="../../assets/pdf/cv.pdf">cv</a>
-  </div>
-  <span class="colophon">Email is generally the best way to contact me.</span>
-  <span>&copy; 2026 Zander W. Blasingame</span>
-</footer>
-
-</div>
-<script src="../../assets/js/citations.js"></script>
-<script src="../../assets/js/theme.js"></script>
-</body>
+      <footer>
+        <div class="socials">
+          <a href="mailto:zblasingame@aithyra.at">email</a> /
+          <a href="https://scholar.google.com/citations?user=gBBtH3AAAAAJ"
+            >scholar</a
+          >
+          / <a href="https://github.com/zblasingame">github</a> /
+          <a href="https://twitter.com/zwblasingame">x</a> /
+          <a href="https://www.linkedin.com/in/zander-blasingame">linkedin</a> /
+          <a href="../../assets/pdf/cv.pdf">cv</a> /
+          <a href="../../subpages/colophon.html">colophon</a>
+        </div>
+        <span>&copy; 2026 Zander W. Blasingame</span>
+        <span
+          class="sdg"
+          lang="la"
+          title="Soli Deo gloria — To God alone be glory"
+          >Soli Deo gloria.</span
+        >
+      </footer>
+    </div>
+    <script src="../../assets/js/citations.js"></script>
+    <script src="../../assets/js/bib.js" defer></script>
+    <script src="../../assets/js/theme.js"></script>
+    <script src="../../assets/js/search-index.js" defer></script>
+    <script src="../../assets/js/search.js" defer></script>
+  </body>
 </html>

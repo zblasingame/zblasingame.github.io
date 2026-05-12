@@ -1,0 +1,45 @@
+name: Rebuild search index
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - "index.html"
+      - "subpages/**.html"
+      - "writings/**.html"
+      - "build-search-index.py"
+      - ".github/workflows/search-index.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # we need write access via the default GITHUB_TOKEN
+          persist-credentials: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Build search index
+        run: python3 build-search-index.py
+
+      - name: Commit updated index (if changed)
+        run: |
+          if git diff --quiet -- assets/js/search-index.json assets/js/search-index.js; then
+            echo "Index unchanged; nothing to commit."
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/js/search-index.json assets/js/search-index.js
+          git commit -m "chore(search): rebuild search-index [skip ci]"
+          git push
