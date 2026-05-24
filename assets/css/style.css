@@ -735,6 +735,9 @@ section > h2 .more:hover {
   letter-spacing: 0.12em;
   margin-top: 0.1rem;
 }
+.pub .venue .sub.award {
+  color: var(--accent);
+}
 .pub .title {
   color: var(--ink);
   font-size: 1.08rem;
