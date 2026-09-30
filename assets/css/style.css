@@ -738,6 +738,20 @@ section > h2 .more:hover {
 .pub .venue .sub.award {
   color: var(--accent);
 }
+/* workshop orals — award treatment without the gilt */
+.pub .presented .award.workshop {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-left: 0.15rem;
+}
+.pub .presented .award.workshop::before {
+  content: " · ";
+  color: var(--text-faint);
+  letter-spacing: 0;
+}
 .pub .title {
   color: var(--ink);
   font-size: 1.08rem;
